@@ -1,0 +1,322 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\hecto\\Downloads\\SkyHelp\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\downloads\\skyhelp\\models\\usuarios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:models\\usuarios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\downloads\\skyhelp\\repositories\\usuariosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:repositories\\usuariosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\downloads\\skyhelp\\repositories\\interfaces\\iusuariosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:repositories\\interfaces\\iusuariosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\downloads\\skyhelp\\repositories\\interfaces\\irolrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:repositories\\interfaces\\irolrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\downloads\\skyhelp\\repositories\\rolrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:repositories\\rolrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\downloads\\skyhelp\\pedidos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:pedidos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\downloads\\skyhelp\\notificaciones.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:notificaciones.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\downloads\\skyhelp\\exportacionesestadisticas.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:exportacionesestadisticas.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\downloads\\skyhelp\\evaluaciones.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:evaluaciones.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\downloads\\skyhelp\\estadosticket.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:estadosticket.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\downloads\\skyhelp\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\downloads\\skyhelp\\estadisticas.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:estadisticas.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\downloads\\skyhelp\\domiciliarios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:domiciliarios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\downloads\\skyhelp\\auditoria.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:auditoria.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\downloads\\skyhelp\\articulos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:articulos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\downloads\\skyhelp\\context\\skyhelpcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:context\\skyhelpcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\downloads\\skyhelp\\models\\roles.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:models\\roles.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 14,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UsuariosRepository.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Repositories\\UsuariosRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\UsuariosRepository.cs",
+              "ToolTip": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Repositories\\UsuariosRepository.cs",
+              "RelativeToolTip": "Repositories\\UsuariosRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T03:15:30.614Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "RolRepository.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Repositories\\RolRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\RolRepository.cs",
+              "ToolTip": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Repositories\\RolRepository.cs",
+              "RelativeToolTip": "Repositories\\RolRepository.cs",
+              "ViewState": "AgIAADIAAAAAAAAAAAAIwDsAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T03:15:45.738Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "IRolRepository.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Repositories\\Interfaces\\IRolRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\Interfaces\\IRolRepository.cs",
+              "ToolTip": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Repositories\\Interfaces\\IRolRepository.cs",
+              "RelativeToolTip": "Repositories\\Interfaces\\IRolRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-25T01:13:28.603Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "IUsuariosRepository.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Repositories\\Interfaces\\IUsuariosRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\Interfaces\\IUsuariosRepository.cs",
+              "ToolTip": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Repositories\\Interfaces\\IUsuariosRepository.cs",
+              "RelativeToolTip": "Repositories\\Interfaces\\IUsuariosRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-25T01:13:00.785Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Roles.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Models\\Roles.cs",
+              "RelativeDocumentMoniker": "Models\\Roles.cs",
+              "ToolTip": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Models\\Roles.cs",
+              "RelativeToolTip": "Models\\Roles.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAABiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-23T16:34:38.998Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "SkyHelpContext.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Context\\SkyHelpContext.cs",
+              "RelativeDocumentMoniker": "Context\\SkyHelpContext.cs",
+              "ToolTip": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Context\\SkyHelpContext.cs*",
+              "RelativeToolTip": "Context\\SkyHelpContext.cs*",
+              "ViewState": "AgIAAAcAAAAAAAAAAAA1wCYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-23T16:30:04.671Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Articulos.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Articulos.cs",
+              "RelativeDocumentMoniker": "Articulos.cs",
+              "ToolTip": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Articulos.cs",
+              "RelativeToolTip": "Articulos.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-18T03:43:25.82Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Auditoria.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Auditoria.cs",
+              "RelativeDocumentMoniker": "Auditoria.cs",
+              "ToolTip": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Auditoria.cs",
+              "RelativeToolTip": "Auditoria.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-18T03:39:39.018Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Domiciliarios.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Domiciliarios.cs",
+              "RelativeDocumentMoniker": "Domiciliarios.cs",
+              "ToolTip": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Domiciliarios.cs",
+              "RelativeToolTip": "Domiciliarios.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-18T03:35:15.573Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Estadisticas.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Estadisticas.cs",
+              "RelativeDocumentMoniker": "Estadisticas.cs",
+              "ToolTip": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Estadisticas.cs",
+              "RelativeToolTip": "Estadisticas.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-18T03:21:27.125Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\hecto\\Downloads\\SkyHelp\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\hecto\\Downloads\\SkyHelp\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-10-18T01:22:20.222Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Usuarios.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Models\\Usuarios.cs",
+              "RelativeDocumentMoniker": "Models\\Usuarios.cs",
+              "ToolTip": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Models\\Usuarios.cs",
+              "RelativeToolTip": "Models\\Usuarios.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAQwBoAAABaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-23T16:37:55.482Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "EstadosTicket.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\Downloads\\SkyHelp\\EstadosTicket.cs",
+              "RelativeDocumentMoniker": "EstadosTicket.cs",
+              "ToolTip": "C:\\Users\\hecto\\Downloads\\SkyHelp\\EstadosTicket.cs",
+              "RelativeToolTip": "EstadosTicket.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-18T03:16:07.418Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Evaluaciones.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Evaluaciones.cs",
+              "RelativeDocumentMoniker": "Evaluaciones.cs",
+              "ToolTip": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Evaluaciones.cs",
+              "RelativeToolTip": "Evaluaciones.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-18T03:13:11.297Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ExportacionesEstadisticas.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\Downloads\\SkyHelp\\ExportacionesEstadisticas.cs",
+              "RelativeDocumentMoniker": "ExportacionesEstadisticas.cs",
+              "ToolTip": "C:\\Users\\hecto\\Downloads\\SkyHelp\\ExportacionesEstadisticas.cs",
+              "RelativeToolTip": "ExportacionesEstadisticas.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-18T03:10:50.684Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Notificaciones.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Notificaciones.cs",
+              "RelativeDocumentMoniker": "Notificaciones.cs",
+              "ToolTip": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Notificaciones.cs",
+              "RelativeToolTip": "Notificaciones.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-18T03:06:52.044Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Pedidos.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Pedidos.cs",
+              "RelativeDocumentMoniker": "Pedidos.cs",
+              "ToolTip": "C:\\Users\\hecto\\Downloads\\SkyHelp\\Pedidos.cs",
+              "RelativeToolTip": "Pedidos.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-18T03:04:13.922Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
