@@ -11,7 +11,7 @@ namespace SkyHelp.Context
 
         public DbSet<Usuarios> Usuarios { get; set; }
         public DbSet<Roles> Roles { get; set; }
-        public DbSet<UsuarioRol> UsuarioRoles { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,18 +36,6 @@ namespace SkyHelp.Context
                 entity.ToTable("Roles");
             });
 
-            // Configuración de la entidad UsuarioRol
-            modelBuilder.Entity<UsuarioRol>(entity =>
-            {
-                entity.HasKey(e => e.IDUsuarioRol);
-                entity.HasOne(e => e.Usuario)
-                      .WithMany(u => u.UsuarioRoles)
-                      .HasForeignKey(e => e.IDUsuario);
-                entity.HasOne(e => e.Rol)
-                      .WithMany(r => r.UsuariosRoles)
-                      .HasForeignKey(e => e.IDRol);
-                entity.ToTable("UsuarioRol");
-            });
             base.OnModelCreating(modelBuilder);
         }
     }

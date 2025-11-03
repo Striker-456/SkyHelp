@@ -1,7 +1,6 @@
 ﻿using Microservicios;
 using Microsoft.EntityFrameworkCore;
 using SkyHelp.Context;
-using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
 using System.Linq.Expressions;
 namespace SkyHelp.Repositories
@@ -13,7 +12,7 @@ namespace SkyHelp.Repositories
         {
             _context = context;
         }
-        public async Task<Usuarios> ObtenerUsuario(int id)
+        public async Task<Usuarios> ObtenerUsuario(Guid id)
         {
             return await _context.Usuarios.FirstOrDefaultAsync(x => x.IDUsuarios == id);
         }
@@ -23,7 +22,7 @@ namespace SkyHelp.Repositories
             return await _context.Usuarios.ToListAsync();
         }
 
-        public async Task<bool> EliminarUsuario(int id)
+        public async Task<bool> EliminarUsuario(Guid id)
         {
             try
             {
@@ -45,11 +44,11 @@ namespace SkyHelp.Repositories
             }
         }
 
-        public async Task<bool> ActualizarUsuario(Usuarios usuario)
+        public async Task<bool> ActualizarUsuario(Guid id, Usuarios usuario)
         {
             try
             {
-                var usuarioExistente = await _context.Usuarios.FirstOrDefaultAsync(x => x.IDUsuarios == usuario.IDUsuarios);
+                var usuarioExistente = await _context.Usuarios.FirstOrDefaultAsync(x => x.IDUsuarios == id);
                 if (usuarioExistente == null)
                 {
                     return false;

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "/VwhkSHLBRI=",
+  "dgSpecHash": "fUN8SxvBG+k=",
   "success": true,
-  "projectFilePath": "C:\\Users\\hecto\\Downloads\\SkyHelp\\SkyHelp.csproj",
+  "projectFilePath": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\Código\\Backend\\SkyHelp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\hecto\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\hecto\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

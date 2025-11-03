@@ -1,7 +1,6 @@
 ﻿using Microservicios;
 using Microsoft.EntityFrameworkCore;
 using SkyHelp.Context;
-using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
 using System.Linq.Expressions;
 namespace SkyHelp.Repositories
@@ -13,7 +12,7 @@ namespace SkyHelp.Repositories
         {
             _context = context;
         }
-        public async Task<Roles> ObtenerRoles(int id)
+        public async Task<Roles> ObtenerRoles(Guid id)
         {
             return await _context.Roles.FirstOrDefaultAsync(x => x.IDRol == id);
         }
@@ -31,11 +30,11 @@ namespace SkyHelp.Repositories
                 throw new Exception(ex.Message.ToString());
             }
         }
-        public async Task<bool> ActualizarRol(Roles roles)
+        public async Task<bool> ActualizarRol(Guid id, Roles roles)
         {
             try
             {
-                var rolExistente = await _context.Roles.FirstOrDefaultAsync(x => x.IDRol == roles.IDRol);
+                var rolExistente = await _context.Roles.FirstOrDefaultAsync(x => x.IDRol == id);
                 if (rolExistente == null)
                 {
                     return false;
@@ -57,7 +56,7 @@ namespace SkyHelp.Repositories
         {
             return await _context.Roles.ToListAsync();
         }
-        public async Task<bool> EliminarRol(int id)
+        public async Task<bool> EliminarRol(Guid id)
         {
             try
             {

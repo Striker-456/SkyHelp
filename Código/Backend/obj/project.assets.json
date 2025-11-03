@@ -3039,11 +3039,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\hecto\\Downloads\\SkyHelp\\SkyHelp.csproj",
+      "projectUniqueName": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\Código\\Backend\\SkyHelp.csproj",
       "projectName": "SkyHelp",
-      "projectPath": "C:\\Users\\hecto\\Downloads\\SkyHelp\\SkyHelp.csproj",
+      "projectPath": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\Código\\Backend\\SkyHelp.csproj",
       "packagesPath": "C:\\Users\\hecto\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\hecto\\Downloads\\SkyHelp\\obj\\",
+      "outputPath": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\Código\\Backend\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

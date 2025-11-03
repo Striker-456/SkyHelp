@@ -7,7 +7,7 @@ namespace Microservicios
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IDUsuarios { get; set; }
+        public Guid IDUsuarios { get; set; }
         [Required]
         [StringLength(50)]
         public string NombreUsuarios { get; set; }

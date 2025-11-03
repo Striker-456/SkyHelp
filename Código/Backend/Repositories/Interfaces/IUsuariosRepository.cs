@@ -7,12 +7,12 @@ namespace SkyHelp.Repositories.Interfaces
     {
         Task<List<Usuarios>> ObtenerUsuario();
 
-        Task<Usuarios> ObtenerUsuario(int id);
+        Task<Usuarios> ObtenerUsuario(Guid id);
 
         Task<bool> CrearUsuario(Usuarios usuario);
 
-        Task<bool> ActualizarUsuario(Usuarios usuario);
+        Task<bool> ActualizarUsuario(Guid id, Usuarios usuario);
 
-        Task<bool> EliminarUsuario(int id);
+        Task<bool> EliminarUsuario(Guid id);
     }
 }

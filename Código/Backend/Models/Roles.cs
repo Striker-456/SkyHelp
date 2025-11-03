@@ -7,7 +7,7 @@ namespace Microservicios
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IDRol { get; set; } // Llave primaria
+        public Guid IDRol { get; set; } // Llave primaria
         [Required]
         [StringLength(50)]  
         public string NombreRol { get; set; }   
