@@ -1,0 +1,8 @@
+{
+    "idRol": "4d00025c-c82c-4a15-953f-d3d6b931eb17",
+    "nombreUsuarios": "Lau02",
+    "nombreCompleto": "Laura Beltran",
+    "correo": "Laura@gmail.com",
+    "contraseña": "4EFnsPG9q5sCFjlY8Nh5M/FwP/pbVnmcAVXxsJwNjfM=",
+    "estadoCuenta": "Activo"
+  }

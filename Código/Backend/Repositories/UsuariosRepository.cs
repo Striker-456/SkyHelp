@@ -1,9 +1,11 @@
 ﻿using Microservicios;
 using Microsoft.EntityFrameworkCore;
 using SkyHelp.Context;
+using SkyHelp.EncriptarSHA256;
 using SkyHelp.Repositories.Interfaces;
 using System.Linq.Expressions;
 namespace SkyHelp.Repositories
+
 {
     public class UsuariosRepository : IUsuariosRepository
     {
@@ -17,7 +19,7 @@ namespace SkyHelp.Repositories
             return await _context.Usuarios.FirstOrDefaultAsync(x => x.IDUsuarios == id);
         }
 
-        public async Task<List<Usuarios>> ObtenerUsuario()
+        public async Task<List<Usuarios>> ObtenerUsuarios()
         {
             return await _context.Usuarios.ToListAsync();
         }
@@ -44,11 +46,11 @@ namespace SkyHelp.Repositories
             }
         }
 
-        public async Task<bool> ActualizarUsuario(Guid id, Usuarios usuario)
+        public async Task<bool> ActualizarUsuario( Usuarios usuario)
         {
             try
             {
-                var usuarioExistente = await _context.Usuarios.FirstOrDefaultAsync(x => x.IDUsuarios == id);
+                var usuarioExistente = await _context.Usuarios.FirstOrDefaultAsync(x => x.IDUsuarios == usuario.IDUsuarios);
                 if (usuarioExistente == null)
                 {
                     return false;
@@ -58,8 +60,14 @@ namespace SkyHelp.Repositories
                 usuarioExistente.NombreUsuarios = usuario.NombreUsuarios;
                 usuarioExistente.NombreCompleto = usuario.NombreCompleto;
                 usuarioExistente.Correo = usuario.Correo;
-                usuarioExistente.Contrasena = usuario.Contrasena;
+                usuarioExistente.Contraseña = usuario.Contraseña;
                 usuarioExistente.EstadoCuenta = usuario.EstadoCuenta;
+
+                if (!string.IsNullOrWhiteSpace(usuario.Contraseña))
+                {
+                    usuarioExistente.Contraseña = Seguridad.EncriptarSHA256(usuario.Contraseña);
+                }
+
 
                 _context.Usuarios.Update(usuarioExistente);
                 await _context.SaveChangesAsync();
@@ -76,6 +84,14 @@ namespace SkyHelp.Repositories
         {
             try
             {
+
+                usuario.Contraseña = Seguridad.EncriptarSHA256(usuario.Contraseña);
+
+                if (usuario.IDUsuarios == Guid.Empty)
+                {
+                    usuario.IDUsuarios = Guid.NewGuid();
+                }
+
                 _context.Usuarios.Add(usuario);
                 await _context.SaveChangesAsync();
                 return true;

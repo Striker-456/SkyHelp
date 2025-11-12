@@ -23,7 +23,7 @@ namespace SkyHelp.Context
                 entity.Property(e => e.NombreUsuarios).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.NombreCompleto).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Correo).IsRequired().HasMaxLength(50);
-                entity.Property(e => e.Contrasena).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Contraseña).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.EstadoCuenta).IsRequired().HasMaxLength(50);
                 entity.ToTable("Usuarios");
             });

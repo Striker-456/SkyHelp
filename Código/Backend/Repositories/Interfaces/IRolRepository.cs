@@ -4,12 +4,13 @@ namespace SkyHelp.Repositories.Interfaces
 {
     public interface IRolRepository
     {
-        Task<Roles> ObtenerRoles(Guid id);
+        Task<List<Roles>> ObtenerRoles();
+        Task<Roles> ObtenerRolesPorID(Guid id);
 
         Task<bool> AsignarRol(Roles roles);
 
-        Task<bool> ActualizarRol(Guid id, Roles roles);
-        Task<List<Roles>> ObtenerRoles();
+        Task<bool> ActualizarRol( Roles roles);
+        
         Task<bool> EliminarRol(Guid id);
 
     }

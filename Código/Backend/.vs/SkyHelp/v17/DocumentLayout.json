@@ -3,20 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\onedrive\\escritorio\\skyhelp\\c\u00F3digo\\backend\\models\\roles.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:models\\roles.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\onedrive\\escritorio\\skyhelp\\c\u00F3digo\\backend\\context\\skyhelpcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:context\\skyhelpcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\onedrive\\escritorio\\skyhelp\\c\u00F3digo\\backend\\controllers\\rolcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:controllers\\rolcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\onedrive\\escritorio\\skyhelp\\c\u00F3digo\\backend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\onedrive\\escritorio\\skyhelp\\c\u00F3digo\\backend\\repositories\\usuariosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:repositories\\usuariosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\onedrive\\escritorio\\skyhelp\\c\u00F3digo\\backend\\models\\roles.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:models\\roles.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\onedrive\\escritorio\\skyhelp\\c\u00F3digo\\backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\onedrive\\escritorio\\skyhelp\\c\u00F3digo\\backend\\repositories\\rolrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -27,12 +27,24 @@
       "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:repositories\\interfaces\\irolrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\onedrive\\escritorio\\skyhelp\\c\u00F3digo\\backend\\repositories\\interfaces\\iusuariosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:repositories\\interfaces\\iusuariosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\onedrive\\escritorio\\skyhelp\\c\u00F3digo\\backend\\context\\inyecciondependencias.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:context\\inyecciondependencias.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\onedrive\\escritorio\\skyhelp\\c\u00F3digo\\backend\\models\\usuarios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:models\\usuarios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\onedrive\\escritorio\\skyhelp\\c\u00F3digo\\backend\\repositories\\interfaces\\iusuariosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:repositories\\interfaces\\iusuariosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\onedrive\\escritorio\\skyhelp\\c\u00F3digo\\backend\\controllers\\usuarioscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:controllers\\usuarioscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\hecto\\onedrive\\escritorio\\skyhelp\\c\u00F3digo\\backend\\repositories\\usuariosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:repositories\\usuariosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -42,21 +54,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 10,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "UsuariosRepository.cs",
-              "DocumentMoniker": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\UsuariosRepository.cs",
-              "RelativeDocumentMoniker": "Repositories\\UsuariosRepository.cs",
-              "ToolTip": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\UsuariosRepository.cs",
-              "RelativeToolTip": "Repositories\\UsuariosRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T03:15:30.614Z",
-              "IsPinned": true
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
@@ -71,15 +70,27 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "RolRepository.cs",
-              "DocumentMoniker": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\RolRepository.cs",
-              "RelativeDocumentMoniker": "Repositories\\RolRepository.cs",
-              "ToolTip": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\RolRepository.cs",
-              "RelativeToolTip": "Repositories\\RolRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAWAAAAAAAAAA==",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABYAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T03:15:45.738Z"
+              "WhenOpened": "2025-11-03T17:57:29.787Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Roles.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Models\\Roles.cs",
+              "RelativeDocumentMoniker": "Models\\Roles.cs",
+              "ToolTip": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Models\\Roles.cs",
+              "RelativeToolTip": "Models\\Roles.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-11T18:47:38.388Z"
             },
             {
               "$type": "Document",
@@ -89,58 +100,34 @@
               "RelativeDocumentMoniker": "Repositories\\Interfaces\\IRolRepository.cs",
               "ToolTip": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\Interfaces\\IRolRepository.cs",
               "RelativeToolTip": "Repositories\\Interfaces\\IRolRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAqAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-25T01:13:28.603Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "IUsuariosRepository.cs",
-              "DocumentMoniker": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\Interfaces\\IUsuariosRepository.cs",
-              "RelativeDocumentMoniker": "Repositories\\Interfaces\\IUsuariosRepository.cs",
-              "ToolTip": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\Interfaces\\IUsuariosRepository.cs",
-              "RelativeToolTip": "Repositories\\Interfaces\\IUsuariosRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-25T01:13:00.785Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Roles.cs",
-              "DocumentMoniker": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Models\\Roles.cs",
-              "RelativeDocumentMoniker": "Models\\Roles.cs",
-              "ToolTip": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Models\\Roles.cs",
-              "RelativeToolTip": "Models\\Roles.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAA5AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-23T16:34:38.998Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "SkyHelpContext.cs",
-              "DocumentMoniker": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Context\\SkyHelpContext.cs",
-              "RelativeDocumentMoniker": "Context\\SkyHelpContext.cs",
-              "ToolTip": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Context\\SkyHelpContext.cs",
-              "RelativeToolTip": "Context\\SkyHelpContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-23T16:30:04.671Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
               "ToolTip": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\appsettings.json",
               "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAVAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-10-18T01:22:20.222Z"
+              "WhenOpened": "2025-10-18T01:22:20.222Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "IUsuariosRepository.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\Interfaces\\IUsuariosRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\Interfaces\\IUsuariosRepository.cs",
+              "ToolTip": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\Interfaces\\IUsuariosRepository.cs",
+              "RelativeToolTip": "Repositories\\Interfaces\\IUsuariosRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-25T01:13:00.785Z"
             },
             {
               "$type": "Document",
@@ -150,9 +137,70 @@
               "RelativeDocumentMoniker": "Models\\Usuarios.cs",
               "ToolTip": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Models\\Usuarios.cs",
               "RelativeToolTip": "Models\\Usuarios.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAASAAAAAAAAAA==",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAqwA4AAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-23T16:37:55.482Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "UsuariosController.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Controllers\\UsuariosController.cs",
+              "RelativeDocumentMoniker": "Controllers\\UsuariosController.cs",
+              "ToolTip": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Controllers\\UsuariosController.cs",
+              "RelativeToolTip": "Controllers\\UsuariosController.cs",
+              "ViewState": "AgIAAGcAAAAAAAAAAAAcwBoAAABPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-11T18:41:26.237Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RolController.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Controllers\\RolController.cs",
+              "RelativeDocumentMoniker": "Controllers\\RolController.cs",
+              "ToolTip": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Controllers\\RolController.cs",
+              "RelativeToolTip": "Controllers\\RolController.cs",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAowDMAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-11T18:40:46.564Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "RolRepository.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\RolRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\RolRepository.cs",
+              "ToolTip": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\RolRepository.cs",
+              "RelativeToolTip": "Repositories\\RolRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T03:15:45.738Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "InyeccionDependencias.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Context\\InyeccionDependencias.cs",
+              "RelativeDocumentMoniker": "Context\\InyeccionDependencias.cs",
+              "ToolTip": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Context\\InyeccionDependencias.cs",
+              "RelativeToolTip": "Context\\InyeccionDependencias.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAACCAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-03T02:22:50.226Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "UsuariosRepository.cs",
+              "DocumentMoniker": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\UsuariosRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\UsuariosRepository.cs",
+              "ToolTip": "C:\\Users\\hecto\\OneDrive\\Escritorio\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\UsuariosRepository.cs",
+              "RelativeToolTip": "Repositories\\UsuariosRepository.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAewDIAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T03:15:30.614Z"
             }
           ]
         }

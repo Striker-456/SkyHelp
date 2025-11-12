@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Microservicios
 {
@@ -7,7 +8,11 @@ namespace Microservicios
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid IDUsuarios { get; set; }
+        public Guid IDUsuarios { get; set; } = Guid.NewGuid();
+
+        [Required]
+        [ForeignKey("Rol")]
+        public Guid IDRol { get; set; }
         [Required]
         [StringLength(50)]
         public string NombreUsuarios { get; set; }
@@ -19,11 +24,11 @@ namespace Microservicios
         public string Correo { get; set; }
         [Required]
         [StringLength(50)]
-        public string Contrasena { get; set; }
+        public string Contraseña { get; set; }
         [Required]
         [StringLength(50)]
         public string EstadoCuenta { get; set; }
-
-        public ICollection <Roles> Rol { get; set; } // Relación muchos a muchos con Roles
+        [JsonIgnore]
+        public virtual Roles? Rol { get; set; } 
     }
 }

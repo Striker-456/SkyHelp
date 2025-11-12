@@ -88,3 +88,5 @@ C:\Users\hecto\OneDrive\Escritorio\SkyHelp\Código\Backend\obj\Debug\net8.0\refi
 C:\Users\hecto\OneDrive\Escritorio\SkyHelp\Código\Backend\obj\Debug\net8.0\SkyHelp.pdb
 C:\Users\hecto\OneDrive\Escritorio\SkyHelp\Código\Backend\obj\Debug\net8.0\SkyHelp.genruntimeconfig.cache
 C:\Users\hecto\OneDrive\Escritorio\SkyHelp\Código\Backend\obj\Debug\net8.0\ref\SkyHelp.dll
+C:\Users\hecto\OneDrive\Escritorio\SkyHelp\Código\Backend\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\hecto\OneDrive\Escritorio\SkyHelp\Código\Backend\bin\Debug\net8.0\Newtonsoft.Json.dll
