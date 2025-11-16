@@ -11,6 +11,7 @@ namespace SkyHelp.Context
 
         public DbSet<Usuarios> Usuarios { get; set; }
         public DbSet<Roles> Roles { get; set; }
+        public DbSet<Articulos> Articulos { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -34,6 +35,18 @@ namespace SkyHelp.Context
                 entity.Property(e => e.NombreRol).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.Descripcion).HasMaxLength(200);
                 entity.ToTable("Roles");
+            });
+            // Configuración de la entidad Articulos
+            modelBuilder.Entity<Articulos>(entity =>
+            {
+                entity.HasKey(e => e.IDArticulo);
+                entity.Property(e => e.Titulo).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Categoria).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Contenido).IsRequired();
+                entity.Property(e => e.FechaPublicacion).IsRequired();
+                entity.Property(e => e.TotalVistas).IsRequired();
+                entity.Property(e => e.CalificacionPromedio).IsRequired();
+                entity.ToTable("Articulos");
             });
 
             base.OnModelCreating(modelBuilder);
