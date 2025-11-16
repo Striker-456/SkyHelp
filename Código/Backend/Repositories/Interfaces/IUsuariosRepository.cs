@@ -14,5 +14,6 @@ namespace SkyHelp.Repositories.Interfaces
         Task<bool> ActualizarUsuario(Usuarios usuario);
 
         Task<bool> EliminarUsuario(Guid id);
+        Task<Usuarios> ObtenerUsuarioPorCorreo(string correo);
     }
 }

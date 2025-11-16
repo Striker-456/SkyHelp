@@ -23,6 +23,10 @@ namespace SkyHelp.Repositories
         {
             return await _context.Usuarios.ToListAsync();
         }
+        public async Task<Usuarios> ObtenerPersonaPorCorreo(string username)
+        {
+            return await _context.Usuarios.FirstOrDefaultAsync(x => x.Correo == username);
+        }
 
         public async Task<bool> EliminarUsuario(Guid id)
         {

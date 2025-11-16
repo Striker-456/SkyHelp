@@ -12,6 +12,7 @@ namespace SkyHelp.Context
         public DbSet<Usuarios> Usuarios { get; set; }
         public DbSet<Roles> Roles { get; set; }
         public DbSet<Articulos> Articulos { get; set; }
+        public DbSet<Login> Login { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -48,7 +49,13 @@ namespace SkyHelp.Context
                 entity.Property(e => e.CalificacionPromedio).IsRequired();
                 entity.ToTable("Articulos");
             });
-
+            modelBuilder.Entity<Login>(entity =>
+            {
+                entity.HasNoKey();
+                entity.Property(e => e.Correo).IsRequired();
+                entity.Property(e => e.Contrasena).IsRequired();
+                entity.ToTable("Login");
+            });
             base.OnModelCreating(modelBuilder);
         }
     }
