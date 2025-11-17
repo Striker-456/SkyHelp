@@ -12,6 +12,8 @@ namespace SkyHelp.Context
         public DbSet<Usuarios> Usuarios { get; set; }
         public DbSet<Roles> Roles { get; set; }
         public DbSet<Articulos> Articulos { get; set; }
+        public DbSet<Domiciliarios> Domiciliarios { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -48,6 +50,21 @@ namespace SkyHelp.Context
                 entity.Property(e => e.CalificacionPromedio).IsRequired();
                 entity.ToTable("Articulos");
             });
+
+            // Configuración de la entidad Domiciliarios
+            modelBuilder.Entity<Domiciliarios>(entity =>
+            {
+                entity.HasKey(e => e.IDDomiciliario);
+                entity.Property(e => e.NombreCompleto).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Apellidos).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Telefono).IsRequired().HasMaxLength(20);
+                entity.Property(e => e.Email).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Estado).IsRequired().HasMaxLength(20);
+                entity.Property(e => e.PlacaVehiculo).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.IDUsuario).IsRequired();             
+                entity.ToTable("Domiciliarios");
+            });
+                  
 
             base.OnModelCreating(modelBuilder);
         }
