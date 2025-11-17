@@ -1,4 +1,4 @@
-﻿using Microservicios;
+﻿using SkyHelp;
 using Microsoft.EntityFrameworkCore;
 using SkyHelp.Models;
 
@@ -14,6 +14,7 @@ namespace SkyHelp.Context
         public DbSet<Roles> Roles { get; set; }
         public DbSet<Articulos> Articulos { get; set; }
         public DbSet<Auditoria> Auditoria { get; set; }
+        public DbSet<Domiciliarios> Domiciliarios { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -68,6 +69,22 @@ namespace SkyHelp.Context
                       .WithMany(t => t.Auditorias)
                       .HasForeignKey(e => e.IDUsuario);
                 entity.ToTable("Auditoria");
+            });
+
+            // Configuración de la entidad Domiciliarios
+            modelBuilder.Entity<Domiciliarios>(entity =>
+            {
+                entity.HasKey(e => e.IDDomiciliario);
+                entity.Property(e => e.NombreCompleto).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Telefono).IsRequired().HasMaxLength(20);
+                entity.Property(e => e.Email).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.EstadoActividad).IsRequired().HasMaxLength(20);
+                entity.Property(e => e.PlacaVehiculo).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.IDUsuario).IsRequired();
+                entity.HasOne(e => e.Usuario)
+                .WithMany(t => t.Domiciliarios)
+                .HasForeignKey(e => e.IDUsuario);
+                entity.ToTable("Domiciliarios");
             });
 
             base.OnModelCreating(modelBuilder);
