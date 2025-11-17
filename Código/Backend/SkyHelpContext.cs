@@ -49,12 +49,18 @@ namespace SkyHelp.Context
                 entity.HasKey(e => e.IDArticulo);
                 entity.Property(e => e.Titulo).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.Categoria).IsRequired().HasMaxLength(50);
-                entity.Property(e => e.Contenido).IsRequired();
-                entity.Property(e => e.FechaPublicacion).IsRequired();
+                entity.Property(e => e.Contenido).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Fecha_Publicacion).IsRequired();
                 entity.Property(e => e.TotalVistas).IsRequired();
-                entity.Property(e => e.CalificacionPromedio).IsRequired();
+                entity.Property(e => e.CalificacionPromedio).HasColumnType("decimal(18, 0)").IsRequired();
+                entity.Property(e => e.IDUsuario).IsRequired();
+                // Relación con Usuarios
+                entity.HasOne(e => e.Usuario)
+                    .WithMany(u => u.Articulos)
+                    .HasForeignKey(e => e.IDUsuario);
                 entity.ToTable("Articulos");
             });
+
             // Configuración de la entidad Auditoria
             modelBuilder.Entity<Auditoria>(entity =>
             {

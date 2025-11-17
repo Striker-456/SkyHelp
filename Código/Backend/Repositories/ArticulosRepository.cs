@@ -8,19 +8,22 @@ namespace SkyHelp.Repositories
 {
     public class ArticulosRepository : IArticulosRepository
     {
-        private readonly SkyHelpContext _context;// Inyección de dependencia del contexto de la base de datos
+        private readonly SkyHelpContext _context;
         public ArticulosRepository(SkyHelpContext context)
         {
             _context = context;
         }
+        // OBTENER TODOS
         public async Task<List<Articulos>> ObtenerArticulos()
         {
             return await _context.Articulos.ToListAsync();
         }
-        public async Task<Articulos?> ObtenerArticulosPorID(Guid id)
+        // OBTENER POR ID
+        public async Task<Articulos> ObtenerArticulosPorID(Guid id)
         {
-            return await _context.Articulos.FindAsync(id);
+            return await _context.Articulos.FirstOrDefaultAsync(x => x.IDArticulo == id);
         }
+        // CREAR
         public async Task<bool> CrearArticulo(Articulos articulo)
         {
             try
@@ -35,6 +38,7 @@ namespace SkyHelp.Repositories
                 throw new Exception(ex.Message.ToString());
             }
         }
+        // ACTUALIZAR
         public async Task<bool> ActualizarArticulo(Articulos articulo)
         {
             try
@@ -43,12 +47,15 @@ namespace SkyHelp.Repositories
                 if (articuloExistente == null)
                 {
                     return false;
-                    throw new Exception("Articulo Para Actualizar No Existe");
+                    throw new Exception("Artículo para actualizar no existe.");
                 }
                 articuloExistente.Titulo = articulo.Titulo;
+                articuloExistente.Categoria = articulo.Categoria;
                 articuloExistente.Contenido = articulo.Contenido;
-                articuloExistente.FechaPublicacion = articulo.FechaPublicacion;
+                articuloExistente.Fecha_Publicacion = articulo.Fecha_Publicacion;
+                articuloExistente.TotalVistas = articulo.TotalVistas;
                 articuloExistente.CalificacionPromedio = articulo.CalificacionPromedio;
+                articuloExistente.IDUsuario = articulo.IDUsuario;
                 _context.Articulos.Update(articuloExistente);
                 await _context.SaveChangesAsync();
                 return true;
@@ -59,6 +66,7 @@ namespace SkyHelp.Repositories
                 throw new Exception(ex.Message.ToString());
             }
         }
+        // ELIMINAR
         public async Task<bool> EliminarArticulo(Guid id)
         {
             try
@@ -67,7 +75,7 @@ namespace SkyHelp.Repositories
                 if (articuloExistente == null)
                 {
                     return false;
-                    throw new Exception("Articulo Para Eliminar No Existe");
+                    throw new Exception("Artículo para eliminar no existe.");
                 }
                 _context.Articulos.Remove(articuloExistente);
                 await _context.SaveChangesAsync();

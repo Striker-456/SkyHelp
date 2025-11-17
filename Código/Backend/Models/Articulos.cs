@@ -18,14 +18,14 @@ namespace SkyHelp.Models
         [Required]
         [StringLength(50)]
         public string Contenido { get; set; }
-        public DateTime FechaPublicacion { get; set; }
+        public DateTime Fecha_Publicacion { get; set; }
         public int  TotalVistas { get; set; } 
         public decimal CalificacionPromedio { get; set; }
         [Required]
         [ForeignKey("Usuario")]
-        public Guid IDUsuarios { get; set; }
+        public Guid IDUsuario { get; set; }
         [JsonIgnore]
-        public virtual Usuarios? Usuarios { get; set; }
+        public virtual Usuarios? Usuario { get; set; }
 
     }
 }

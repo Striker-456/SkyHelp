@@ -3,20 +3,36 @@
   "WorkspaceRootPath": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\edwar\\source\\repos\\skyhelp\\c\u00F3digo\\backend\\controllers\\articuloscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:controllers\\articuloscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\edwar\\source\\repos\\skyhelp\\c\u00F3digo\\backend\\controllers\\usuarioscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:controllers\\usuarioscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\edwar\\source\\repos\\skyhelp\\c\u00F3digo\\backend\\repositories\\articulosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:repositories\\articulosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\edwar\\source\\repos\\skyhelp\\c\u00F3digo\\backend\\repositories\\interfaces\\iarticulosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:repositories\\interfaces\\iarticulosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\edwar\\source\\repos\\skyhelp\\c\u00F3digo\\backend\\models\\articulos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:models\\articulos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\edwar\\source\\repos\\skyhelp\\c\u00F3digo\\backend\\controllers\\articuloscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:controllers\\articuloscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\edwar\\source\\repos\\skyhelp\\c\u00F3digo\\backend\\repositories\\interfaces\\iusuariosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:repositories\\interfaces\\iusuariosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\edwar\\source\\repos\\skyhelp\\c\u00F3digo\\backend\\skyhelpcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:skyhelpcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\edwar\\source\\repos\\skyhelp\\c\u00F3digo\\backend\\repositories\\interfaces\\irolrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:repositories\\interfaces\\irolrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\edwar\\source\\repos\\skyhelp\\c\u00F3digo\\backend\\controllers\\usuarioscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:controllers\\usuarioscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\edwar\\source\\repos\\skyhelp\\c\u00F3digo\\backend\\repositories\\usuariosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -27,10 +43,6 @@
       "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:models\\usuarios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\edwar\\source\\repos\\skyhelp\\c\u00F3digo\\backend\\repositories\\articulosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:repositories\\articulosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\edwar\\source\\repos\\skyhelp\\c\u00F3digo\\backend\\controllers\\rolcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:controllers\\rolcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -39,20 +51,8 @@
       "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:context\\inyecciondependencias.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\edwar\\source\\repos\\skyhelp\\c\u00F3digo\\backend\\skyhelpcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:skyhelpcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\edwar\\source\\repos\\skyhelp\\c\u00F3digo\\backend\\models\\articulos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:models\\articulos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\edwar\\source\\repos\\skyhelp\\c\u00F3digo\\backend\\repositories\\rolrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:repositories\\rolrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\edwar\\source\\repos\\skyhelp\\c\u00F3digo\\backend\\repositories\\interfaces\\irolrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|solutionrelative:repositories\\interfaces\\irolrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{AA086F7A-EB75-41EA-80DB-25E5321C7A7A}|SkyHelp.csproj|c:\\users\\edwar\\source\\repos\\skyhelp\\c\u00F3digo\\backend\\models\\roles.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -74,17 +74,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 2,
               "Title": "Articulos.cs",
-              "DocumentMoniker": "C:\\Users\\Edwar\\Source\\Repos\\SkyHelp\\C\u00F3digo\\Backend\\Models\\Articulos.cs",
+              "DocumentMoniker": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Models\\Articulos.cs",
               "RelativeDocumentMoniker": "Models\\Articulos.cs",
-              "ToolTip": "C:\\Users\\Edwar\\Source\\Repos\\SkyHelp\\C\u00F3digo\\Backend\\Models\\Articulos.cs",
-              "RelativeToolTip": "Models\\Articulos.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABsAAAA3AAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Models\\Articulos.cs*",
+              "RelativeToolTip": "Models\\Articulos.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-16T17:23:09.892Z",
               "IsPinned": true,
@@ -92,13 +92,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 0,
               "Title": "ArticulosRepository.cs",
               "DocumentMoniker": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\ArticulosRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\ArticulosRepository.cs",
-              "ToolTip": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\ArticulosRepository.cs",
-              "RelativeToolTip": "Repositories\\ArticulosRepository.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAQwA0AAAAJAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\ArticulosRepository.cs*",
+              "RelativeToolTip": "Repositories\\ArticulosRepository.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-16T17:34:23.811Z",
               "IsPinned": true,
@@ -106,13 +106,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "IArticulosRepository.cs",
               "DocumentMoniker": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\Interfaces\\IArticulosRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\Interfaces\\IArticulosRepository.cs",
               "ToolTip": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\Interfaces\\IArticulosRepository.cs",
               "RelativeToolTip": "Repositories\\Interfaces\\IArticulosRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAA6AAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-16T17:34:57.962Z",
               "IsPinned": true,
@@ -120,13 +120,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "ArticulosController.cs",
               "DocumentMoniker": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Controllers\\ArticulosController.cs",
               "RelativeDocumentMoniker": "Controllers\\ArticulosController.cs",
-              "ToolTip": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Controllers\\ArticulosController.cs*",
-              "RelativeToolTip": "Controllers\\ArticulosController.cs*",
-              "ViewState": "AgIAAFgAAAAAAAAAAAAcwD4AAAAhAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Controllers\\ArticulosController.cs",
+              "RelativeToolTip": "Controllers\\ArticulosController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJEAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-16T18:06:36.859Z",
               "IsPinned": true,
@@ -146,20 +146,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 7,
               "Title": "UsuariosController.cs",
               "DocumentMoniker": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Controllers\\UsuariosController.cs",
               "RelativeDocumentMoniker": "Controllers\\UsuariosController.cs",
               "ToolTip": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Controllers\\UsuariosController.cs",
               "RelativeToolTip": "Controllers\\UsuariosController.cs",
-              "ViewState": "AgIAABkAAAAAAAAAAAAuwCwAAABFAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACwAAABFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-11T18:41:26.237Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 10,
               "Title": "RolController.cs",
               "DocumentMoniker": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Controllers\\RolController.cs",
               "RelativeDocumentMoniker": "Controllers\\RolController.cs",
@@ -167,12 +167,11 @@
               "RelativeToolTip": "Controllers\\RolController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-11T18:40:46.564Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-11T18:40:46.564Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 9,
               "Title": "Usuarios.cs",
               "DocumentMoniker": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Models\\Usuarios.cs",
               "RelativeDocumentMoniker": "Models\\Usuarios.cs",
@@ -180,12 +179,11 @@
               "RelativeToolTip": "Models\\Usuarios.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-23T16:37:55.482Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-23T16:37:55.482Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 8,
               "Title": "UsuariosRepository.cs",
               "DocumentMoniker": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\UsuariosRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\UsuariosRepository.cs",
@@ -193,12 +191,11 @@
               "RelativeToolTip": "Repositories\\UsuariosRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADIAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T03:15:30.614Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-28T03:15:30.614Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "IUsuariosRepository.cs",
               "DocumentMoniker": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\Interfaces\\IUsuariosRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\Interfaces\\IUsuariosRepository.cs",
@@ -211,7 +208,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 11,
               "Title": "InyeccionDependencias.cs",
               "DocumentMoniker": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Context\\InyeccionDependencias.cs",
               "RelativeDocumentMoniker": "Context\\InyeccionDependencias.cs",
@@ -219,25 +216,24 @@
               "RelativeToolTip": "Context\\InyeccionDependencias.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-03T02:22:50.226Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-03T02:22:50.226Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 5,
               "Title": "SkyHelpContext.cs",
               "DocumentMoniker": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\SkyHelpContext.cs",
               "RelativeDocumentMoniker": "SkyHelpContext.cs",
-              "ToolTip": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\SkyHelpContext.cs",
-              "RelativeToolTip": "SkyHelpContext.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAA0wC8AAABKAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\SkyHelpContext.cs*",
+              "RelativeToolTip": "SkyHelpContext.cs*",
+              "ViewState": "AgIAABcAAAAAAAAAAAAswDQAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-16T01:17:34.636Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "RolRepository.cs",
               "DocumentMoniker": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\RolRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\RolRepository.cs",
@@ -245,8 +241,7 @@
               "RelativeToolTip": "Repositories\\RolRepository.cs",
               "ViewState": "AgIAAC4AAAAAAAAAAAAcwA0AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T03:15:45.738Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-28T03:15:45.738Z"
             },
             {
               "$type": "Document",
@@ -270,8 +265,7 @@
               "RelativeToolTip": "Models\\Roles.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-11T18:47:38.388Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-11T18:47:38.388Z"
             },
             {
               "$type": "Document",
@@ -283,12 +277,11 @@
               "RelativeToolTip": "Program.cs",
               "ViewState": "AgIAAA8AAAAAAAAAAAAAABYAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-03T17:57:29.787Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-03T17:57:29.787Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 6,
               "Title": "IRolRepository.cs",
               "DocumentMoniker": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Repositories\\Interfaces\\IRolRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\Interfaces\\IRolRepository.cs",

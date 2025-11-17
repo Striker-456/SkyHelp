@@ -7,115 +7,140 @@ using System.Linq.Expressions;
 
 namespace SkyHelp.Controllers
 {
-    [Route("api/[controller]")]// Definindo a ruta base para o controlador
+    [Route("api/[controller]")]
     [ApiController]
     public class ArticulosController : ControllerBase
     {
-        private readonly IArticulosRepository _ArticulosRepository;
-        public ArticulosController(IArticulosRepository articulosRepository)// Constructor de la clase con inyección de dependencia
+        private readonly IArticulosRepository _articulosRepository;
+
+        public ArticulosController(IArticulosRepository articulosRepository)
         {
-            _ArticulosRepository = articulosRepository;// Inyección de dependencia del repositorio de artículos
+            _articulosRepository = articulosRepository;
         }
-        [HttpGet("ObtenerArticulos")]// Definiendo que este método responde a solicitudes GET
-        [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
-        [ProducesResponseType(StatusCodes.Status404NotFound)]// Indicando que este método puede retornar un estado 404 Not Found
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]// Indicando que este método puede retornar un estado 500 Internal Server Error
-        public async Task<IActionResult> ObtenerArticulos()// Método para obtener todos los artículos
+
+        // OBTENER TODOS
+        [HttpGet("ObtenerArticulos")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ObtenerArticulos()
         {
             try
             {
-                var articulos = await _ArticulosRepository.ObtenerArticulos();// Llamando al método del repositorio para obtener los artículos
-                if (articulos == null || !articulos.Any())// Verificando si la lista de artículos está vacía
+                var lista = await _articulosRepository.ObtenerArticulos();
+
+                if (lista == null || !lista.Any())
                 {
-                    return NotFound("No se encontraron artículos.");// Retornando una respuesta HTTP 404 si no se encuentran artículos
+                    return NotFound("No se encontraron artículos.");
                 }
-                return Ok(articulos);// Retornando una respuesta HTTP 200 con la lista de artículos
+
+                return Ok(lista);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener Artículos.");// Retornando una respuesta HTTP 500 en caso de error
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error al obtener los artículos.");
             }
         }
-        [HttpGet("ObtenerArticulosPorID")]// Definiendo que este método responde a solicitudes GET
-        [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
-        [ProducesResponseType(StatusCodes.Status404NotFound)]// Indicando que este método puede retornar un estado 404 Not Found
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]// Indicando que este método puede retornar un estado 500 Internal Server Error
-        public async Task<IActionResult> ObtenerArticulosPorId(Guid id)// Método para obtener un artículo por su ID
+
+        // OBTENER POR ID
+        [HttpGet("ObtenerArticuloPorID")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ObtenerArticuloPorID(Guid id)
         {
             try
             {
-                var articulo = await _ArticulosRepository.ObtenerArticulosPorID(id);// Llamando al método del repositorio para obtener el artículo por ID
-                if (articulo == null)// Verificando si el artículo no fue encontrado
+                var articulo = await _articulosRepository.ObtenerArticulosPorID(id);
+
+                if (articulo == null)
                 {
-                    return NotFound("Artículo no encontrado.");// Retornando una respuesta HTTP 404 si no se encuentra el artículo
+                    return NotFound("Artículo no encontrado.");
                 }
-                return Ok(articulo);// Retornando una respuesta HTTP 200 con el artículo encontrado
+
+                return Ok(articulo);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener Artículo.");// Retornando una respuesta HTTP 500 en caso de error
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error al obtener el artículo.");
             }
         }
-        [HttpPost("CrearArticulo")]// Definiendo que este método responde a solicitudes GET
-        [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
-        [ProducesResponseType(StatusCodes.Status404NotFound)]// Indicando que este método puede retornar un estado 404 Not Found
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]// Indicando que este método puede retornar un estado 500 Internal Server Error
-        public async Task<IActionResult> CrearArticulo(Articulos articulo)// Método para crear un nuevo artículo
+
+        // CREAR
+        [HttpPost("CrearArticulo")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CrearArticulo([FromBody] Articulos articulo)
         {
             try
             {
-                var resultado = await _ArticulosRepository.CrearArticulo(articulo);// Llamando al método del repositorio para crear el artículo
-                if (!resultado)// Verificando si la creación del artículo falló
+                var resultado = await _articulosRepository.CrearArticulo(articulo);
+
+                if (!resultado)
                 {
-                    return NotFound("No se pudo crear el artículo.");// Retornando una respuesta HTTP 404 si no se pudo crear el artículo
+                    return BadRequest("No se pudo crear el artículo.");
                 }
-                return Ok("Artículo creado exitosamente.");// Retornando una respuesta HTTP 200 si el artículo fue creado exitosamente
+
+                return Ok("Artículo creado exitosamente.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al crear Artículo.");// Retornando una respuesta HTTP 500 en caso de error
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error al crear el artículo.");
             }
         }
-        [HttpPut("ActualizarArticulo")]// Definiendo que este método responde a solicitudes GET
-        [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
-        [ProducesResponseType(StatusCodes.Status404NotFound)]// Indicando que este método puede retornar un estado 404 Not Found
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]// Indicando que este método puede retornar un estado 500 Internal Server Error
-        public async Task<IActionResult> ActualizarArticulo(Articulos articulo)// Método para actualizar un artículo existente
+
+        // ACTUALIZAR
+        [HttpPut("ActualizarArticulo")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ActualizarArticulo([FromBody] Articulos articulo)
         {
             try
             {
-                var resultado = await _ArticulosRepository.ActualizarArticulo(articulo);// Llamando al método del repositorio para actualizar el artículo
-                if (!resultado)// Verificando si la actualización del artículo falló
+                var resultado = await _articulosRepository.ActualizarArticulo(articulo);
+
+                if (!resultado)
                 {
-                    return NotFound("No se pudo actualizar el artículo.");// Retornando una respuesta HTTP 404 si no se pudo actualizar el artículo
+                    return NotFound("No se pudo actualizar el artículo.");
                 }
-                return Ok("Artículo actualizado exitosamente.");// Retornando una respuesta HTTP 200 si el artículo fue actualizado exitosamente
+
+                return Ok("Artículo actualizado exitosamente.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar Artículo.");// Retornando una respuesta HTTP 500 en caso de error
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error al actualizar el artículo.");
             }
         }
-        [HttpDelete("EliminarArticulo")]// Definiendo que este método responde a solicitudes GET
-        [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
-        [ProducesResponseType(StatusCodes.Status404NotFound)]// Indicando que este método puede retornar un estado 404 Not Found
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]// Indicando que este método puede retornar un estado 500 Internal Server Error
-        public async Task<IActionResult> EliminarArticulo(Guid id)// Método para eliminar un artículo por su ID
+
+        // ELIMINAR
+        [HttpDelete("EliminarArticulo")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> EliminarArticulo(Guid id)
         {
             try
             {
-                var resultado = await _ArticulosRepository.EliminarArticulo(id);// Llamando al método del repositorio para eliminar el artículo
-                if (!resultado)// Verificando si la eliminación del artículo falló
+                var resultado = await _articulosRepository.EliminarArticulo(id);
+
+                if (!resultado)
                 {
-                    return NotFound("No se pudo eliminar el artículo.");// Retornando una respuesta HTTP 404 si no se pudo eliminar el artículo
+                    return NotFound("No se pudo eliminar el artículo.");
                 }
-                return Ok("Artículo eliminado exitosamente.");// Retornando una respuesta HTTP 200 si el artículo fue eliminado exitosamente
+
+                return Ok("Artículo eliminado exitosamente.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al eliminar Artículo.");// Retornando una respuesta HTTP 500 en caso de error
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error al eliminar el artículo.");
             }
         }
     }
-
 }
