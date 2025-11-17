@@ -1,5 +1,5 @@
 ﻿
-using Microservicios;
+using SkyHelp.Models;
 
 namespace SkyHelp.Repositories.Interfaces
 {

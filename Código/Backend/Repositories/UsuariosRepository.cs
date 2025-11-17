@@ -1,7 +1,8 @@
-﻿using Microservicios;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using SkyHelp;
 using SkyHelp.Context;
 using SkyHelp.EncriptarSHA256;
+using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
 using System.Linq.Expressions;
 namespace SkyHelp.Repositories
@@ -60,12 +61,12 @@ namespace SkyHelp.Repositories
                 usuarioExistente.NombreUsuarios = usuario.NombreUsuarios;
                 usuarioExistente.NombreCompleto = usuario.NombreCompleto;
                 usuarioExistente.Correo = usuario.Correo;
-                usuarioExistente.Contraseña = usuario.Contraseña;
+                usuarioExistente.Contrasena = usuario.Contrasena;
                 usuarioExistente.EstadoCuenta = usuario.EstadoCuenta;
 
-                if (!string.IsNullOrWhiteSpace(usuario.Contraseña))
+                if (!string.IsNullOrWhiteSpace(usuario.Contrasena))
                 {
-                    usuarioExistente.Contraseña = Seguridad.EncriptarSHA256(usuario.Contraseña);
+                    usuarioExistente.Contrasena = Seguridad.EncriptarSHA256(usuario.Contrasena);
                 }
 
 
@@ -85,7 +86,7 @@ namespace SkyHelp.Repositories
             try
             {
 
-                usuario.Contraseña = Seguridad.EncriptarSHA256(usuario.Contraseña);
+                usuario.Contrasena = Seguridad.EncriptarSHA256(usuario.Contrasena);
 
                 if (usuario.IDUsuarios == Guid.Empty)
                 {

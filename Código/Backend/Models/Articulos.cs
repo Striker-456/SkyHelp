@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace Microservicios
+namespace SkyHelp.Models
 {
     public class Articulos
     {

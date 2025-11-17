@@ -1,6 +1,7 @@
-﻿using Microservicios;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using SkyHelp;
 using SkyHelp.Context;
+using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
 using System.Linq.Expressions;
 namespace SkyHelp.Repositories

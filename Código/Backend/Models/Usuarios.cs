@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SkyHelp;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace Microservicios
+namespace SkyHelp.Models
 {
     public class Usuarios
     {
@@ -24,11 +25,14 @@ namespace Microservicios
         public string Correo { get; set; }
         [Required]
         [StringLength(50)]
-        public string Contraseña { get; set; }
+        public string Contrasena { get; set; }
         [Required]
         [StringLength(50)]
         public string EstadoCuenta { get; set; }
         [JsonIgnore]
         public virtual Roles? Rol { get; set; } 
+        [JsonIgnore]
+
+        public virtual ICollection<Auditoria>? Auditorias { get; set; }
     }
 }
