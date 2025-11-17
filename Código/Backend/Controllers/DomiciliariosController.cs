@@ -1,24 +1,22 @@
-﻿using Microservicios;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SkyHelp.Repositories;
+using Microservicios;
+using SkyHelp.Repositories.Interfaces;
 
 namespace SkyHelp.Controllers
-{   
-    //[Authorize]
+{
     [Route("api/[controller]")]
     [ApiController]
     public class DomiciliariosController : ControllerBase
     {
-        private readonly IDomiciliariosRepository _repositorio;
+        private readonly IDomiciliariosRepository _domiciliariosRepository;
 
-        public DomiciliariosController(IDomiciliariosRepository repositorio)
+        public DomiciliariosController(IDomiciliariosRepository domiciliariosRepository)
         {
-            _repositorio = repositorio;
+            _domiciliariosRepository = domiciliariosRepository;
         }
 
-        // OBTENER TODOS LOS DOMICILIARIOS
-
+        // OBTENER TODOS
         [HttpGet("ObtenerDomiciliarios")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -27,12 +25,14 @@ namespace SkyHelp.Controllers
         {
             try
             {
-                var domiciliarios = await _repositorio.TodosLosDomiciliariosAsync();
-                if (domiciliarios == null || !domiciliarios.Any())
+                var lista = await _domiciliariosRepository.ObtenerDomiciliarios();
+
+                if (lista == null || !lista.Any())
                 {
                     return NotFound("No se encontraron domiciliarios.");
                 }
-                return Ok(domiciliarios);
+
+                return Ok(lista);
             }
             catch (Exception)
             {
@@ -41,15 +41,15 @@ namespace SkyHelp.Controllers
         }
 
         // OBTENER POR ID
-        [HttpGet("ObtenerDomiciliarioPorId")]
+        [HttpGet("ObtenerDomiciliarioPorID")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ObtenerDomiciliarioPorId(Guid Id)
+        public async Task<IActionResult> ObtenerDomiciliarioPorID(Guid id)
         {
             try
             {
-                var domiciliario = await _repositorio.DomiciliariosIdAsync(Id);
+                var domiciliario = await _domiciliariosRepository.ObtenerDomiciliariosPorID(id);
 
                 if (domiciliario == null)
                 {
@@ -67,20 +67,20 @@ namespace SkyHelp.Controllers
         // CREAR
         [HttpPost("CrearDomiciliario")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CrearDomiciliario(Domiciliarios domiciliario)
+        public async Task<IActionResult> CrearDomiciliario([FromBody] Domiciliarios domiciliario)
         {
             try
             {
-                var creado = await _repositorio.DomiciliariosCreadosAsync(domiciliario);
+                var resultado = await _domiciliariosRepository.CrearDomiciliario(domiciliario);
 
-                if (creado == null)
+                if (!resultado)
                 {
-                    return NotFound("No se pudo crear el domiciliario.");
+                    return BadRequest("No se pudo crear el domiciliario.");
                 }
 
-                return Ok(creado);
+                return Ok("Domiciliario creado exitosamente.");
             }
             catch (Exception)
             {
@@ -88,43 +88,43 @@ namespace SkyHelp.Controllers
             }
         }
 
-
         // ACTUALIZAR
         [HttpPut("ActualizarDomiciliario")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ActualizarDomiciliario(Domiciliarios domiciliario)
+        public async Task<IActionResult> ActualizarDomiciliario([FromBody] Domiciliarios domiciliario)
         {
             try
             {
-                var actualizado = await _repositorio.ActualizarDomiciliariosAsync(domiciliario);
+                var resultado = await _domiciliariosRepository.ActualizarDomiciliario(domiciliario);
 
-                if (actualizado == null)
+                if (!resultado)
                 {
                     return NotFound("No se pudo actualizar el domiciliario.");
                 }
 
-                return Ok(actualizado);
+                return Ok("Domiciliario actualizado exitosamente.");
             }
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar el domiciliario.");
             }
         }
-     
+
         // ELIMINAR
+ 
         [HttpDelete("EliminarDomiciliario")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> EliminarDomiciliario(Guid Id)
+        public async Task<IActionResult> EliminarDomiciliario(Guid id)
         {
             try
             {
-                var eliminado = await _repositorio.EliminarDomiciliariosAsync(Id);
+                var resultado = await _domiciliariosRepository.EliminarDomiciliario(id);
 
-                if (!eliminado)
+                if (!resultado)
                 {
                     return NotFound("No se pudo eliminar el domiciliario.");
                 }
