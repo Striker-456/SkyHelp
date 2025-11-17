@@ -126,23 +126,10 @@
               "RelativeDocumentMoniker": "Controllers\\ArticulosController.cs",
               "ToolTip": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Controllers\\ArticulosController.cs*",
               "RelativeToolTip": "Controllers\\ArticulosController.cs*",
-              "ViewState": "AgIAAFsAAAAAAAAAAAAcwHUAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAFgAAAAAAAAAAAAcwD4AAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-16T18:06:36.859Z",
               "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "UsuariosController.cs",
-              "DocumentMoniker": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Controllers\\UsuariosController.cs",
-              "RelativeDocumentMoniker": "Controllers\\UsuariosController.cs",
-              "ToolTip": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Controllers\\UsuariosController.cs",
-              "RelativeToolTip": "Controllers\\UsuariosController.cs",
-              "ViewState": "AgIAAGgAAAAAAAAAAAAkwCwAAABFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-11T18:41:26.237Z",
               "EditorCaption": ""
             },
             {
@@ -156,6 +143,19 @@
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UsuariosController.cs",
+              "DocumentMoniker": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Controllers\\UsuariosController.cs",
+              "RelativeDocumentMoniker": "Controllers\\UsuariosController.cs",
+              "ToolTip": "C:\\Users\\Edwar\\source\\repos\\SkyHelp\\C\u00F3digo\\Backend\\Controllers\\UsuariosController.cs",
+              "RelativeToolTip": "Controllers\\UsuariosController.cs",
+              "ViewState": "AgIAABkAAAAAAAAAAAAuwCwAAABFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-11T18:41:26.237Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
