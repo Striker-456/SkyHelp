@@ -17,6 +17,28 @@ namespace SkyHelp.Controllers
         {
             _UsuariosRepository = usuariosRepository;// inyección de dependencia del repositorio de usuarios
         }
+        [HttpGet("ObtnerUsuariosPorCorreo")]// Definiendo que este método responde a solicitudes GET)
+        [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
+        [ProducesResponseType(StatusCodes.Status404NotFound)]// Indicando que este método puede retornar un estado 404 Not Found
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]// Indicando que este método puede retornar un estado 500 Internal Server Error
+
+        public async Task<IActionResult> ObtenerUsuariosPorCorreo(string Correo)// Método para obtener usuarios por correo
+        {
+            try
+            {
+                var usuarios = await _UsuariosRepository.ObtenerUsuarioPorCorreo(Correo);// Llamando al método del repositorio para obtener los usuarios por correo
+                if (usuarios == null) // Verificando si el usuario existe
+                {
+                    return NotFound("Usuario no encontrado."); // Retornando una respuesta HTTP 404 si no se encuentra el usuario
+                }
+                return Ok(usuarios); // Retornando una respuesta HTTP 200 con el usuario encontrado
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener el usuario."); // Retornando una respuesta HTTP 500 en caso de error
+            }
+        }
+
 
         [HttpGet("ObtenerUsuarios")]// Definiendo que este método responde a solicitudes GET
         [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
@@ -67,7 +89,7 @@ namespace SkyHelp.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]// Indicando que este método puede retornar un estado 404 Not Found
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]// Indicando que este método puede retornar un estado 500 Internal Server Error
 
-        public async Task<IActionResult> InsertarUsuario([FromBody] Usuarios usuario)
+        public async Task<IActionResult> CrearUsuario([FromBody] Usuarios usuario)
         {
             try
             {
@@ -75,9 +97,9 @@ namespace SkyHelp.Controllers
 
                 if (!Resultado)
                 {
-                    return BadRequest("No se puede Insertar Usuario");
+                    return BadRequest("No se puede Crear Usuario");
                 }
-                return Ok("Usuario Insertado Correctamente");
+                return Ok("Usuario Creado Correctamente");
             }
             catch (Exception ex)
             {

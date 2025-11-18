@@ -34,10 +34,10 @@ namespace SkyHelp.Controllers
             var usuario = await _usuariosRepository.ObtenerUsuarioPorCorreo(login.Correo);
             if (usuario == null)
             {
-                return Unauthorized("Credenciales inválidas.");
+                return Unauthorized();
             }
 
-            if (login.Contrasena != usuario.Contrasena)
+            if (login.Contrasena == usuario.Contrasena)
             {
                 var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
                 var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
@@ -47,12 +47,12 @@ namespace SkyHelp.Controllers
                     audience: _configuration["Jwt:Audience"],
                     claims: new List<Claim>
                     {
-                    new Claim(ClaimTypes.Name, usuario.Correo),
-                    new Claim(ClaimTypes.Role, "Admin")
+            new Claim(ClaimTypes.Name, usuario.Correo),
+            new Claim(ClaimTypes.Role, "Admin")
                     },
                     expires: DateTime.Now.AddMinutes(30),
                     signingCredentials: signinCredentials
-                    );
+                );
 
                 var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
                 return Ok(new { Token = tokenString });
@@ -67,4 +67,3 @@ namespace SkyHelp.Controllers
 
 
 
-                
