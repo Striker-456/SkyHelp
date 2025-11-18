@@ -1,11 +1,13 @@
-﻿using SkyHelp.Models;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
 
 
 namespace SkyHelp.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]// Definindo a ruta base para o controlador
     [ApiController]
     public class UsuariosController : ControllerBase
@@ -60,6 +62,7 @@ namespace SkyHelp.Controllers
         }
 
         [HttpPost("CrearUsuario")]// Definiendo que este método responde a solicitudes GET
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
         [ProducesResponseType(StatusCodes.Status404NotFound)]// Indicando que este método puede retornar un estado 404 Not Found
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]// Indicando que este método puede retornar un estado 500 Internal Server Error

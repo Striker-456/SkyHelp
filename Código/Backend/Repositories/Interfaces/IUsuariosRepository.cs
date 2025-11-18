@@ -8,6 +8,7 @@ namespace SkyHelp.Repositories.Interfaces
         Task<List<Usuarios>> ObtenerUsuarios();
 
         Task<Usuarios> ObtenerUsuario(Guid id);
+        Task<Usuarios> ObtenerUsuarioPorCorreo(string Correo);
 
         Task<bool> CrearUsuario(Usuarios usuario);                                                          
 

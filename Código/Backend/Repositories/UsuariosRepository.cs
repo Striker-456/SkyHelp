@@ -20,6 +20,11 @@ namespace SkyHelp.Repositories
             return await _context.Usuarios.FirstOrDefaultAsync(x => x.IDUsuarios == id);
         }
 
+        public async Task<Usuarios> ObtenerUsuarioPorCorreo(string Correo)
+        {
+            return await _context.Usuarios.FirstOrDefaultAsync(x => x.Correo == Correo);
+        }
+
         public async Task<List<Usuarios>> ObtenerUsuarios()
         {
             return await _context.Usuarios.ToListAsync();

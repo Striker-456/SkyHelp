@@ -34,5 +34,9 @@ namespace SkyHelp.Models
         [JsonIgnore]
 
         public virtual ICollection<Auditoria>? Auditorias { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Articulos>? Articulos { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Domiciliarios>? Domiciliarios { get; set; }
     }
 }
