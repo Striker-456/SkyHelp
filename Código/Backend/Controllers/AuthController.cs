@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using SkyHelp.EncriptarSHA256;
 using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
@@ -36,8 +37,9 @@ namespace SkyHelp.Controllers
             {
                 return Unauthorized();
             }
-
-            if (login.Contrasena == usuario.Contrasena)
+            Console.WriteLine(Seguridad.EncriptarSHA256(login.Contrasena));
+            Console.WriteLine(usuario.Contrasena);
+            if (Seguridad.EncriptarSHA256(login.Contrasena) == usuario.Contrasena)
             {
                 var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
                 var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
