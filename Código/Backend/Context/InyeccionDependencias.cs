@@ -18,6 +18,7 @@ namespace SkyHelp.Context
             services.AddScoped<IArticulosRepository, ArticulosRepository>();// Inyección de dependencia del repositorio de artículos
             services.AddScoped<IAuditoriaRepository, AuditoriaRepository>();//Inyección de dependencia del repositorio de auditoría
             services.AddScoped<IDomiciliariosRepository, DomiciliariosRepository>();//Inyección de dependencia del repositorio de domiciliarios
+            services.AddScoped<IReportesRepository, ReportesRepository>();//Inyección de dependencia del repositorio de reportes
             return services;
             
         }

@@ -64,6 +64,7 @@ namespace SkyHelp.Repositories
                 }
 
                 usuarioExistente.NombreUsuarios = usuario.NombreUsuarios;
+                usuarioExistente.IDRol = usuario.IDRol;
                 usuarioExistente.NombreCompleto = usuario.NombreCompleto;
                 usuarioExistente.Correo = usuario.Correo;
                 usuarioExistente.Contrasena = usuario.Contrasena;

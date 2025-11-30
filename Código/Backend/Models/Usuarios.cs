@@ -30,7 +30,7 @@ namespace SkyHelp.Models
         [StringLength(50)]
         public string EstadoCuenta { get; set; }
         [JsonIgnore]
-        public virtual Roles? Rol { get; set; } 
+        public virtual Roles? Rol { get; set; }
         [JsonIgnore]
 
         public virtual ICollection<Auditoria>? Auditorias { get; set; }
@@ -38,5 +38,8 @@ namespace SkyHelp.Models
         public virtual ICollection<Articulos>? Articulos { get; set; }
         [JsonIgnore]
         public virtual ICollection<Domiciliarios>? Domiciliarios { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Reportes>? Reportes { get; set; }
     }
+        
 }

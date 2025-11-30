@@ -15,6 +15,7 @@ namespace SkyHelp.Context
         public DbSet<Articulos> Articulos { get; set; }
         public DbSet<Auditoria> Auditoria { get; set; }
         public DbSet<Domiciliarios> Domiciliarios { get; set; }
+        public DbSet<Reportes> Reportes { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -91,6 +92,23 @@ namespace SkyHelp.Context
                 .WithMany(t => t.Domiciliarios)
                 .HasForeignKey(e => e.IDUsuario);
                 entity.ToTable("Domiciliarios");
+            });
+
+            //Configuracion de la entidada Reportes 
+            modelBuilder.Entity<Reportes>(entity =>
+            {
+                entity.HasKey(e => e.IDReporte);
+                entity.Property(e => e.TipoReporte).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Descripcion).IsRequired().HasMaxLength(500);
+                entity.Property(e => e.Titulo).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.FechaGeneracion).IsRequired();
+                entity.Property(e => e.IDUsuario).IsRequired();
+                entity.Property(e => e.IdOrigen).IsRequired();
+                entity.Property(e => e.OrigenTabla).IsRequired().HasMaxLength(100);
+                entity.HasOne(e => e.Usuario)
+                      .WithMany(t => t.Reportes)
+                      .HasForeignKey(e => e.IDUsuario);
+                entity.ToTable("Reportes");
             });
 
             base.OnModelCreating(modelBuilder);

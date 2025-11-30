@@ -13,17 +13,21 @@ namespace SkyHelp.Models
         [StringLength(50)]
         public string Titulo { get; set; }
         [Required]
+        [StringLength(500)]
+        public string Descripcion { get; set; }
+        [Required]
         [StringLength(50)]
         public string TipoReporte { get; set; }
         [Required]
-        [StringLength(50)]
-        public string FechaGeneracion { get; set; }
+        [JsonIgnore]
+        public DateTime? FechaGeneracion { get; set; } = DateTime.Now;
         [Required]
         [ForeignKey("Usuario")]
         public Guid IDUsuario { get; set; }
         [Required]
         public Guid IdOrigen { get; set; } = Guid.NewGuid();
         [Required]  
+
         public String OrigenTabla { get; set; }
         [JsonIgnore]
         public virtual Usuarios? Usuario { get; set; }
