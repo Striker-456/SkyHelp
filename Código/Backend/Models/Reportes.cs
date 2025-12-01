@@ -19,7 +19,6 @@ namespace SkyHelp.Models
         [StringLength(50)]
         public string TipoReporte { get; set; }
         [Required]
-        [JsonIgnore]
         public DateTime? FechaGeneracion { get; set; } = DateTime.Now;
         [Required]
         [ForeignKey("Usuario")]
