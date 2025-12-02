@@ -16,6 +16,7 @@ namespace SkyHelp.Context
         public DbSet<Auditoria> Auditoria { get; set; }
         public DbSet<Domiciliarios> Domiciliarios { get; set; }
         public DbSet<Reportes> Reportes { get; set; }
+        public DbSet<Notificaciones> Notificaciones { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -109,6 +110,23 @@ namespace SkyHelp.Context
                       .WithMany(t => t.Reportes)
                       .HasForeignKey(e => e.IDUsuario);
                 entity.ToTable("Reportes");
+            });
+            //Configuracion de la entidad Notificaciones
+           modelBuilder.Entity<Notificaciones>(entity =>
+            {
+                entity.HasKey(e => e.IDNotificacion);
+                entity.Property(e => e.IDUsuario).IsRequired();
+                entity.Property(e => e.Contenido).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.FechaEnvio).IsRequired();
+                entity.Property(e => e.MedioEnvio).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.IDTicket).IsRequired();
+                entity.HasOne(e => e.Usuario)
+                      .WithMany()
+                      .HasForeignKey(e => e.IDUsuario);
+                entity.HasOne(e => e.Ticket)
+                      .WithMany()
+                      .HasForeignKey(e => e.IDTicket);
+                entity.ToTable("Notificaciones");
             });
 
             base.OnModelCreating(modelBuilder);
