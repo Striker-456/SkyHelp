@@ -2,6 +2,7 @@
 using SkyHelp.Repositories;
 using SkyHelp.Repositories.Interfaces;
 using SkyHelp.Repositories.Interfaces.SkyHelp.Repositories.Interfaces;
+using System.Net.Security;
 
 namespace SkyHelp.Context
 {
@@ -20,6 +21,7 @@ namespace SkyHelp.Context
             services.AddScoped<IDomiciliariosRepository, DomiciliariosRepository>();//Inyección de dependencia del repositorio de domiciliarios
             services.AddScoped<IReportesRepository, ReportesRepository>();//Inyección de dependencia del repositorio de reportes
             services.AddScoped<INotificacionesRepository, NotificacionRepository>();//Inyección de dependencia del repositorio de notificaciones
+            services.AddScoped<IPedidosRepository, PedidosRepository>();//Inyección de dependencia del repositorio de pedidos
             return services;
             
         }

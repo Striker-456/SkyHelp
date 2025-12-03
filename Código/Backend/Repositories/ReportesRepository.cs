@@ -20,7 +20,7 @@ namespace SkyHelp.Repositories
         }
         public async Task<Reportes> ObtenerReportesPorId(Guid id)
         {
-            return await _context.Reportes.FirstOrDefaultAsync(x => x.IDReporte == id);
+            return await _context.Reportes.FirstOrDefaultAsync(x => x.IdReporte == id);
         }
 
 
@@ -28,7 +28,7 @@ namespace SkyHelp.Repositories
         {
             try
             {
-                var ReporteExistente = await _context.Reportes.FirstOrDefaultAsync(x => x.IDReporte == id);
+                var ReporteExistente = await _context.Reportes.FirstOrDefaultAsync(x => x.IdReporte == id);
                 if (ReporteExistente == null)
                 {
                     return false;
@@ -50,7 +50,7 @@ namespace SkyHelp.Repositories
         {
             try
             {
-                var ReporteExistente = await _context.Reportes.FirstOrDefaultAsync(x => x.IDReporte == reportes.IDReporte);
+                var ReporteExistente = await _context.Reportes.FirstOrDefaultAsync(x => x.IdReporte == reportes.IdReporte);
                 if (ReporteExistente == null)
                 {
                     return false;
@@ -61,7 +61,7 @@ namespace SkyHelp.Repositories
                 ReporteExistente.Descripcion = reportes.Descripcion;
                 ReporteExistente.TipoReporte = reportes.TipoReporte;
                 ReporteExistente.FechaGeneracion = reportes.FechaGeneracion;
-                ReporteExistente.IDUsuario = reportes.IDUsuario;
+                ReporteExistente.IdUsuario = reportes.IdUsuario;
                 ReporteExistente.IdOrigen = reportes.IdOrigen;
                 ReporteExistente.OrigenTabla = reportes.OrigenTabla;
 

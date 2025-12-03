@@ -9,11 +9,11 @@ namespace SkyHelp.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid IDUsuarios { get; set; } = Guid.NewGuid();
+        public Guid IdUsuarios { get; set; } = Guid.NewGuid();
 
         [Required]
         [ForeignKey("Rol")]
-        public Guid IDRol { get; set; }
+        public Guid IdRol { get; set; }
         [Required]
         [StringLength(50)]
         public string NombreUsuarios { get; set; }
@@ -40,6 +40,12 @@ namespace SkyHelp.Models
         public virtual ICollection<Domiciliarios>? Domiciliarios { get; set; }
         [JsonIgnore]
         public virtual ICollection<Reportes>? Reportes { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Tickets>? Tickets { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Notificaciones>? Notificaciones { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Pedidos>? Pedidos { get; set; }
     }
         
 }

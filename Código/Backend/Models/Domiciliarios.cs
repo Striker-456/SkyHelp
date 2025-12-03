@@ -9,7 +9,7 @@ namespace SkyHelp
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid IDDomiciliario { get; set; }
+        public Guid IdDomiciliario { get; set; }
         [Required]
         [StringLength(50)]
         public string NombreCompleto { get; set; }
@@ -27,5 +27,7 @@ namespace SkyHelp
         public Guid IDUsuario { get; set; }
         [JsonIgnore]
         public virtual Usuarios? Usuario { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Pedidos>? Pedidos { get; set; }
     }
 }
