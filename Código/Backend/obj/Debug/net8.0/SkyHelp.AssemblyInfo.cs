@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SkyHelp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e5ddde6515be89e974783d855945f48b355f764e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cc6612bdd1923673177cf1a2bd96a1ec11428048")]
 [assembly: System.Reflection.AssemblyProductAttribute("SkyHelp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SkyHelp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

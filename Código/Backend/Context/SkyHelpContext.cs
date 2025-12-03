@@ -17,6 +17,7 @@ namespace SkyHelp.Context
         public DbSet<Domiciliarios> Domiciliarios { get; set; }
         public DbSet<Reportes> Reportes { get; set; }
         public DbSet<Notificaciones> Notificaciones { get; set; }
+        public DbSet<Pedidos> Pedidos { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -25,8 +26,8 @@ namespace SkyHelp.Context
 
             modelBuilder.Entity<Usuarios>(entity =>
             {
-                entity.HasKey(e => e.IDUsuarios);
-                entity.Property(e => e.IDRol).IsRequired();
+                entity.HasKey(e => e.IdUsuarios);
+                entity.Property(e => e.IdRol).IsRequired();
                 entity.Property(e => e.NombreUsuarios).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.NombreCompleto).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Correo).IsRequired().HasMaxLength(50);
@@ -34,7 +35,7 @@ namespace SkyHelp.Context
                 entity.Property(e => e.EstadoCuenta).IsRequired().HasMaxLength(50);
                 entity.HasOne(e => e.Rol)
                       .WithMany(t => t.Usuario)
-                      .HasForeignKey(e => e.IDRol);
+                      .HasForeignKey(e => e.IdRol);
                 entity.ToTable("Usuarios");
             });
             // Configuración de la entidad Roles
@@ -82,7 +83,7 @@ namespace SkyHelp.Context
             // Configuración de la entidad Domiciliarios
             modelBuilder.Entity<Domiciliarios>(entity =>
             {
-                entity.HasKey(e => e.IDDomiciliario);
+                entity.HasKey(e => e.IdDomiciliario);
                 entity.Property(e => e.NombreCompleto).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.Telefono).IsRequired().HasMaxLength(20);
                 entity.Property(e => e.Email).IsRequired().HasMaxLength(50);
@@ -98,17 +99,17 @@ namespace SkyHelp.Context
             //Configuracion de la entidada Reportes 
             modelBuilder.Entity<Reportes>(entity =>
             {
-                entity.HasKey(e => e.IDReporte);
+                entity.HasKey(e => e.IdReporte);
                 entity.Property(e => e.TipoReporte).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Descripcion).IsRequired().HasMaxLength(500);
                 entity.Property(e => e.Titulo).IsRequired().HasMaxLength(200);
                 entity.Property(e => e.FechaGeneracion).IsRequired();
-                entity.Property(e => e.IDUsuario).IsRequired();
+                entity.Property(e => e.IdUsuario).IsRequired();
                 entity.Property(e => e.IdOrigen).IsRequired();
                 entity.Property(e => e.OrigenTabla).IsRequired().HasMaxLength(100);
                 entity.HasOne(e => e.Usuario)
                       .WithMany(t => t.Reportes)
-                      .HasForeignKey(e => e.IDUsuario);
+                      .HasForeignKey(e => e.IdUsuario);
                 entity.ToTable("Reportes");
             });
             //Configuracion de la entidad Notificaciones
@@ -127,6 +128,25 @@ namespace SkyHelp.Context
                       .WithMany()
                       .HasForeignKey(e => e.IDTicket);
                 entity.ToTable("Notificaciones");
+            });
+
+            // Configuración de la entidad Pedidos
+            modelBuilder.Entity<Pedidos>(entity =>
+            {
+                entity.HasKey(e => e.IdPedido);
+                entity.Property(e => e.FechaPedido).IsRequired();
+                entity.Property(e => e.EstadoPedido).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.DireccionEntrega).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.Observaciones ).HasMaxLength(500);
+                entity.Property(e => e.IdUsuario).IsRequired();
+                entity.Property(e => e.IdDomiciliario).IsRequired();
+                entity.HasOne(e => e.Usuario)
+                      .WithMany(t => t.Pedidos)
+                      .HasForeignKey(e => e.IdUsuario);
+                entity.HasOne(e => e.Domiciliario)
+                      .WithMany(t => t.Pedidos)
+                      .HasForeignKey(e => e.IdDomiciliario);
+                entity.ToTable("Pedidos");
             });
 
             base.OnModelCreating(modelBuilder);

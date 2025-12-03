@@ -8,7 +8,7 @@ namespace SkyHelp.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid IDReporte { get; set; } = Guid.NewGuid();
+        public Guid IdReporte { get; set; } = Guid.NewGuid();
         [Required]
         [StringLength(50)]
         public string Titulo { get; set; }
@@ -22,7 +22,7 @@ namespace SkyHelp.Models
         public DateTime? FechaGeneracion { get; set; } = DateTime.Now;
         [Required]
         [ForeignKey("Usuario")]
-        public Guid IDUsuario { get; set; }
+        public Guid IdUsuario { get; set; }
         [Required]
         public Guid IdOrigen { get; set; } = Guid.NewGuid();
         [Required]  

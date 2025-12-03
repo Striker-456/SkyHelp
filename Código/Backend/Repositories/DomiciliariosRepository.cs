@@ -21,7 +21,7 @@ namespace SkyHelp.Repositories
 
             public async Task<Domiciliarios> ObtenerDomiciliarioPorID(Guid id)
             {
-                return await _context.Domiciliarios.FirstOrDefaultAsync(x => x.IDDomiciliario == id);
+                return await _context.Domiciliarios.FirstOrDefaultAsync(x => x.IdDomiciliario == id);
             }
 
             public async Task<bool> CrearDomiciliario(Domiciliarios domiciliario)
@@ -44,7 +44,7 @@ namespace SkyHelp.Repositories
                 try
                 {
                     var domiciliarioExistente = await _context.Domiciliarios
-                        .FirstOrDefaultAsync(x => x.IDDomiciliario == domiciliario.IDDomiciliario);
+                        .FirstOrDefaultAsync(x => x.IdDomiciliario == domiciliario.IdDomiciliario);
 
                     if (domiciliarioExistente == null)
                     {
@@ -74,7 +74,7 @@ namespace SkyHelp.Repositories
             {
                 try
                 {
-                    var domiciliarioExistente = await _context.Domiciliarios.FirstOrDefaultAsync(x => x.IDDomiciliario == id);
+                    var domiciliarioExistente = await _context.Domiciliarios.FirstOrDefaultAsync(x => x.IdDomiciliario == id);
 
                     if (domiciliarioExistente == null)
                     {

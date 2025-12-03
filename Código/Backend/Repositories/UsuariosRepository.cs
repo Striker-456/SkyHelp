@@ -17,7 +17,7 @@ namespace SkyHelp.Repositories
         }
         public async Task<Usuarios> ObtenerUsuario(Guid id)
         {
-            return await _context.Usuarios.FirstOrDefaultAsync(x => x.IDUsuarios == id);
+            return await _context.Usuarios.FirstOrDefaultAsync(x => x.IdUsuarios == id);
         }
 
         public async Task<Usuarios> ObtenerUsuarioPorCorreo(string Correo)
@@ -34,7 +34,7 @@ namespace SkyHelp.Repositories
         {
             try
             {
-                var usuarioExistente = await _context.Usuarios.FirstOrDefaultAsync(x => x.IDUsuarios == id);
+                var usuarioExistente = await _context.Usuarios.FirstOrDefaultAsync(x => x.IdUsuarios == id);
                 if (usuarioExistente == null)
                 {
                     return false;
@@ -56,7 +56,7 @@ namespace SkyHelp.Repositories
         {
             try
             {
-                var usuarioExistente = await _context.Usuarios.FirstOrDefaultAsync(x => x.IDUsuarios == usuario.IDUsuarios);
+                var usuarioExistente = await _context.Usuarios.FirstOrDefaultAsync(x => x.IdUsuarios == usuario.IdUsuarios);
                 if (usuarioExistente == null)
                 {
                     return false;
@@ -64,7 +64,7 @@ namespace SkyHelp.Repositories
                 }
 
                 usuarioExistente.NombreUsuarios = usuario.NombreUsuarios;
-                usuarioExistente.IDRol = usuario.IDRol;
+                usuarioExistente.IdRol = usuario.IdRol;
                 usuarioExistente.NombreCompleto = usuario.NombreCompleto;
                 usuarioExistente.Correo = usuario.Correo;
                 usuarioExistente.Contrasena = usuario.Contrasena;
@@ -94,9 +94,9 @@ namespace SkyHelp.Repositories
 
                 usuario.Contrasena = Seguridad.EncriptarSHA256(usuario.Contrasena);
 
-                if (usuario.IDUsuarios == Guid.Empty)
+                if (usuario.IdUsuarios == Guid.Empty)
                 {
-                    usuario.IDUsuarios = Guid.NewGuid();
+                    usuario.IdUsuarios = Guid.NewGuid();
                 }
 
                 _context.Usuarios.Add(usuario);
