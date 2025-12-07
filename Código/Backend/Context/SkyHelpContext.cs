@@ -21,6 +21,7 @@ namespace SkyHelp.Context
         public DbSet<Pedidos> Pedidos { get; set; }
         public DbSet<Estadisticas> Estadisticas { get; set; }
         public DbSet<ExportacionesEstadisticas> ExportacionesEstadisticas { get; set; }
+        public DbSet<Tecnicos> Tecnico { get; set; }
 
 
 
@@ -157,37 +158,37 @@ namespace SkyHelp.Context
             modelBuilder.Entity<Estadisticas>(entity =>
             {
                 entity.ToTable("Estadisticas");
-                entity.HasKey(e => e.IDEstadisticas);
-                entity.Property(e => e.IDEstadisticas).HasColumnName("ID_Estadisticas");
+                entity.HasKey(e => e.IdEstadisticas);
+                entity.Property(e => e.IdEstadisticas).HasColumnName("ID_Estadisticas");
                 entity.Property(e => e.Periodo).HasColumnName("Periodo").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.FechaInicio).HasColumnName("Fecha_Inicio").IsRequired();
                 entity.Property(e => e.FechaFin).HasColumnName("Fecha_Fin").IsRequired();
                 entity.Property(e => e.TipoGrafico).HasColumnName("Tipo_Grafico").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.Datos).HasColumnName("Datos").HasColumnType("ntext").IsRequired();
-                entity.Property(e => e.IDUsuario).HasColumnName("IDUsuario").IsRequired();
+                entity.Property(e => e.IdUsuario).HasColumnName("IDUsuario").IsRequired();
                 entity.Property(e => e.ExportadoExcel).HasColumnName("Exportado_Excel").IsRequired();
                 entity.Property(e => e.ExportadoPDF).HasColumnName("Exportado_PDF").IsRequired();
                 entity.Property(e => e.FechaGeneracion).HasColumnName("Fecha_Generacion").IsRequired();
                 // RELACIÓN: Estadisticas -> Usuarios
                 entity.HasOne(e => e.Usuario)
                       .WithMany(u => u.Estadisticas)
-                      .HasForeignKey(e => e.IDUsuario);
+                      .HasForeignKey(e => e.IdUsuario);
             });
 
             // Configuración de la entidad ExportacionesEstadisticas
             modelBuilder.Entity<ExportacionesEstadisticas>(entity =>
             {
                 entity.ToTable("ExportacionesEstadisticas");
-                entity.HasKey(e => e.IDExportado);
-                entity.Property(e => e.IDExportado).HasColumnName("ID_Exportado");
-                entity.Property(e => e.IDEstadisticas).HasColumnName("ID_Estadisticas").IsRequired();
+                entity.HasKey(e => e.IdExportado);
+                entity.Property(e => e.IdExportado).HasColumnName("ID_Exportado");
+                entity.Property(e => e.IdEstadisticas).HasColumnName("ID_Estadisticas").IsRequired();
                 entity.Property(e => e.ExportadoPor).HasColumnName("Exportado_Por").HasMaxLength(100).IsRequired();
                 entity.Property(e => e.FechaExportacion).HasColumnName("Fecha_Exportacion").IsRequired();
                 entity.Property(e => e.Formato).HasColumnName("Formato").HasMaxLength(50).IsRequired();
                 // RELACIÓN: ExportacionesEstadisticas -> Estadisticas
                 entity.HasOne(e => e.Estadisticas)
                       .WithMany()
-                      .HasForeignKey(e => e.IDEstadisticas);
+                      .HasForeignKey(e => e.IdEstadisticas);
             });
             base.OnModelCreating(modelBuilder);
         }
