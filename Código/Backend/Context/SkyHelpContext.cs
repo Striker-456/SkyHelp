@@ -22,6 +22,9 @@ namespace SkyHelp.Context
         public DbSet<Estadisticas> Estadisticas { get; set; }
         public DbSet<ExportacionesEstadisticas> ExportacionesEstadisticas { get; set; }
         public DbSet<Tecnicos> Tecnicos { get; set; }
+        public DbSet<Tickets> Tickets { get; set; }
+        public DbSet<EstadosTicket> EstadosTickets { get; set; }
+        public DbSet<Evaluaciones> Evaluaciones { get; set; }
 
 
 
@@ -120,15 +123,15 @@ namespace SkyHelp.Context
             //Configuracion de la entidad Notificaciones
             modelBuilder.Entity<Notificaciones>(entity =>
              {
-                 entity.HasKey(e => e.IDNotificacion);
-                 entity.Property(e => e.IDUsuario).IsRequired();
+                 entity.HasKey(e => e.IdNotificacion);
+                 entity.Property(e => e.IdUsuario).IsRequired();
                  entity.Property(e => e.Contenido).IsRequired().HasMaxLength(50);
                  entity.Property(e => e.FechaEnvio).IsRequired();
                  entity.Property(e => e.MedioEnvio).IsRequired().HasMaxLength(50);
                  entity.Property(e => e.IDTicket).IsRequired();
                  entity.HasOne(e => e.Usuario)
-                       .WithMany()
-                       .HasForeignKey(e => e.IDUsuario);
+                       .WithMany(t => t.Notificaciones)
+                       .HasForeignKey(e => e.IdUsuario);
                  entity.HasOne(e => e.Ticket)
                        .WithMany()
                        .HasForeignKey(e => e.IDTicket);
@@ -200,6 +203,66 @@ namespace SkyHelp.Context
                 entity.HasOne(e => e.Usuario)
                       .WithMany(t => t.Tecnico)
                       .HasForeignKey(e => e.IdUsuario);
+            });
+
+            // Configuración de la entidad Tickets
+            modelBuilder.Entity<Tickets>(entity =>
+            {
+                entity.ToTable("Tickets");
+                entity.HasKey(e => e.IdTicket);
+                entity.Property(e => e.Descripcion).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.Categoria).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Prioridad).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.FechaCreacion).IsRequired();
+                entity.Property(e => e.IdEstado).IsRequired();
+                entity.Property(e => e.IdUsuario).IsRequired();
+                entity.Property(e => e.IdDomiciliario).IsRequired();
+                entity.Property(e => e.IdTecnico).IsRequired();
+                // RELACIÓN: Tickets -> Usuarios
+                entity.HasOne(e => e.Usuario)
+                      .WithMany(u => u.Tickets)
+                      .HasForeignKey(e => e.IdUsuario);
+                // RELACIÓN: Tickets -> EstadosTickets
+                entity.HasOne(e => e.EstadoTicket)
+                      .WithMany(et => et.Tickets)
+                      .HasForeignKey(e => e.IdEstado);
+                // RELACIÓN: Tickets -> Tecnicos
+                entity.HasOne(e => e.Tecnico)
+                      .WithMany(t => t.Tickets)
+                      .HasForeignKey(e => e.IdTecnico);
+                // RELACIÓN: Tickets -> Domiciliarios
+                entity.HasOne(e => e.Domiciliario)
+                      .WithMany(d => d.Tickets)
+                      .HasForeignKey(e => e.IdDomiciliario);
+            });
+
+            // Configuracion de la entidad Estados tickets
+            modelBuilder .Entity<EstadosTicket>(entity =>
+            {
+                entity.ToTable("EstadosTickets");
+                entity.HasKey(e => e.IdEstado);
+                entity.Property(e => e.NombreEstado).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Descripcion).HasMaxLength(200);
+            });
+
+            // Configuración de la entidad Evaluaciones
+            modelBuilder.Entity<Evaluaciones>(entity =>
+            {
+                entity.ToTable("Evaluaciones");
+                entity.HasKey(e => e.IdEvaluacion);
+                entity.Property(e => e.IdTicket).IsRequired();
+                entity.Property(e => e.IdUsuario).IsRequired();
+                entity.Property(e => e.Calificacion).IsRequired();
+                entity.Property(e => e.Comentario).HasMaxLength(500);
+                entity.Property(e => e.FechaEvaluacion).IsRequired();
+                // RELACIÓN: Evaluaciones -> Usuarios
+                entity.HasOne(e => e.Usuario)
+                      .WithMany(u => u.Evaluaciones)
+                      .HasForeignKey(e => e.IdUsuario);
+                // RELACIÓN: Evaluaciones -> Tickets
+                entity.HasOne(e => e.Ticket)
+                      .WithMany(t => t.Evaluaciones)
+                      .HasForeignKey(e => e.IdTicket);
             });
             base.OnModelCreating(modelBuilder);
         }

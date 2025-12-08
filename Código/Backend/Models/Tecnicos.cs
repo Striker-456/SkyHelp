@@ -15,5 +15,7 @@ namespace SkyHelp
         public DateTime FechaRegistro { get; set; } //Estaba mal escrito como FechaResgistro
         [JsonIgnore]
         public Usuarios? Usuario { get; set; }
+        [JsonIgnore]
+        public ICollection<Tickets>? Tickets { get; set; }
     }
 }

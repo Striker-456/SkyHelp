@@ -15,7 +15,30 @@ namespace SkyHelp.Controllers
         {
             _notificacionesRepository = notificacionesRepository;
         }
+        // Obtener todas las notificaciones
+        [HttpGet("ObtenerNotificaciones")]
+        [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
+        [ProducesResponseType(StatusCodes.Status404NotFound)]// Indicando que este método puede retornar un estado 404 Not Found
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]// Indicando que este método puede retornar un estado 500 Internal Server Error
 
+        public async Task<IActionResult> ObtenerNotificaciones()
+        {
+            try
+            {
+                var notificaciones = await _notificacionesRepository.ObtenerNotificaciones();
+                if (notificaciones == null || !notificaciones.Any())
+                {
+                    return NotFound("No se encontraron notificaciones.");
+                }
+                return Ok(notificaciones);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener notificaciones.");
+            }
+        }
+
+        
 
         // Obtener notificaciones por Usuario
 
@@ -63,28 +86,29 @@ namespace SkyHelp.Controllers
             }
         }
 
-        // Marcar notificación como leída
-        [HttpPost("MarcarComoLeida")]
+        // Crear notificación
+        [HttpPost("CrearNotificacion")]
         [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
         [ProducesResponseType(StatusCodes.Status404NotFound)]// Indicando que este método puede retornar un estado 404 Not Found
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]// Indicando que este método puede retornar un estado 500 Internal Server Error
 
-        public async Task<IActionResult> MarcarComoLeida(Guid id)
+        public async Task<IActionResult> CrearNotificacion([FromBody] Notificaciones notificacion)
         {
             try
             {
-                var resultado = await _notificacionesRepository.MarcarComoLeida(id);
+                var resultado = await _notificacionesRepository.CrearNotificacion(notificacion);
                 if (!resultado)
                 {
-                    return NotFound("Notificación no encontrada.");
+                    return BadRequest("No se puede crear la notificación.");
                 }
-                return Ok("Notificación marcada como leída.");
+                return Ok("Notificación creada correctamente.");
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al marcar la notificación como leída.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al crear la notificación.");
             }
         }
+
 
         // Eliminar notificación
         [HttpDelete("EliminarNotificacion")]

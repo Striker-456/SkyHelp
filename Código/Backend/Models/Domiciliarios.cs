@@ -29,5 +29,7 @@ namespace SkyHelp
         public virtual Usuarios? Usuario { get; set; }
         [JsonIgnore]
         public virtual ICollection<Pedidos>? Pedidos { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Tickets>? Tickets { get; set; }
     }
 }

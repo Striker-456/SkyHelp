@@ -50,6 +50,9 @@ namespace SkyHelp.Models
         public ICollection<Estadisticas> Estadisticas { get; set; }
         [JsonIgnore]
         public ICollection<Tecnicos> Tecnico { get; set; }
+
+        [JsonIgnore]
+        public virtual ICollection<Evaluaciones>? Evaluaciones { get; set; }
     }
         
 }

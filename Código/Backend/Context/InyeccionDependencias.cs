@@ -8,7 +8,7 @@ namespace SkyHelp.Context
 {
     public static class InyeccionDependencias
     {
-        public static IServiceCollection AddExternal(this IServiceCollection services,IConfiguration _Configuration)// Método de extensión para agregar dependencias externas
+        public static IServiceCollection AddExternal(this IServiceCollection services, IConfiguration _Configuration)// Método de extensión para agregar dependencias externas
         {
             String connectionString = "";
             connectionString = _Configuration["ConnectionStrings:SQL"];// Obtener la cadena de conexión desde la configuración
@@ -25,6 +25,9 @@ namespace SkyHelp.Context
             services.AddScoped<IEstadisticasRepository, EstadisticasRepository>();//Inyección de dependencia del repositorio de estadísticas
             services.AddScoped<IExportacionesEstadisticasRepository, ExportacionesEstadisticasRepository>();//Inyección de dependencia del repositorio de exportaciones de estadísticas
             services.AddScoped<ITecnicosRepository, TecnicosRepository>();//Inyección de dependencia del repositorio de técnicos
+            services.AddScoped<ITicketsRepository, TicketsRepository>();//Inyección de dependencia del repositorio de tickets
+            services.AddScoped<IEstadosTicketsRepository, EstadosTicketsRepository>();//Inyección de dependencia del repositorio de estados de tickets
+            services.AddScoped<IEvaluacionesRepository, EvaluacionesRepository>();//Inyección de dependencia del repositorio de evaluaciones
             return services;
             
         }

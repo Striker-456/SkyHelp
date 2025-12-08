@@ -9,9 +9,9 @@ namespace SkyHelp
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid IDNotificacion { get; set; } = Guid.NewGuid();
+        public Guid IdNotificacion { get; set; } = Guid.NewGuid();
         [Required]
-        public Guid IDUsuario { get; set; }
+        public Guid IdUsuario { get; set; }
         [Required]
         [StringLength(50)]
         public string Contenido { get; set; }

@@ -1,12 +1,27 @@
-﻿namespace Microservicios
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+
+namespace SkyHelp.Models
 {
     public class Evaluaciones
     {
-        public Guid IDEvaluacion { get; set; }
-        public Guid IDUsuario { get; set; }
-        public Guid IDTicket { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid IdEvaluacion { get; set; } = Guid.NewGuid();
+        [Required]
+        public Guid IdUsuario { get; set; }
+        [Required]
+        public Guid IdTicket { get; set; }
+        [Required]
         public int Calificacion { get; set; }
+        [Required]
         public string Comentario { get; set; }
-        public DateTime FechaEvaluacion { get; set; }
+        [Required]
+        public DateTime? FechaEvaluacion { get; set; } = DateTime.Now;
+        [JsonIgnore]
+        public virtual Usuarios? Usuario { get; set; }
+        [JsonIgnore]
+        public virtual Tickets? Ticket { get; set; }
     }
 }

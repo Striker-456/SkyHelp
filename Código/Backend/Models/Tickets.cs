@@ -8,7 +8,7 @@ namespace SkyHelp.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid IDTicket {  get ; set; } = Guid.NewGuid();
+        public Guid IdTicket {  get ; set; } = Guid.NewGuid();
         [Required]
         [StringLength(200)]
         public string Descripcion { get; set; }
@@ -19,21 +19,27 @@ namespace SkyHelp.Models
         [StringLength(50)]
         public string Prioridad { get; set; }
         [Required]
-        public DateTime FechaCreacion { get; set; } 
+        public DateTime? FechaCreacion { get; set; } = DateTime.Now;
         [Required]
-        public Guid IDEstado { get; set; }
+        public Guid IdEstado { get; set; }
         [Required]
         [ForeignKey("Usuario")]
-        public Guid IDUsuario { get; set; }
+        public Guid IdUsuario { get; set; }
         [Required]
         [ForeignKey("Domiciliario")]
-        public Guid IDDomiciliarioAsignado { get; set; }
+        public Guid IdDomiciliario { get; set; }
         [Required]
         [ForeignKey("Tecnico")]
-        public Guid IDTecnicoAsignado { get; set; }
+        public Guid IdTecnico { get; set; }
         [JsonIgnore]
         public virtual Usuarios? Usuario { get; set; }
         [JsonIgnore]
         public virtual Domiciliarios? Domiciliario { get; set; }
+        [JsonIgnore]
+        public virtual Tecnicos? Tecnico { get; set; }
+        [JsonIgnore]
+        public virtual EstadosTicket? EstadoTicket { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Evaluaciones>? Evaluaciones { get; set; }
     }
 }

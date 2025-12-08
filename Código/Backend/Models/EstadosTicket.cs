@@ -1,10 +1,22 @@
-﻿namespace Microservicios
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+
+namespace SkyHelp.Models
 {
     public class EstadosTicket
     {
-        public Guid IDEstado { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid IdEstado { get; set; } = Guid.NewGuid();
+        [Required]
         public string NombreEstado { get; set; }
+        [Required]
         public string Descripcion { get; set; }
+        [JsonIgnore]
+        public ICollection<Tickets>? Tickets { get; set; }
+
+
 
     }
 }
