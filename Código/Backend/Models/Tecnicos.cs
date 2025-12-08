@@ -12,7 +12,7 @@ namespace SkyHelp
         [Required]
         public Guid IdUsuario { get; set; }
         [Required]
-        public DateTime FechaResgistro { get; set; }
+        public DateTime FechaRegistro { get; set; } //Estaba mal escrito como FechaResgistro
         [JsonIgnore]
         public Usuarios? Usuario { get; set; }
     }

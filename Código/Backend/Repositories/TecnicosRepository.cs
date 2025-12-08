@@ -46,7 +46,7 @@ namespace SkyHelp.Repositories
                     throw new Exception("Técnico para actualizar no existe");
                 }
                 tecnicoExistente.IdUsuario = tecnico.IdUsuario;
-                tecnicoExistente.FechaResgistro = tecnico.FechaResgistro;
+                tecnicoExistente.FechaRegistro = tecnico.FechaRegistro;
                 _context.Tecnicos.Update(tecnicoExistente);
                 await _context.SaveChangesAsync();
                 return true;

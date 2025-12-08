@@ -6,12 +6,16 @@ namespace SkyHelp
 {
     public class ExportacionesEstadisticas
     {
-        public Guid IdExportado { get; set; }
-        public Guid IdEstadisticas { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid IdExportado { get; set; } = Guid.NewGuid();
+        [ForeignKey("Estadistica")]
+        public Guid IdEstadistica { get; set; }
         public string ExportadoPor { get; set; }
-        public DateTime FechaExportacion { get; set; }
+        public DateTime? FechaExportacion { get; set; } = DateTime.Now;
         public string Formato { get; set; }
-        public virtual Estadisticas? Estadisticas { get; set; }
+        [JsonIgnore]
+        public virtual Estadisticas? Estadistica { get; set; }
 
     }
 }

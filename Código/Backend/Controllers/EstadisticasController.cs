@@ -1,10 +1,12 @@
 ﻿using Microservicios;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SkyHelp.Repositories;
 using SkyHelp.Repositories.Interfaces;
 namespace SkyHelp.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class EstadisticasController : ControllerBase

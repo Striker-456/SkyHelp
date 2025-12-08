@@ -47,7 +47,7 @@ namespace SkyHelp.Repositories
                     throw new Exception("La exportación para actualizar no existe.");
                 }
                 // Actualización campo por campo
-                exportacionExistente.IdEstadisticas = exportacionEstadistica.IdEstadisticas;
+                exportacionExistente.IdEstadistica = exportacionEstadistica.IdEstadistica;
                 exportacionExistente.ExportadoPor = exportacionEstadistica.ExportadoPor;
                 exportacionExistente.FechaExportacion = exportacionEstadistica.FechaExportacion;
                 exportacionExistente.Formato = exportacionEstadistica.Formato;
