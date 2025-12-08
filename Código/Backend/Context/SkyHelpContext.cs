@@ -1,5 +1,6 @@
 ﻿using SkyHelp;
 using Microsoft.EntityFrameworkCore;
+using SkyHelp;
 using SkyHelp.Models;
 
 namespace SkyHelp.Context
@@ -18,6 +19,10 @@ namespace SkyHelp.Context
         public DbSet<Reportes> Reportes { get; set; }
         public DbSet<Notificaciones> Notificaciones { get; set; }
         public DbSet<Pedidos> Pedidos { get; set; }
+        public DbSet<Estadisticas> Estadisticas { get; set; }
+        public DbSet<ExportacionesEstadisticas> ExportacionesEstadisticas { get; set; }
+        public DbSet<Tecnicos> Tecnicos { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -26,7 +31,7 @@ namespace SkyHelp.Context
 
             modelBuilder.Entity<Usuarios>(entity =>
             {
-                entity.HasKey(e => e.IdUsuarios);
+                entity.HasKey(e => e.IdUsuario);
                 entity.Property(e => e.IdRol).IsRequired();
                 entity.Property(e => e.NombreUsuarios).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.NombreCompleto).IsRequired().HasMaxLength(100);
@@ -49,18 +54,18 @@ namespace SkyHelp.Context
             // Configuración de la entidad Articulos
             modelBuilder.Entity<Articulos>(entity =>
             {
-                entity.HasKey(e => e.IDArticulo);
+                entity.HasKey(e => e.IdArticulo);
                 entity.Property(e => e.Titulo).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.Categoria).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.Contenido).IsRequired().HasMaxLength(50);
-                entity.Property(e => e.Fecha_Publicacion).IsRequired();
+                entity.Property(e => e.FechaPublicacion).IsRequired();
                 entity.Property(e => e.TotalVistas).IsRequired();
                 entity.Property(e => e.CalificacionPromedio).HasColumnType("decimal(18, 0)").IsRequired();
-                entity.Property(e => e.IDUsuario).IsRequired();
+                entity.Property(e => e.IdUsuario).IsRequired();
                 // Relación con Usuarios
                 entity.HasOne(e => e.Usuario)
                     .WithMany(u => u.Articulos)
-                    .HasForeignKey(e => e.IDUsuario);
+                    .HasForeignKey(e => e.IdUsuario);
                 entity.ToTable("Articulos");
             });
 
@@ -74,7 +79,7 @@ namespace SkyHelp.Context
                 entity.Property(e => e.IDRegistro).IsRequired();
                 entity.Property(e => e.Descripcion).IsRequired().HasMaxLength(200);
                 entity.Property(e => e.FechaEvento).IsRequired();
-                entity.HasOne( e => e.Usuario)
+                entity.HasOne(e => e.Usuario)
                       .WithMany(t => t.Auditorias)
                       .HasForeignKey(e => e.IDUsuario);
                 entity.ToTable("Auditoria");
@@ -113,22 +118,22 @@ namespace SkyHelp.Context
                 entity.ToTable("Reportes");
             });
             //Configuracion de la entidad Notificaciones
-           modelBuilder.Entity<Notificaciones>(entity =>
-            {
-                entity.HasKey(e => e.IDNotificacion);
-                entity.Property(e => e.IDUsuario).IsRequired();
-                entity.Property(e => e.Contenido).IsRequired().HasMaxLength(50);
-                entity.Property(e => e.FechaEnvio).IsRequired();
-                entity.Property(e => e.MedioEnvio).IsRequired().HasMaxLength(50);
-                entity.Property(e => e.IDTicket).IsRequired();
-                entity.HasOne(e => e.Usuario)
-                      .WithMany()
-                      .HasForeignKey(e => e.IDUsuario);
-                entity.HasOne(e => e.Ticket)
-                      .WithMany()
-                      .HasForeignKey(e => e.IDTicket);
-                entity.ToTable("Notificaciones");
-            });
+            modelBuilder.Entity<Notificaciones>(entity =>
+             {
+                 entity.HasKey(e => e.IDNotificacion);
+                 entity.Property(e => e.IDUsuario).IsRequired();
+                 entity.Property(e => e.Contenido).IsRequired().HasMaxLength(50);
+                 entity.Property(e => e.FechaEnvio).IsRequired();
+                 entity.Property(e => e.MedioEnvio).IsRequired().HasMaxLength(50);
+                 entity.Property(e => e.IDTicket).IsRequired();
+                 entity.HasOne(e => e.Usuario)
+                       .WithMany()
+                       .HasForeignKey(e => e.IDUsuario);
+                 entity.HasOne(e => e.Ticket)
+                       .WithMany()
+                       .HasForeignKey(e => e.IDTicket);
+                 entity.ToTable("Notificaciones");
+             });
 
             // Configuración de la entidad Pedidos
             modelBuilder.Entity<Pedidos>(entity =>
@@ -137,7 +142,7 @@ namespace SkyHelp.Context
                 entity.Property(e => e.FechaPedido).IsRequired();
                 entity.Property(e => e.EstadoPedido).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.DireccionEntrega).IsRequired().HasMaxLength(200);
-                entity.Property(e => e.Observaciones ).HasMaxLength(500);
+                entity.Property(e => e.Observaciones).HasMaxLength(500);
                 entity.Property(e => e.IdUsuario).IsRequired();
                 entity.Property(e => e.IdDomiciliario).IsRequired();
                 entity.HasOne(e => e.Usuario)
@@ -149,6 +154,53 @@ namespace SkyHelp.Context
                 entity.ToTable("Pedidos");
             });
 
+            // Configuración de la entidad Estadisticas
+            modelBuilder.Entity<Estadisticas>(entity =>
+            {
+                entity.ToTable("Estadisticas");
+                entity.HasKey(e => e.IdEstadistica);
+                entity.Property(e => e.Periodo).HasMaxLength(50).IsRequired();
+                entity.Property(e => e.FechaInicio).IsRequired();
+                entity.Property(e => e.FechaFin).IsRequired();
+                entity.Property(e => e.TipoGrafico).HasMaxLength(50).IsRequired();
+                entity.Property(e => e.Datos).HasColumnType("ntext").IsRequired();
+                entity.Property(e => e.IdUsuario).IsRequired();
+                entity.Property(e => e.ExportadoExcel).IsRequired();
+                entity.Property(e => e.ExportadoPDF).IsRequired();
+                entity.Property(e => e.FechaGeneracion).IsRequired();
+                // RELACIÓN: Estadisticas -> Usuarios
+                entity.HasOne(e => e.Usuario)
+                      .WithMany(u => u.Estadisticas)
+                      .HasForeignKey(e => e.IdUsuario);
+            });
+
+            // Configuración de la entidad ExportacionesEstadisticas
+            modelBuilder.Entity<ExportacionesEstadisticas>(entity =>
+            {
+                entity.ToTable("ExportacionesEstadisticas");
+                entity.HasKey(e => e.IdExportado);
+                entity.Property(e => e.IdEstadistica).IsRequired();
+                entity.Property(e => e.ExportadoPor).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.FechaExportacion).IsRequired();
+                entity.Property(e => e.Formato).HasMaxLength(50).IsRequired();
+                entity.HasOne(e => e.Estadistica)
+                      .WithMany(e => e.ExportacionesEstadisticas)
+                      .HasForeignKey(e => e.IdEstadistica)
+                ;
+            });
+
+            // Configuración de la entidad Tecnicos
+            modelBuilder.Entity<Tecnicos>(entity =>
+            {
+                entity.ToTable("Tecnicos");
+                entity.HasKey(e => e.IdTecnico);
+                entity.Property(e => e.IdUsuario).IsRequired();
+                entity.Property(e => e.FechaRegistro).IsRequired();
+                // RELACIÓN: Usuarios -> Tecnicos
+                entity.HasOne(e => e.Usuario)
+                      .WithMany(t => t.Tecnico)
+                      .HasForeignKey(e => e.IdUsuario);
+            });
             base.OnModelCreating(modelBuilder);
         }
     }

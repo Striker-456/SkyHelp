@@ -17,7 +17,7 @@ namespace SkyHelp.Repositories
         }
         public async Task<Usuarios> ObtenerUsuario(Guid id)
         {
-            return await _context.Usuarios.FirstOrDefaultAsync(x => x.IdUsuarios == id);
+            return await _context.Usuarios.FirstOrDefaultAsync(x => x.IdUsuario == id);
         }
 
         public async Task<Usuarios> ObtenerUsuarioPorCorreo(string Correo)
@@ -34,7 +34,7 @@ namespace SkyHelp.Repositories
         {
             try
             {
-                var usuarioExistente = await _context.Usuarios.FirstOrDefaultAsync(x => x.IdUsuarios == id);
+                var usuarioExistente = await _context.Usuarios.FirstOrDefaultAsync(x => x.IdUsuario == id);
                 if (usuarioExistente == null)
                 {
                     return false;
@@ -56,7 +56,7 @@ namespace SkyHelp.Repositories
         {
             try
             {
-                var usuarioExistente = await _context.Usuarios.FirstOrDefaultAsync(x => x.IdUsuarios == usuario.IdUsuarios);
+                var usuarioExistente = await _context.Usuarios.FirstOrDefaultAsync(x => x.IdUsuario == usuario.IdUsuario);
                 if (usuarioExistente == null)
                 {
                     return false;
@@ -94,9 +94,9 @@ namespace SkyHelp.Repositories
 
                 usuario.Contrasena = Seguridad.EncriptarSHA256(usuario.Contrasena);
 
-                if (usuario.IdUsuarios == Guid.Empty)
+                if (usuario.IdUsuario == Guid.Empty)
                 {
-                    usuario.IdUsuarios = Guid.NewGuid();
+                    usuario.IdUsuario = Guid.NewGuid();
                 }
 
                 _context.Usuarios.Add(usuario);
