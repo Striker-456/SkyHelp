@@ -31,7 +31,7 @@ namespace SkyHelp.Context
 
             modelBuilder.Entity<Usuarios>(entity =>
             {
-                entity.HasKey(e => e.IdUsuarios);
+                entity.HasKey(e => e.IdUsuario);
                 entity.Property(e => e.IdRol).IsRequired();
                 entity.Property(e => e.NombreUsuarios).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.NombreCompleto).IsRequired().HasMaxLength(100);
@@ -54,18 +54,18 @@ namespace SkyHelp.Context
             // Configuración de la entidad Articulos
             modelBuilder.Entity<Articulos>(entity =>
             {
-                entity.HasKey(e => e.IDArticulo);
+                entity.HasKey(e => e.IdArticulo);
                 entity.Property(e => e.Titulo).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.Categoria).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.Contenido).IsRequired().HasMaxLength(50);
-                entity.Property(e => e.Fecha_Publicacion).IsRequired();
+                entity.Property(e => e.FechaPublicacion).IsRequired();
                 entity.Property(e => e.TotalVistas).IsRequired();
                 entity.Property(e => e.CalificacionPromedio).HasColumnType("decimal(18, 0)").IsRequired();
-                entity.Property(e => e.IDUsuario).IsRequired();
+                entity.Property(e => e.IdUsuario).IsRequired();
                 // Relación con Usuarios
                 entity.HasOne(e => e.Usuario)
                     .WithMany(u => u.Articulos)
-                    .HasForeignKey(e => e.IDUsuario);
+                    .HasForeignKey(e => e.IdUsuario);
                 entity.ToTable("Articulos");
             });
 
@@ -158,7 +158,7 @@ namespace SkyHelp.Context
             modelBuilder.Entity<Estadisticas>(entity =>
             {
                 entity.ToTable("Estadisticas");
-                entity.HasKey(e => e.IdEstadisticas);
+                entity.HasKey(e => e.IdEstadistica);
                 entity.Property(e => e.Periodo).HasMaxLength(50).IsRequired();
                 entity.Property(e => e.FechaInicio).IsRequired();
                 entity.Property(e => e.FechaFin).IsRequired();
@@ -179,14 +179,14 @@ namespace SkyHelp.Context
             {
                 entity.ToTable("ExportacionesEstadisticas");
                 entity.HasKey(e => e.IdExportado);
-                entity.Property(e => e.IdEstadisticas).IsRequired();
+                entity.Property(e => e.IdEstadistica).IsRequired();
                 entity.Property(e => e.ExportadoPor).HasMaxLength(100).IsRequired();
                 entity.Property(e => e.FechaExportacion).IsRequired();
                 entity.Property(e => e.Formato).HasMaxLength(50).IsRequired();
-                // RELACIÓN: ExportacionesEstadisticas -> Estadisticas
-                entity.HasOne(e => e.Estadisticas)
-                      .WithMany()
-                      .HasForeignKey(e => e.IdEstadisticas);
+                entity.HasOne(e => e.Estadistica)
+                      .WithMany(e => e.ExportacionesEstadisticas)
+                      .HasForeignKey(e => e.IdEstadistica)
+                ;
             });
 
             // Configuración de la entidad Tecnicos
@@ -195,7 +195,7 @@ namespace SkyHelp.Context
                 entity.ToTable("Tecnicos");
                 entity.HasKey(e => e.IdTecnico);
                 entity.Property(e => e.IdUsuario).IsRequired();
-                entity.Property(e => e.FechaResgistro).IsRequired();
+                entity.Property(e => e.FechaRegistro).IsRequired();
                 // RELACIÓN: Usuarios -> Tecnicos
                 entity.HasOne(e => e.Usuario)
                       .WithMany(t => t.Tecnico)

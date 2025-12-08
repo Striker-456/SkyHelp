@@ -10,7 +10,7 @@ namespace SkyHelp.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid IdUsuarios { get; set; } = Guid.NewGuid();
+        public Guid IdUsuario { get; set; } = Guid.NewGuid();
 
         [Required]
         [ForeignKey("Rol")]

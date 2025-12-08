@@ -18,7 +18,7 @@ namespace SkyHelp.Repositories
         }
         public async Task<Estadisticas> ObtenerEstadisticaPorId(Guid id)
         {
-            return await _context.Estadisticas.FirstOrDefaultAsync(e => e.IdEstadisticas == id);
+            return await _context.Estadisticas.FirstOrDefaultAsync(e => e.IdEstadistica == id);
         }
         public async Task<bool> CrearEstadistica(Estadisticas estadistica)
         {
@@ -38,7 +38,7 @@ namespace SkyHelp.Repositories
         {
             try
             {
-                var estadisticaExistente = await _context.Estadisticas.FirstOrDefaultAsync(e => e.IdEstadisticas == estadistica.IdEstadisticas);
+                var estadisticaExistente = await _context.Estadisticas.FirstOrDefaultAsync(e => e.IdEstadistica == estadistica.IdEstadistica);
                 if (estadisticaExistente == null)
                 {
                     return false;
@@ -68,7 +68,7 @@ namespace SkyHelp.Repositories
         {
             try
             {
-                var estadisticaExistente = await _context.Estadisticas.FirstOrDefaultAsync(e => e.IdEstadisticas == id);
+                var estadisticaExistente = await _context.Estadisticas.FirstOrDefaultAsync(e => e.IdEstadistica == id);
                 if (estadisticaExistente == null)
                 {
                     return false;

@@ -21,7 +21,7 @@ namespace SkyHelp.Repositories
         // OBTENER POR ID
         public async Task<Articulos> ObtenerArticulosPorID(Guid id)
         {
-            return await _context.Articulos.FirstOrDefaultAsync(x => x.IDArticulo == id);
+            return await _context.Articulos.FirstOrDefaultAsync(x => x.IdArticulo == id);
         }
         // CREAR
         public async Task<bool> CrearArticulo(Articulos articulo)
@@ -43,7 +43,7 @@ namespace SkyHelp.Repositories
         {
             try
             {
-                var articuloExistente = await _context.Articulos.FirstOrDefaultAsync(x => x.IDArticulo == articulo.IDArticulo);
+                var articuloExistente = await _context.Articulos.FirstOrDefaultAsync(x => x.IdArticulo == articulo.IdArticulo);
                 if (articuloExistente == null)
                 {
                     return false;
@@ -52,10 +52,10 @@ namespace SkyHelp.Repositories
                 articuloExistente.Titulo = articulo.Titulo;
                 articuloExistente.Categoria = articulo.Categoria;
                 articuloExistente.Contenido = articulo.Contenido;
-                articuloExistente.Fecha_Publicacion = articulo.Fecha_Publicacion;
+                articuloExistente.FechaPublicacion = articulo.FechaPublicacion;
                 articuloExistente.TotalVistas = articulo.TotalVistas;
                 articuloExistente.CalificacionPromedio = articulo.CalificacionPromedio;
-                articuloExistente.IDUsuario = articulo.IDUsuario;
+                articuloExistente.IdUsuario = articulo.IdUsuario;
                 _context.Articulos.Update(articuloExistente);
                 await _context.SaveChangesAsync();
                 return true;
@@ -71,7 +71,7 @@ namespace SkyHelp.Repositories
         {
             try
             {
-                var articuloExistente = await _context.Articulos.FirstOrDefaultAsync(x => x.IDArticulo == id);
+                var articuloExistente = await _context.Articulos.FirstOrDefaultAsync(x => x.IdArticulo == id);
                 if (articuloExistente == null)
                 {
                     return false;
