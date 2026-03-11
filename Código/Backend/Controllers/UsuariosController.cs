@@ -82,7 +82,7 @@ namespace SkyHelp.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener el usuario."); // Retornando una respuesta HTTP 500 en caso de error
             }
         }
-
+        
         [HttpPost("CrearUsuario")]// Definiendo que este método responde a solicitudes GET
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
