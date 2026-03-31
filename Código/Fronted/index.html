@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyHelp - Sistema CRM de Gestión de Equipos</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Pantalla de Carga -->
+    <div id="pantalla-carga" class="pantalla-carga oculto">
+        <div class="cargador"></div>
+        <p>Cargando...</p>
+    </div>
+
+    <!-- PÁGINA DE INICIO -->
+    <div id="pagina-inicio" class="vista activa">
+        <!-- Fondo Animado -->
+        <div class="fondo-animado">
+            <div class="mancha mancha-1"></div>
+            <div class="mancha mancha-2"></div>
+            <div class="mancha mancha-3"></div>
+        </div>
+
+        <!-- Encabezado -->
+        <header class="encabezado-inicio">
+            <div class="contenedor">
+                <div class="logo">
+                    <div class="logo-icono">S</div>
+                    <span class="logo-texto">SkyHelp</span>
+                </div>
+                <button class="btn btn-primario" onclick="aplicacion.mostrarLogin()">Comenzar</button>
+            </div>
+        </header>
+
+        <!-- Sección Hero -->
+        <section class="hero">
+            <div class="contenedor">
+                <div class="insignia">
+                    <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    Sistema CRM Especializado
+                    <svg class="icono icono-estrella" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </div>
+                
+                <h1 class="titulo-hero">
+                    Optimiza la gestión de
+                    <span class="texto-degradado"> equipos electrónicos</span>
+                </h1>
+                
+                <p class="descripcion-hero">
+                    SkyHelp es la plataforma completa para el mantenimiento y reparación de dispositivos. 
+                    Mejora la comunicación entre clientes, técnicos y domiciliarios con seguimiento en tiempo real.
+                </p>
+                
+                <div class="botones-hero">
+                    <button class="btn btn-primario btn-lg" onclick="aplicacion.mostrarLogin()">
+                        Empezar Gratis
+                        <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </button>
+                    <button class="btn btn-secundario btn-lg">
+                        Ver Demo
+                    </button>
+                </div>
+
+                <!-- Paneles Showcase -->
+                <div class="cuadricula-showcase">
+                    <div class="tarjeta-showcase">
+                        <div class="imagen-showcase" style="background-image: url('https://images.unsplash.com/photo-1590010358311-55d7c0769a3a?w=400')"></div>
+                        <div class="superposicion-showcase">
+                            <h3>Dashboard Inteligente</h3>
+                            <p>Visualiza toda tu operación en tiempo real</p>
+                        </div>
+                        <div class="metricas-showcase">
+                            <div class="metrica">
+                                <div class="valor-metrica">247+</div>
+                                <div class="etiqueta-metrica">Tickets</div>
+                            </div>
+                            <div class="metrica">
+                                <div class="valor-metrica">12</div>
+                                <div class="etiqueta-metrica">Técnicos</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tarjeta-showcase">
+                        <div class="imagen-showcase" style="background-image: url('https://images.unsplash.com/photo-1703960525294-53f01e3546eb?w=400')"></div>
+                        <div class="superposicion-showcase">
+                            <h3>Gestión de Tickets</h3>
+                            <p>Organiza y prioriza todas las solicitudes</p>
+                        </div>
+                        <div class="metricas-showcase">
+                            <div class="metrica">
+                                <div class="valor-metrica">98%</div>
+                                <div class="etiqueta-metrica">Satisfacción</div>
+                            </div>
+                            <div class="metrica">
+                                <div class="valor-metrica">2h</div>
+                                <div class="etiqueta-metrica">Respuesta</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tarjeta-showcase">
+                        <div class="imagen-showcase" style="background-image: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400')"></div>
+                        <div class="superposicion-showcase">
+                            <h3>Análisis Detallado</h3>
+                            <p>Toma decisiones basadas en datos</p>
+                        </div>
+                        <div class="metricas-showcase">
+                            <div class="metrica">
+                                <div class="valor-metrica">+60%</div>
+                                <div class="etiqueta-metrica">Eficiencia</div>
+                            </div>
+                            <div class="metrica">
+                                <div class="valor-metrica">40%</div>
+                                <div class="etiqueta-metrica">Ahorro</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tarjeta-showcase">
+                        <div class="imagen-showcase" style="background-image: url('https://images.unsplash.com/photo-1748256622734-92241ae7b43f?w=400')"></div>
+                        <div class="superposicion-showcase">
+                            <h3>Colaboración en Equipo</h3>
+                            <p>Comunicación fluida entre todos los roles</p>
+                        </div>
+                        <div class="metricas-showcase">
+                            <div class="metrica">
+                                <div class="valor-metrica">50+</div>
+                                <div class="etiqueta-metrica">Usuarios</div>
+                            </div>
+                            <div class="metrica">
+                                <div class="valor-metrica">24/7</div>
+                                <div class="etiqueta-metrica">Activos</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Características -->
+        <section class="caracteristicas">
+            <div class="contenedor">
+                <div class="encabezado-seccion">
+                    <h2>Todo lo que necesitas en una plataforma</h2>
+                    <p>Herramientas completas para optimizar cada aspecto de tu servicio técnico</p>
+                </div>
+
+                <div class="cuadricula-caracteristicas">
+                    <div class="tarjeta-caracteristica">
+                        <div class="imagen-caracteristica" style="background-image: url('https://images.unsplash.com/photo-1703960525294-53f01e3546eb?w=400')">
+                            <div class="superposicion-caracteristica degradado-rojo"></div>
+                            <div class="icono-caracteristica">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                            </div>
+                        </div>
+                        <div class="contenido-caracteristica">
+                            <h3>Gestión de Tickets</h3>
+                            <p>Crea, asigna y da seguimiento a incidencias de manera eficiente</p>
+                            <div class="enlace-caracteristica">
+                                <span>Conocer más</span>
+                                <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tarjeta-caracteristica">
+                        <div class="imagen-caracteristica" style="background-image: url('https://images.unsplash.com/photo-1748256622734-92241ae7b43f?w=400')">
+                            <div class="superposicion-caracteristica degradado-rosa"></div>
+                            <div class="icono-caracteristica">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            </div>
+                        </div>
+                        <div class="contenido-caracteristica">
+                            <h3>Múltiples Roles</h3>
+                            <p>Sistema diseñado para clientes, técnicos, administradores y domiciliarios</p>
+                            <div class="enlace-caracteristica">
+                                <span>Conocer más</span>
+                                <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tarjeta-caracteristica">
+                        <div class="imagen-caracteristica" style="background-image: url('https://images.unsplash.com/photo-1758519289594-8e0444825b04?w=400')">
+                            <div class="superposicion-caracteristica degradado-purpura"></div>
+                            <div class="icono-caracteristica">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                            </div>
+                        </div>
+                        <div class="contenido-caracteristica">
+                            <h3>Gestión de Domiciliarios</h3>
+                            <p>Coordina recogidas y entregas de equipos de forma optimizada</p>
+                            <div class="enlace-caracteristica">
+                                <span>Conocer más</span>
+                                <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tarjeta-caracteristica">
+                        <div class="imagen-caracteristica" style="background-image: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400')">
+                            <div class="superposicion-caracteristica degradado-azul"></div>
+                            <div class="icono-caracteristica">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                            </div>
+                        </div>
+                        <div class="contenido-caracteristica">
+                            <h3>Reportes Detallados</h3>
+                            <p>Estadísticas completas sobre tiempos de respuesta y satisfacción</p>
+                            <div class="enlace-caracteristica">
+                                <span>Conocer más</span>
+                                <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tarjeta-caracteristica">
+                        <div class="imagen-caracteristica" style="background-image: url('https://images.unsplash.com/photo-1590010358311-55d7c0769a3a?w=400')">
+                            <div class="superposicion-caracteristica degradado-amarillo"></div>
+                            <div class="icono-caracteristica">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                            </div>
+                        </div>
+                        <div class="contenido-caracteristica">
+                            <h3>Notificaciones en Tiempo Real</h3>
+                            <p>Mantente informado con alertas instantáneas de actualizaciones</p>
+                            <div class="enlace-caracteristica">
+                                <span>Conocer más</span>
+                                <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tarjeta-caracteristica">
+                        <div class="imagen-caracteristica" style="background-image: url('https://images.unsplash.com/photo-1676630444903-163fe485c5d1?w=400')">
+                            <div class="superposicion-caracteristica degradado-verde"></div>
+                            <div class="icono-caracteristica">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+                            </div>
+                        </div>
+                        <div class="contenido-caracteristica">
+                            <h3>Centro de Conocimiento</h3>
+                            <p>Base de datos completa con artículos de ayuda y FAQ</p>
+                            <div class="enlace-caracteristica">
+                                <span>Conocer más</span>
+                                <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Beneficios -->
+        <section class="beneficios">
+            <div class="contenedor">
+                <div class="tarjeta-beneficios">
+                    <div class="contenido-beneficios">
+                        <h2>Resultados que marcan la diferencia</h2>
+                        <p>Empresas que utilizan SkyHelp experimentan mejoras significativas en eficiencia y satisfacción del cliente.</p>
+                        
+                        <div class="lista-beneficios">
+                            <div class="item-beneficio">
+                                <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+                                <span>Reduce tiempos de respuesta en un 60%</span>
+                            </div>
+                            <div class="item-beneficio">
+                                <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+                                <span>Mejora la comunicación entre equipos</span>
+                            </div>
+                            <div class="item-beneficio">
+                                <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+                                <span>Optimiza la gestión de recursos</span>
+                            </div>
+                            <div class="item-beneficio">
+                                <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+                                <span>Aumenta la satisfacción del cliente</span>
+                            </div>
+                            <div class="item-beneficio">
+                                <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+                                <span>Proporciona trazabilidad completa</span>
+                            </div>
+                            <div class="item-beneficio">
+                                <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+                                <span>Facilita la toma de decisiones</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cuadricula-estadisticas">
+                        <div class="tarjeta-estadistica degradado-rojo">
+                            <div class="valor-estadistica">247+</div>
+                            <div class="etiqueta-estadistica">Tickets Gestionados</div>
+                        </div>
+                        <div class="tarjeta-estadistica degradado-rosa">
+                            <div class="valor-estadistica">98%</div>
+                            <div class="etiqueta-estadistica">Satisfacción</div>
+                        </div>
+                        <div class="tarjeta-estadistica degradado-purpura">
+                            <div class="valor-estadistica">60%</div>
+                            <div class="etiqueta-estadistica">Más Rápido</div>
+                        </div>
+                        <div class="tarjeta-estadistica degradado-azul">
+                            <div class="valor-estadistica">24/7</div>
+                            <div class="etiqueta-estadistica">Disponibilidad</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección CTA -->
+        <section class="cta">
+            <div class="contenedor">
+                <div class="tarjeta-cta">
+                    <div class="mancha-cta"></div>
+                    <div class="contenido-cta">
+                        <h2>¿Listo para transformar tu servicio técnico?</h2>
+                        <p>Únete a cientos de empresas que ya optimizan sus operaciones con SkyHelp</p>
+                        <div class="botones-cta">
+                            <button class="btn btn-blanco btn-lg" onclick="aplicacion.mostrarLogin()">
+                                Comenzar Ahora
+                                <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </button>
+                            <button class="btn btn-contorno btn-lg">
+                                Contactar Ventas
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pie de Página -->
+        <footer class="pie-pagina">
+            <div class="contenedor">
+                <div class="logo-pie">
+                    <div class="logo-icono">S</div>
+                    <span class="logo-texto">SkyHelp</span>
+                </div>
+                <p class="descripcion-pie">Sistema CRM especializado en mantenimiento y reparación de equipos electrónicos</p>
+                <div class="enlaces-pie">
+                    <a href="#">Términos de Servicio</a>
+                    <a href="#">Política de Privacidad</a>
+                    <a href="#">Soporte</a>
+                </div>
+                <div class="derechos-autor">© 2024 SkyHelp. Todos los derechos reservados.</div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- PÁGINA DE LOGIN -->
+    <div id="pagina-login" class="vista">
+        <div class="contenedor-login">
+            <div class="encabezado-login">
+                <button class="btn-atras" onclick="aplicacion.mostrarInicio()">
+                    <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                </button>
+                <div class="logo">
+                    <div class="logo-icono">S</div>
+                    <span class="logo-texto">SkyHelp</span>
+                </div>
+            </div>
+
+            <div class="tarjeta-login">
+                <div class="pestanas">
+                    <button class="pestana activa" data-pestana="login" onclick="aplicacion.cambiarPestana('login')">Iniciar Sesión</button>
+                    <button class="pestana" data-pestana="registro" onclick="aplicacion.cambiarPestana('registro')">Registrarse</button>
+                </div>
+
+                <!-- Pestaña de Login -->
+                <div id="pestana-login" class="contenido-pestana activa">
+                    <div class="encabezado-formulario">
+                        <h2>Bienvenido de vuelta</h2>
+                        <p>Ingresa a tu cuenta SkyHelp</p>
+                    </div>
+
+                    <form id="formulario-login" onsubmit="aplicacion.manejarLogin(event)">
+                        <div class="grupo-formulario">
+                            <label>Correo Electrónico</label>
+                            <input type="email" name="correo" placeholder="correo@ejemplo.com" required>
+                        </div>
+
+                        <div class="grupo-formulario">
+                            <label>Contraseña</label>
+                            <div class="entrada-contrasena">
+                                <input type="password" name="contrasena" id="contrasena-login" placeholder="••••••••" required>
+                                <button type="button" class="alternar-contrasena" onclick="aplicacion.alternarContrasena('contrasena-login')">
+                                    <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="pie-formulario">
+                            <label class="etiqueta-checkbox">
+                                <input type="checkbox">
+                                Recordarme
+                            </label>
+                            <a href="#" class="enlace">¿Olvidaste tu contraseña?</a>
+                        </div>
+
+                        <button type="submit" class="btn btn-primario btn-bloque">Iniciar Sesión</button>
+
+                        <div class="cuentas-demo">
+                            <p>Cuentas Demo:</p>
+                            <div class="lista-demo">
+                                <div>👤 <strong>Admin:</strong> admin@skyhelp.com / admin123</div>
+                                <div>🔧 <strong>Técnico:</strong> tecnico@skyhelp.com / tecnico123</div>
+                                <div>👥 <strong>Cliente:</strong> cliente@skyhelp.com / cliente123</div>
+                                <div>🚚 <strong>Domiciliario:</strong> domiciliario@skyhelp.com / domiciliario123</div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Pestaña de Registro -->
+                <div id="pestana-registro" class="contenido-pestana">
+                    <div class="encabezado-formulario">
+                        <h2>Crear Cuenta</h2>
+                        <p>Regístrate en SkyHelp</p>
+                    </div>
+
+                    <form id="formulario-registro" onsubmit="aplicacion.manejarRegistro(event)">
+                        <div class="fila-formulario">
+                            <div class="grupo-formulario">
+                                <label>Nombre Completo *</label>
+                                <input type="text" name="nombre" placeholder="Tu nombre" required>
+                            </div>
+                            <div class="grupo-formulario">
+                                <label>Teléfono</label>
+                                <input type="tel" name="telefono" placeholder="+57 123 456 7890">
+                            </div>
+                        </div>
+
+                        <div class="grupo-formulario">
+                            <label>Correo Electrónico *</label>
+                            <input type="email" name="correo" placeholder="correo@ejemplo.com" required>
+                        </div>
+
+                        <div class="grupo-formulario">
+                            <label>Tipo de Usuario *</label>
+                            <select name="rol" required>
+                                <option value="">Selecciona tu rol</option>
+                                <option value="cliente">Cliente</option>
+                                <option value="tecnico">Técnico</option>
+                                <option value="domiciliario">Domiciliario</option>
+                            </select>
+                        </div>
+
+                        <div class="grupo-formulario">
+                            <label>Empresa (Opcional)</label>
+                            <input type="text" name="empresa" placeholder="Nombre de tu empresa">
+                        </div>
+
+                        <div class="fila-formulario">
+                            <div class="grupo-formulario">
+                                <label>Contraseña *</label>
+                                <input type="password" name="contrasena" id="contrasena-registro" placeholder="••••••••" required>
+                            </div>
+                            <div class="grupo-formulario">
+                                <label>Confirmar Contraseña *</label>
+                                <input type="password" name="confirmarContrasena" id="confirmar-contrasena" placeholder="••••••••" required>
+                            </div>
+                        </div>
+
+                        <div class="pie-formulario">
+                            <label class="etiqueta-checkbox">
+                                <input type="checkbox" required>
+                                Acepto los <a href="#" class="enlace">términos y condiciones</a>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primario btn-bloque">Crear Cuenta</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VISTA DE APLICACIÓN -->
+    <div id="vista-aplicacion" class="vista">
+        <!-- Barra Lateral -->
+        <aside id="barra-lateral" class="barra-lateral">
+            <div class="encabezado-barra">
+                <div class="logo">
+                    <div class="logo-icono">S</div>
+                    <span class="logo-texto">SkyHelp</span>
+                </div>
+                <button class="alternar-barra" onclick="aplicacion.alternarBarraLateral()">
+                    <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+                </button>
+            </div>
+
+            <nav class="navegacion-barra" id="navegacion-barra">
+                <!-- Los elementos de navegación se generarán dinámicamente -->
+            </nav>
+
+            <div class="pie-barra">
+                <div class="info-usuario">
+                    <div class="avatar-usuario" id="avatar-usuario">S</div>
+                    <div class="detalles-usuario">
+                        <div class="nombre-usuario" id="nombre-usuario">Usuario</div>
+                        <div class="rol-usuario" id="rol-usuario">Rol</div>
+                    </div>
+                </div>
+                <button class="btn btn-cerrar-sesion" onclick="aplicacion.cerrarSesion()">
+                    <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                    Cerrar Sesión
+                </button>
+            </div>
+        </aside>
+
+        <!-- Contenido Principal -->
+        <main class="contenido-principal">
+            <!-- Encabezado -->
+            <header class="encabezado-app">
+                <button class="alternar-barra movil" onclick="aplicacion.alternarBarraLateral()">
+                    <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+                </button>
+                <h1 id="titulo-pagina">Dashboard</h1>
+                <div class="acciones-encabezado">
+                    <button class="boton-icono" title="Notificaciones">
+                        <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        <span class="insignia-notificacion">3</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Área de Contenido -->
+            <div id="area-contenido" class="area-contenido">
+                <!-- El contenido dinámico se cargará aquí -->
+            </div>
+        </main>
+    </div>
+
+<<<<<<< HEAD
+  <script type="text/javascript" src="js/script.js"></script>
+
+=======
+>>>>>>> ca973b1f50799f288ad06efb2adb54a1f16a8e69
+</body>
+</html>
