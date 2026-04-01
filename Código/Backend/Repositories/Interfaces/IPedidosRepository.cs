@@ -1,8 +1,9 @@
-﻿namespace SkyHelp.Repositories.Interfaces
+namespace SkyHelp.Repositories.Interfaces
 {
     public interface IPedidosRepository
     {
         Task<List<Pedidos>> ObtenerPedidos();
+        Task<List<Pedidos>> ObtenerPedidosPorDomiciliario(Guid idDomiciliario);
         Task<Pedidos> ObtenerPedidoPorId(Guid id);
         Task<bool> CrearPedido(Pedidos pedido);
         Task<bool> ActualizarPedido(Pedidos pedido);

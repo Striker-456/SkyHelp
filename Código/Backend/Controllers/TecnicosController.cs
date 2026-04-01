@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SkyHelp.Authorization;
 using SkyHelp.Repositories.Interfaces;
 
 namespace SkyHelp.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = RoleNames.Administrador)]
     [Route("api/[controller]")]
     [ApiController]
     public class TecnicosController : ControllerBase

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SkyHelp.Context;
 using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces.SkyHelp.Repositories.Interfaces;
@@ -17,6 +17,11 @@ namespace SkyHelp.Repositories
             public async Task<List<Domiciliarios>> ObtenerDomiciliarios()
             {
                 return await _context.Domiciliarios.ToListAsync();
+            }
+
+            public async Task<Domiciliarios?> ObtenerDomiciliarioPorIdUsuario(Guid idUsuario)
+            {
+                return await _context.Domiciliarios.FirstOrDefaultAsync(x => x.IDUsuario == idUsuario);
             }
 
             public async Task<Domiciliarios> ObtenerDomiciliarioPorID(Guid id)

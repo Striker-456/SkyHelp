@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SkyHelp.Context;
 using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
@@ -21,6 +21,12 @@ namespace SkyHelp.Repositories
         {
             return await _context.Tecnicos.FirstOrDefaultAsync(x => x.IdTecnico == id);
         }
+
+        public async Task<Tecnicos?> ObtenerTecnicoPorIdUsuario(Guid idUsuario)
+        {
+            return await _context.Tecnicos.FirstOrDefaultAsync(x => x.IdUsuario == idUsuario);
+        }
+
         public async Task<bool> CrearTecnico(Tecnicos tecnico)
         {
             try

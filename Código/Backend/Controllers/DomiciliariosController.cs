@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SkyHelp.Authorization;
 using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces.SkyHelp.Repositories.Interfaces;
 
 namespace SkyHelp.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = RoleNames.Administrador)]
     [Route("api/[controller]")]
     [ApiController]
     public class DomiciliariosController : ControllerBase

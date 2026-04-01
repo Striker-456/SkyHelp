@@ -7,6 +7,10 @@ class AplicacionSkyHelp {
         this.usuarioActual = null;
         this.seccionActual = 'dashboard';
         this.barraLateralAbierta = true;
+
+        // Ajusta si tu API corre en otro puerto/host
+        this.apiBaseUrl = 'https://localhost:7062';
+        this.tokenStorageKey = 'skyhelp_token';
         
         // Usuarios de demostración
         this.usuariosDemo = [
@@ -91,8 +95,120 @@ class AplicacionSkyHelp {
         }
     }
     
+    // Networking / JWT
+    obtenerTokenGuardado() {
+        return localStorage.getItem(this.tokenStorageKey);
+    }
+
+    guardarToken(token) {
+        if (!token) return;
+        localStorage.setItem(this.tokenStorageKey, token);
+    }
+
+    limpiarToken() {
+        localStorage.removeItem(this.tokenStorageKey);
+    }
+
+    mapearRol(nombreRol) {
+        const raw = (nombreRol || '').toString().toLowerCase();
+        if (raw.includes('admin')) return 'administrador';
+        if (raw.includes('tecnico')) return 'tecnico';
+        if (raw.includes('cliente')) return 'cliente';
+        if (raw.includes('domicili')) return 'domiciliario';
+        return raw || 'cliente';
+    }
+
+    async apiRequest(path, { method = 'GET', body = null, auth = false } = {}) {
+        const url = `${this.apiBaseUrl}${path}`;
+        const headers = {};
+
+        if (body !== null) headers['Content-Type'] = 'application/json';
+
+        if (auth) {
+            const token = this.obtenerTokenGuardado();
+            if (!token) throw new Error('No hay token JWT. Inicia sesión.');
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const res = await fetch(url, {
+            method,
+            headers,
+            body: body !== null ? JSON.stringify(body) : undefined
+        });
+
+        const text = await res.text();
+        if (!res.ok) {
+            let msg = text;
+            try {
+                const parsed = text ? JSON.parse(text) : null;
+                msg = parsed?.mensaje || parsed?.title || parsed?.detail || text;
+            } catch {
+                // ignore
+            }
+            throw new Error(`HTTP ${res.status}: ${msg}`);
+        }
+
+        if (!text) return null;
+        try {
+            return JSON.parse(text);
+        } catch {
+            return text;
+        }
+    }
+
+    async obtenerUsuarioPorCorreo(correo) {
+        // Nota: tu backend tiene el endpoint "ObtnerUsuariosPorCorreo" (typo incluido).
+        return await this.apiRequest(
+            `/api/Usuarios/ObtnerUsuariosPorCorreo?Correo=${encodeURIComponent(correo)}`,
+            { auth: true }
+        );
+    }
+
+    async obtenerRolPorId(idRol) {
+        return await this.apiRequest(
+            `/api/Rol/ObtenerRolPorID?ID=${encodeURIComponent(idRol)}`,
+            { auth: true }
+        );
+    }
+
+    async cargarTicketsDesdeApi() {
+        // Cargar datos base (tickets + catálogos) para renderizar nombres
+        const [tickets, estados, usuarios, tecnicos] = await Promise.all([
+            this.apiRequest('/api/Tickets/ObtenerTickets', { auth: true }),
+            this.apiRequest('/api/EstadosTickets/ObtenerEstadosTickets', { auth: true }),
+            this.apiRequest('/api/Usuarios/ObtenerUsuarios', { auth: true }),
+            this.apiRequest('/api/Tecnicos/ObtenerTecnicos', { auth: true })
+        ]);
+
+        const estadosMap = new Map((estados || []).map(e => [e.IdEstado, e.NombreEstado]));
+        const usuariosMap = new Map((usuarios || []).map(u => [
+            u.IdUsuario,
+            u.NombreCompleto || u.NombreUsuarios || u.Correo
+        ]));
+        const tecnicosMap = new Map((tecnicos || []).map(t => [t.IdTecnico, t.IdUsuario]));
+
+        this.tickets = (tickets || []).map(t => {
+            const estadoNombre = estadosMap.get(t.IdEstado) || (t.IdEstado ? t.IdEstado.toString() : '');
+            const clienteNombre = usuariosMap.get(t.IdUsuario) || (t.IdUsuario ? t.IdUsuario.toString() : '');
+
+            const tecnicoUsuarioId = tecnicosMap.get(t.IdTecnico);
+            const tecnicoNombre = tecnicoUsuarioId ? usuariosMap.get(tecnicoUsuarioId) : '';
+
+            return {
+                id: t.IdTicket,
+                equipo: t.Categoria || '',
+                problema: t.Descripcion || '',
+                cliente: clienteNombre || 'Sin asignar',
+                tecnico: tecnicoNombre || 'Sin asignar',
+                estado: estadoNombre || 'Pendiente',
+                prioridad: t.Prioridad || '',
+                creado: t.FechaCreacion ? new Date(t.FechaCreacion).toLocaleDateString() : ''
+            };
+        });
+    }
+    
     // Autenticación
-    manejarLogin(evento) {
+    async manejarLogin(evento) {
         evento.preventDefault();
         
         const datosFormulario = new FormData(evento.target);
@@ -100,19 +216,36 @@ class AplicacionSkyHelp {
         const contrasena = datosFormulario.get('contrasena');
         
         this.mostrarCarga();
-        
-        setTimeout(() => {
-            const usuario = this.usuariosDemo.find(u => u.correo === correo && u.contrasena === contrasena);
-            
-            if (usuario) {
-                this.usuarioActual = usuario;
-                this.ocultarCarga();
-                this.mostrarApp();
-            } else {
-                this.ocultarCarga();
-                alert('Credenciales inválidas. Usa las cuentas demo:\n- admin@skyhelp.com / admin123\n- tecnico@skyhelp.com / tecnico123\n- cliente@skyhelp.com / cliente123\n- domiciliario@skyhelp.com / domiciliario123');
-            }
-        }, 1200);
+
+        try {
+            const resp = await this.apiRequest('/api/Auth/login', {
+                method: 'POST',
+                body: { Correo: correo, Contrasena: contrasena },
+                auth: false
+            });
+
+            const token = resp?.Token || resp?.token;
+            if (!token) throw new Error('No se recibió Token JWT del backend.');
+
+            this.guardarToken(token);
+
+            const usuario = await this.obtenerUsuarioPorCorreo(correo);
+            const rol = await this.obtenerRolPorId(usuario.IdRol);
+
+            this.usuarioActual = {
+                nombre: usuario.NombreCompleto || usuario.NombreUsuarios || correo,
+                correo: usuario.Correo || correo,
+                rol: this.mapearRol(rol?.NombreRol || rol?.nombreRol || rol?.nombre || '')
+            };
+
+            await this.cargarTicketsDesdeApi();
+
+            this.ocultarCarga();
+            this.mostrarApp();
+        } catch (err) {
+            this.ocultarCarga();
+            alert(`Error al iniciar sesión o cargar datos.\n${err?.message || err}`);
+        }
     }
     
     manejarRegistro(evento) {
@@ -145,6 +278,7 @@ class AplicacionSkyHelp {
     }
     
     cerrarSesion() {
+        this.limpiarToken();
         this.usuarioActual = null;
         this.mostrarInicio();
     }

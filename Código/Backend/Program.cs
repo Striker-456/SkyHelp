@@ -66,11 +66,11 @@ var jwtIssuer = builder.Configuration["Jwt:Issuer"];
 var jwtAudience = builder.Configuration["Jwt:Audience"];
 
 if (string.IsNullOrWhiteSpace(jwtKey))
-    throw new InvalidOperationException("Falta la configuraci�n 'Jwt:Key'. Revisa appsettings.json o variables de entorno.");
+    throw new InvalidOperationException("Falta la configuración 'Jwt:Key'. Revisa appsettings.json o variables de entorno.");
 if (string.IsNullOrWhiteSpace(jwtIssuer))
-    throw new InvalidOperationException("Falta la configuraci�n 'Jwt:Issuer'. Revisa appsettings.json o variables de entorno.");
+    throw new InvalidOperationException("Falta la configuración 'Jwt:Issuer'. Revisa appsettings.json o variables de entorno.");
 if (string.IsNullOrWhiteSpace(jwtAudience))
-    throw new InvalidOperationException("Falta la configuraci�n 'Jwt:Audience'. Revisa appsettings.json o variables de entorno.");
+    throw new InvalidOperationException("Falta la configuración 'Jwt:Audience'. Revisa appsettings.json o variables de entorno.");
 
 var key = Encoding.ASCII.GetBytes(jwtKey);
 builder.Services.AddAuthentication(x =>
@@ -104,6 +104,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Needed for browser-based frontend calls from a different origin.
+app.UseCors("AllowSpecificOrigin");
+
 app.UseAuthentication();
 app.Use(async (context, next) =>
 {
@@ -112,11 +115,18 @@ app.Use(async (context, next) =>
     if (context.Response.StatusCode == StatusCodes.Status401Unauthorized)
     {
         context.Response.ContentType = "application/json";
-        var result = System.Text.Json.JsonSerializer.Serialize(new
+        await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(new
         {
-            mensaje = "Acceso no autorizado. Verifique su token o credenciales."
-        });
-        await context.Response.WriteAsync(result);
+            mensaje = "No autenticado. Debe iniciar sesión para acceder a este recurso."
+        }));
+    }
+    else if (context.Response.StatusCode == StatusCodes.Status403Forbidden)
+    {
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(new
+        {
+            mensaje = "Acceso denegado. No tiene permisos suficientes para realizar esta acción."
+        }));
     }
 });
 app.UseAuthorization();

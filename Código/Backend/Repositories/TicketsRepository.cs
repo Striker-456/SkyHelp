@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SkyHelp.Context;
 using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
@@ -16,6 +16,17 @@ namespace SkyHelp.Repositories
         {
             return await _context.Tickets.ToListAsync();
         }
+
+        public async Task<List<Tickets>> ObtenerTicketsPorUsuario(Guid idUsuario)
+        {
+            return await _context.Tickets.Where(t => t.IdUsuario == idUsuario).ToListAsync();
+        }
+
+        public async Task<List<Tickets>> ObtenerTicketsPorTecnico(Guid idTecnico)
+        {
+            return await _context.Tickets.Where(t => t.IdTecnico == idTecnico).ToListAsync();
+        }
+
         public async Task<Tickets> ObtenerTicketPorId(Guid id)
         {
             return await _context.Tickets.FirstOrDefaultAsync(x => x.IdTicket == id);
