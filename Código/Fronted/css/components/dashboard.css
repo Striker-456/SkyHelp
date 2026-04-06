@@ -1,0 +1,134 @@
+/* Dashboard */
+.cuadricula-estadisticas-dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2.5rem;
+  margin-bottom: 3.5rem;
+}
+
+.tarjeta-estadistica-dashboard {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 1.25rem;
+  box-shadow: var(--sombra);
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  transition: var(--transicion);
+  border: 2px solid transparent;
+}
+
+.tarjeta-estadistica-dashboard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--sombra-lg);
+  border-color: var(--color-primario);
+}
+
+.icono-estadistica {
+  width: 56px;
+  height: 56px;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.info-estadistica {
+  flex: 1;
+}
+
+.etiqueta-estadistica-dashboard {
+  font-size: 0.9375rem;
+  color: var(--gris-600);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.valor-estadistica-dashboard {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--gris-900);
+}
+
+.tarjeta {
+  background: white;
+  border-radius: 1.25rem;
+  padding: 3rem;
+  box-shadow: var(--sombra);
+  margin-bottom: 3rem;
+  border: 1px solid var(--gris-200);
+}
+
+.tarjeta h3 {
+  margin-bottom: 2.5rem;
+  color: var(--gris-900);
+}
+
+.contenedor-tabla {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: var(--gris-50);
+}
+
+th {
+  padding: 1.25rem 1.5rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--gris-700);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+td {
+  padding: 1.5rem;
+  border-top: 1px solid var(--gris-200);
+  font-size: 0.9375rem;
+  color: var(--gris-700);
+}
+
+tr:hover {
+  background: var(--gris-50);
+}
+
+.insignia-estado {
+  display: inline-block;
+  padding: 0.375rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.insignia-verde {
+  background: #d1fae5;
+  color: #065f46;
+}
+.insignia-azul {
+  background: #dbeafe;
+  color: #1e40af;
+}
+.insignia-amarillo {
+  background: #fef3c7;
+  color: #92400e;
+}
+.insignia-rojo {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.insignia-naranja {
+  background: #ffedd5;
+  color: #9a3412;
+}
+.insignia-purpura {
+  background: #ede9fe;
+  color: #5b21b6;
+}

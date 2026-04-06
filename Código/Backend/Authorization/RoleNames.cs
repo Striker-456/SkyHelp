@@ -7,7 +7,7 @@ namespace SkyHelp.Authorization
     {
         public const string Administrador = "Administrador";
         public const string Tecnico = "Tecnico";
-        public const string Domiciliario = "Domi";
+        public const string Domiciliario = "Domiciliario";
         public const string Usuario = "Usuario";
     }
 }

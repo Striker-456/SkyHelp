@@ -19,6 +19,7 @@ namespace SkyHelp.Controllers
             _RolRepository = rolRepository;
         }
 
+        [AllowAnonymous]
         [HttpGet("ObtenerRoles")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

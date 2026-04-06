@@ -155,7 +155,7 @@
                         <div class="contenido-caracteristica">
                             <h3>Gestión de Tickets</h3>
                             <p>Crea, asigna y da seguimiento a incidencias de manera eficiente</p>
-                            <div class="enlace-caracteristica">
+                            <div class="enlace-caracteristica" onclick="aplicacion.mostrarDetalleCaracteristica('tickets')">
                                 <span>Conocer más</span>
                                 <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                             </div>
@@ -172,7 +172,7 @@
                         <div class="contenido-caracteristica">
                             <h3>Múltiples Roles</h3>
                             <p>Sistema diseñado para clientes, técnicos, administradores y domiciliarios</p>
-                            <div class="enlace-caracteristica">
+                            <div class="enlace-caracteristica" onclick="aplicacion.mostrarDetalleCaracteristica('roles')">
                                 <span>Conocer más</span>
                                 <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                             </div>
@@ -189,7 +189,7 @@
                         <div class="contenido-caracteristica">
                             <h3>Gestión de Domiciliarios</h3>
                             <p>Coordina recogidas y entregas de equipos de forma optimizada</p>
-                            <div class="enlace-caracteristica">
+                            <div class="enlace-caracteristica" onclick="aplicacion.mostrarDetalleCaracteristica('domiciliarios')">
                                 <span>Conocer más</span>
                                 <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                             </div>
@@ -206,7 +206,7 @@
                         <div class="contenido-caracteristica">
                             <h3>Reportes Detallados</h3>
                             <p>Estadísticas completas sobre tiempos de respuesta y satisfacción</p>
-                            <div class="enlace-caracteristica">
+                            <div class="enlace-caracteristica" onclick="aplicacion.mostrarDetalleCaracteristica('reportes')">
                                 <span>Conocer más</span>
                                 <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                             </div>
@@ -223,7 +223,7 @@
                         <div class="contenido-caracteristica">
                             <h3>Notificaciones en Tiempo Real</h3>
                             <p>Mantente informado con alertas instantáneas de actualizaciones</p>
-                            <div class="enlace-caracteristica">
+                            <div class="enlace-caracteristica" onclick="aplicacion.mostrarDetalleCaracteristica('notificaciones')">
                                 <span>Conocer más</span>
                                 <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                             </div>
@@ -240,7 +240,7 @@
                         <div class="contenido-caracteristica">
                             <h3>Centro de Conocimiento</h3>
                             <p>Base de datos completa con artículos de ayuda y FAQ</p>
-                            <div class="enlace-caracteristica">
+                            <div class="enlace-caracteristica" onclick="aplicacion.mostrarDetalleCaracteristica('conocimiento')">
                                 <span>Conocer más</span>
                                 <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                             </div>
@@ -399,16 +399,6 @@
                         </div>
 
                         <button type="submit" class="btn btn-primario btn-bloque">Iniciar Sesión</button>
-
-                        <div class="cuentas-demo">
-                            <p>Cuentas Demo:</p>
-                            <div class="lista-demo">
-                                <div>👤 <strong>Admin:</strong> admin@skyhelp.com / admin123</div>
-                                <div>🔧 <strong>Técnico:</strong> tecnico@skyhelp.com / tecnico123</div>
-                                <div>👥 <strong>Cliente:</strong> cliente@skyhelp.com / cliente123</div>
-                                <div>🚚 <strong>Domiciliario:</strong> domiciliario@skyhelp.com / domiciliario123</div>
-                            </div>
-                        </div>
                     </form>
                 </div>
 
@@ -532,6 +522,37 @@
         </main>
     </div>
 
-    <script type="text/javascript" src="js/script.js"></script>
+  <!-- Modal Overlay -->
+  <div id="contenedor-modal" class="modal-overlay oculto" onclick="aplicacion.cerrarModalAlFondo(event)">
+      <div class="modal" id="modal-principal">
+          <!-- Contenido dinámico -->
+      </div>
+  </div>
+
+  <!-- Toast de Notificación -->
+  <div id="toast-notificacion" class="toast oculto">
+      <span id="toast-mensaje"></span>
+  </div>
+
+  <!-- Scripts modulares -->
+  <script type="text/javascript" src="js/modules/api.js"></script>
+  <script type="text/javascript" src="js/modules/data.js"></script>
+  <script type="text/javascript" src="js/modules/core.js"></script>
+  <script type="text/javascript" src="js/modules/auth.js"></script>
+  <script type="text/javascript" src="js/modules/navigation.js"></script>
+  <script type="text/javascript" src="js/modules/dashboard.js"></script>
+  <script type="text/javascript" src="js/modules/admin.js"></script>
+  <script type="text/javascript" src="js/modules/map.js"></script>
+  <script type="text/javascript" src="js/modules/tickets.js"></script>
+  <script type="text/javascript" src="js/modules/users.js"></script>
+  <script type="text/javascript" src="js/modules/reports.js"></script>
+  <script type="text/javascript" src="js/modules/config.js"></script>
+  <script type="text/javascript" src="js/modules/knowledge.js"></script>
+  <script type="text/javascript" src="js/modules/profile.js"></script>
+  <script type="text/javascript" src="js/modules/history.js"></script>
+  <script type="text/javascript" src="js/modules/modal.js"></script>
+  <script type="text/javascript" src="js/modules/utils.js"></script>
+  <script type="text/javascript" src="js/script.js"></script>
+
 </body>
 </html>

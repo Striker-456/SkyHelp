@@ -14,9 +14,10 @@ namespace SkyHelp.Authorization
             return n switch
             {
                 "administrador" => RoleNames.Administrador,
-                "tecnico" => RoleNames.Tecnico,
+                "tecnico" or "técnico" => RoleNames.Tecnico,
                 "domiciliario" or "domi" => RoleNames.Domiciliario,
                 "cliente" or "usuario" => RoleNames.Usuario,
+                "backend" => RoleNames.Administrador,
                 _ => nombreRolEnBd.Trim()
             };
         }

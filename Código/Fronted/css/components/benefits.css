@@ -1,0 +1,107 @@
+/* Sección de Beneficios */
+.beneficios {
+  padding: 9rem 0;
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    #fee2e2 0%,
+    #fce7f3 50%,
+    #f3e8ff 100%
+  );
+}
+
+.tarjeta-beneficios {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(30px);
+  border-radius: 2rem;
+  padding: 5rem;
+  box-shadow: var(--sombra-2xl);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 5rem;
+  align-items: center;
+}
+
+.contenido-beneficios h2 {
+  margin-bottom: 2rem;
+  color: var(--gris-900);
+}
+
+.contenido-beneficios > p {
+  font-size: 1.25rem;
+  color: var(--gris-600);
+  margin-bottom: 2.5rem;
+  line-height: 1.8;
+}
+
+.lista-beneficios {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.item-beneficio {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 1.25rem;
+  border-radius: 1rem;
+  box-shadow: var(--sombra-sm);
+  transition: var(--transicion);
+  border: 2px solid transparent;
+}
+
+.item-beneficio:hover {
+  transform: translateX(12px);
+  box-shadow: var(--sombra-lg);
+  border-color: var(--color-primario);
+}
+
+.item-beneficio .icono {
+  color: var(--color-verde);
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.item-beneficio span {
+  color: var(--gris-700);
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.cuadricula-estadisticas {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+.tarjeta-estadistica {
+  padding: 2rem;
+  border-radius: 1.25rem;
+  color: white;
+  text-align: center;
+  box-shadow: var(--sombra-xl);
+  transition: var(--transicion);
+}
+
+.tarjeta-estadistica:hover {
+  transform: scale(1.08) rotate(3deg);
+  box-shadow: var(--sombra-2xl);
+}
+
+.valor-estadistica {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.etiqueta-estadistica {
+  font-size: 0.9375rem;
+  opacity: 0.95;
+  font-weight: 500;
+}
