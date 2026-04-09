@@ -41,6 +41,7 @@ namespace SkyHelp.Context
                 entity.Property(e => e.Correo).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.Contrasena).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.EstadoCuenta).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Telefono).HasMaxLength(20);
                 entity.HasOne(e => e.Rol)
                       .WithMany(t => t.Usuario)
                       .HasForeignKey(e => e.IdRol);
@@ -210,14 +211,13 @@ namespace SkyHelp.Context
             {
                 entity.ToTable("Tickets");
                 entity.HasKey(e => e.IdTicket);
+                entity.Property(e => e.NumeroTicket).ValueGeneratedOnAdd();
                 entity.Property(e => e.Descripcion).IsRequired().HasMaxLength(200);
                 entity.Property(e => e.Categoria).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.Prioridad).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.FechaCreacion).IsRequired();
                 entity.Property(e => e.IdEstado).IsRequired();
                 entity.Property(e => e.IdUsuario).IsRequired();
-                entity.Property(e => e.IdDomiciliario).IsRequired();
-                entity.Property(e => e.IdTecnico).IsRequired();
                 // RELACIÓN: Tickets -> Usuarios
                 entity.HasOne(e => e.Usuario)
                       .WithMany(u => u.Tickets)
@@ -233,7 +233,8 @@ namespace SkyHelp.Context
                 // RELACIÓN: Tickets -> Domiciliarios
                 entity.HasOne(e => e.Domiciliario)
                       .WithMany(d => d.Tickets)
-                      .HasForeignKey(e => e.IdDomiciliario);
+                      .HasForeignKey(e => e.IdDomiciliario)
+                      .IsRequired(false);
             });
 
             // Configuracion de la entidad Estados tickets

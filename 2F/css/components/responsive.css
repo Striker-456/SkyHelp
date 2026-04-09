@@ -1,0 +1,108 @@
+/* Responsive */
+@media (max-width: 1024px) {
+  .barra-lateral-mapa {
+    width: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.25rem;
+  }
+  h2 {
+    font-size: 1.875rem;
+  }
+
+  .titulo-hero {
+    font-size: 2rem;
+  }
+  .descripcion-hero {
+    font-size: 1.125rem;
+  }
+
+  .botones-hero,
+  .botones-cta {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .botones-hero .btn,
+  .botones-cta .btn {
+    width: 100%;
+  }
+
+  .cuadricula-showcase,
+  .cuadricula-caracteristicas {
+    grid-template-columns: 1fr;
+  }
+
+  .tarjeta-beneficios {
+    grid-template-columns: 1fr;
+    padding: 2.5rem 1.5rem;
+  }
+
+  .fila-formulario {
+    grid-template-columns: 1fr;
+  }
+
+  .barra-lateral {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 200;
+    width: var(--ancho-sidebar);
+    transform: translateX(calc(-1 * var(--ancho-sidebar)));
+  }
+
+  .barra-lateral.abierta {
+    transform: translateX(0) !important;
+  }
+
+  .barra-lateral.minimizada {
+    transform: translateX(calc(-1 * var(--ancho-sidebar))) !important;
+    width: var(--ancho-sidebar);
+  }
+
+  .contenido-principal {
+    margin-left: 0;
+  }
+
+  .barra-lateral.minimizada ~ .contenido-principal {
+    margin-left: 0;
+  }
+
+  .alternar-barra.movil {
+    display: block;
+  }
+
+  .barra-lateral-mapa {
+    width: calc(100% - 3rem);
+  }
+
+  .encabezado-app {
+    padding: 0 1.5rem;
+  }
+
+  .encabezado-app h1 {
+    font-size: 1.5rem;
+  }
+
+  .area-contenido {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .cuadricula-estadisticas,
+  .cuadricula-estadisticas-dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .tarjeta-cta {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .tarjeta-login {
+    padding: 2rem 1.5rem;
+  }
+}

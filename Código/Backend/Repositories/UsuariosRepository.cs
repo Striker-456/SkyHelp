@@ -67,8 +67,8 @@ namespace SkyHelp.Repositories
                 usuarioExistente.IdRol = usuario.IdRol;
                 usuarioExistente.NombreCompleto = usuario.NombreCompleto;
                 usuarioExistente.Correo = usuario.Correo;
-                usuarioExistente.Contrasena = usuario.Contrasena;
                 usuarioExistente.EstadoCuenta = usuario.EstadoCuenta;
+                usuarioExistente.Telefono = usuario.Telefono;
 
                 if (!string.IsNullOrWhiteSpace(usuario.Contrasena))
                 {

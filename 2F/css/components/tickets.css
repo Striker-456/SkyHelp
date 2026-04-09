@@ -1,0 +1,58 @@
+/* Tickets */
+.encabezado-tickets {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.entrada-busqueda {
+  flex: 1;
+  min-width: 280px;
+  padding: 0.875rem 1.25rem;
+  border: 2px solid var(--gris-200);
+  border-radius: 0.75rem;
+  font-size: 0.9375rem;
+  transition: var(--transicion);
+}
+
+.entrada-busqueda:focus {
+  outline: none;
+  border-color: var(--color-primario);
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}
+
+.filtros {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.filtros select {
+  padding: 0.875rem 1.25rem;
+  border: 2px solid var(--gris-200);
+  border-radius: 0.75rem;
+  font-size: 0.9375rem;
+  background: white;
+  cursor: pointer;
+  transition: var(--transicion);
+  font-weight: 500;
+}
+
+.filtros select:focus {
+  outline: none;
+  border-color: var(--color-primario);
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}
+
+.acciones-ticket {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.acciones-ticket button {
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
+}

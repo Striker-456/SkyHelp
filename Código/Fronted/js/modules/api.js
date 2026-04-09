@@ -98,15 +98,20 @@ const Api = {
         return this.get('/tickets/ObtenerMisTickets');
     },
     crearTicket(ticket)           { return this.post('/tickets/CrearTicket', ticket); },
-    actualizarTicket(id, ticket)  { return this.put(`/tickets/ActualizarTicket?id=${id}`, ticket); },
+    actualizarTicket(ticket)      { return this.put('/tickets/ActualizarTicket', ticket); },
 
     // Usuarios
     getUsuarios()                 { return this.get('/usuarios/ObtenerUsuarios'); },
     crearUsuario(usuario)         { return this.post('/usuarios/CrearUsuario', usuario); },
+    actualizarUsuario(usuario)    { return this.put('/usuarios/ActualizarUsuario', usuario); },
+    eliminarUsuario(id)           { return this.delete(`/usuarios/EliminarUsuario?ID=${id}`); },
 
     // Estados de tickets
     getEstadosTickets()           { return this.get('/estadostickets/ObtenerEstadosTickets'); },
 
     // Técnicos
     getTecnicos()                 { return this.get('/tecnicos/ObtenerTecnicos'); },
+
+    // Domiciliarios
+    getDomiciliarios()            { return this.get('/domiciliarios/ObtenerDomiciliarios'); },
 };

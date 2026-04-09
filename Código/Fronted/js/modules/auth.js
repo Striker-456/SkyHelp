@@ -16,15 +16,20 @@ AplicacionSkyHelp.prototype.manejarLogin = async function(evento) {
         if (!respuesta || !respuesta.token) throw new Error('Sin token: ' + JSON.stringify(respuesta));
 
         const payload = JSON.parse(atob(respuesta.token.split('.')[1]));
-        const nombre = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || correo;
+        const nombre = payload['nombreCompleto'] 
+            || payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] 
+            || correo;
+        const idUsuario = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || '';
 
         Api.guardarSesion(respuesta.token, respuesta.role, nombre, correo);
+        sessionStorage.setItem('skyhelp_id', idUsuario);
 
         this.usuarioActual = {
             correo,
             nombre,
             rol: respuesta.role.toLowerCase(),
-            token: respuesta.token
+            token: respuesta.token,
+            id: idUsuario
         };
 
         this.ocultarCarga();
@@ -61,7 +66,7 @@ AplicacionSkyHelp.prototype.manejarRegistro = async function(evento) {
     try {
         // Obtener roles para mapear nombre -> IdRol
         const roles = await Api.getRoles();
-        const rol = roles.find(r => r.nombreRol.toLowerCase() === rolNombre.toLowerCase());
+        const rol = roles.find(r => normalizarTexto(r.nombreRol) === normalizarTexto(rolNombre));
         if (!rol) throw new Error('Rol no encontrado: ' + rolNombre);
 
         await Api.crearUsuario({
@@ -78,7 +83,9 @@ AplicacionSkyHelp.prototype.manejarRegistro = async function(evento) {
         if (!respuesta || !respuesta.token) throw new Error('El servidor no devolvió un token válido');
 
         const payloadReg = JSON.parse(atob(respuesta.token.split('.')[1]));
-        const nombreSesion = payloadReg['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || correo;
+        const nombreSesion = payloadReg['nombreCompleto']
+            || payloadReg['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] 
+            || correo;
 
         Api.guardarSesion(respuesta.token, respuesta.role, nombreSesion, correo);
 
@@ -111,7 +118,8 @@ AplicacionSkyHelp.prototype.restaurarSesion = function() {
             correo: sesion.correo,
             nombre: sesion.nombre,
             rol: sesion.rol.toLowerCase(),
-            token: sesion.token
+            token: sesion.token,
+            id: sessionStorage.getItem('skyhelp_id') || ''
         };
         this.mostrarApp();
         return true;

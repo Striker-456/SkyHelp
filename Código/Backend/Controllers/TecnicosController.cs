@@ -5,7 +5,7 @@ using SkyHelp.Repositories.Interfaces;
 
 namespace SkyHelp.Controllers
 {
-    [Authorize(Roles = RoleNames.Administrador)]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TecnicosController : ControllerBase
@@ -16,6 +16,7 @@ namespace SkyHelp.Controllers
             _tecnicosRepository = tecnicosRepository;
         }
         // OBTENER TODOS
+        [Authorize]
         [HttpGet("ObtenerTecnicos")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -26,10 +27,16 @@ namespace SkyHelp.Controllers
             {
                 var lista = await _tecnicosRepository.ObtenerTecnicos();
                 if (lista == null || !lista.Any())
-                {
                     return NotFound("No se encontraron técnicos.");
-                }
-                return Ok(lista);
+
+                var resultado = lista.Select(t => new {
+                    t.IdTecnico,
+                    t.IdUsuario,
+                    t.FechaRegistro,
+                    NombreCompleto = t.Usuario?.NombreCompleto ?? t.Usuario?.NombreUsuarios ?? "",
+                    Correo = t.Usuario?.Correo ?? ""
+                });
+                return Ok(resultado);
             }
             catch (Exception)
             {
@@ -37,6 +44,7 @@ namespace SkyHelp.Controllers
             }
         }
         // OBTENER POR ID
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpGet("ObtenerTecnicoPorID")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -58,6 +66,7 @@ namespace SkyHelp.Controllers
             }
         }
         // CREAR
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpPost("CrearTecnico")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -79,6 +88,7 @@ namespace SkyHelp.Controllers
             }
         }
         // ACTUALIZAR
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpPut("ActualizarTecnico")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -100,6 +110,7 @@ namespace SkyHelp.Controllers
             }
         }
         // ELIMINAR
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpDelete("EliminarTecnico")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -15,7 +15,9 @@ namespace SkyHelp.Repositories
         }
         public async Task<List<Tecnicos>> ObtenerTecnicos()
         {
-            return await _context.Tecnicos.ToListAsync();
+            return await _context.Tecnicos
+                .Include(t => t.Usuario)
+                .ToListAsync();
         }
         public async Task<Tecnicos> ObtenerTecnicoPorId(Guid id)
         {

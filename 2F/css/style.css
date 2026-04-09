@@ -1,0 +1,59 @@
+﻿/* SkyHelp - Estilos Modulares */
+/* Archivo principal que importa todos los componentes CSS */
+
+/* Variables y reset */
+@import url('components/base.css');
+
+/* Tipografía */
+@import url('components/typography.css');
+
+/* Pantalla de carga */
+@import url('components/loading.css');
+
+/* Utilidades (vistas, iconos, botones) */
+@import url('components/utilities.css');
+
+/* Página de inicio */
+@import url('components/landing.css');
+
+/* Características */
+@import url('components/features.css');
+
+/* Beneficios */
+@import url('components/benefits.css');
+
+/* Call to Action */
+@import url('components/cta.css');
+
+/* Pie de página */
+@import url('components/footer.css');
+
+/* Autenticación */
+@import url('components/auth.css');
+
+/* Vista de aplicación */
+@import url('components/app.css');
+
+/* Dashboard */
+@import url('components/dashboard.css');
+
+/* Administración (Gestión de técnicos) */
+@import url('components/admin.css');
+
+/* Tickets */
+@import url('components/tickets.css');
+
+/* Chat */
+@import url('components/chat.css');
+
+/* Modales */
+@import url('components/modal.css');
+
+/* Responsive */
+@import url('components/responsive.css');
+
+/* Modo Oscuro */
+@import url('components/darkmode.css');
+
+/* Domiciliario y Perfil */
+@import url('components/domiciliario.css');

@@ -20,6 +20,7 @@ namespace SkyHelp.Controllers
         }
 
         // OBTENER TODOS
+        [Authorize]
         [HttpGet("ObtenerDomiciliarios")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

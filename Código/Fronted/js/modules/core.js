@@ -13,6 +13,23 @@ class AplicacionSkyHelp {
     
     inicializar() {
         console.log('Aplicación SkyHelp inicializada');
+        // Restaurar tema guardado
+        if (localStorage.getItem('skyhelp-tema') === 'oscuro') {
+            document.body.classList.add('modo-oscuro');
+        }
+        // Manejar navegación con flechas del navegador
+        window.addEventListener('popstate', (e) => {
+            if (this.usuarioActual && e.state?.seccion) {
+                this.cargarContenido(e.state.seccion);
+                // Actualizar nav activo
+                document.querySelectorAll('.item-nav').forEach(item => {
+                    item.classList.toggle('activo', item.dataset.seccion === e.state.seccion);
+                });
+                const titulos = { dashboard:'Dashboard', tickets:'Gestión de Tickets', tecnicos:'Gestión de Técnicos', usuarios:'Gestión de Usuarios', reportes:'Reportes y Estadísticas', configuracion:'Configuración', conocimiento:'Base de Conocimientos', perfil:'Mi Perfil', historial:'Historial de Entregas', chat:'Mis Chats' };
+                const titulo = document.getElementById('titulo-pagina');
+                if (titulo) titulo.textContent = titulos[e.state.seccion] || 'Dashboard';
+            }
+        });
         // Intentar restaurar sesión antes de mostrar inicio
         if (!this.restaurarSesion()) {
             this.mostrarVista('inicio');
@@ -102,3 +119,10 @@ class AplicacionSkyHelp {
         pantallaCarga.classList.add('oculto');
     }
 }
+
+AplicacionSkyHelp.prototype.alternarModoOscuro = function() {
+    const oscuro = document.body.classList.toggle('modo-oscuro');
+    localStorage.setItem('skyhelp-tema', oscuro ? 'oscuro' : 'claro');
+    document.querySelectorAll('.icono-luna').forEach(el => el.style.display = oscuro ? 'none' : '');
+    document.querySelectorAll('.icono-sol').forEach(el => el.style.display = oscuro ? '' : 'none');
+};

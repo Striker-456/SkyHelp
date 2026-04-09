@@ -196,3 +196,10 @@ AplicacionSkyHelp.prototype.mostrarDetalleCaracteristica = function(id) {
     `;
     this.abrirModal(contenido, true);
 };
+
+// Normaliza tildes para comparaciones de texto
+function normalizarTexto(texto) {
+    return (texto || '').toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+}

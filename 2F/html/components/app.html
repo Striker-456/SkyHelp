@@ -1,0 +1,55 @@
+<!-- VISTA DE APLICACIÓN -->
+<div id="vista-aplicacion" class="vista">
+    <!-- Barra Lateral -->
+    <aside id="barra-lateral" class="barra-lateral">
+        <div class="encabezado-barra">
+            <div class="logo">
+                <div class="logo-icono">S</div>
+                <span class="logo-texto">SkyHelp</span>
+            </div>
+            <button class="alternar-barra" onclick="aplicacion.alternarBarraLateral()">
+                <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+            </button>
+        </div>
+
+        <nav class="navegacion-barra" id="navegacion-barra">
+            <!-- Los elementos de navegación se generarán dinámicamente -->
+        </nav>
+
+        <div class="pie-barra">
+            <div class="info-usuario">
+                <div class="avatar-usuario" id="avatar-usuario">S</div>
+                <div class="detalles-usuario">
+                    <div class="nombre-usuario" id="nombre-usuario">Usuario</div>
+                    <div class="rol-usuario" id="rol-usuario">Rol</div>
+                </div>
+            </div>
+            <button class="btn btn-cerrar-sesion" onclick="aplicacion.cerrarSesion()">
+                <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                Cerrar Sesión
+            </button>
+        </div>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main class="contenido-principal">
+        <!-- Encabezado -->
+        <header class="encabezado-app">
+            <button class="alternar-barra movil" onclick="aplicacion.alternarBarraLateral()">
+                <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+            </button>
+            <h1 id="titulo-pagina">Dashboard</h1>
+            <div class="acciones-encabezado">
+                <button class="boton-icono" title="Notificaciones">
+                    <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    <span class="insignia-notificacion">3</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Área de Contenido -->
+        <div id="area-contenido" class="area-contenido">
+            <!-- El contenido dinámico se cargará aquí -->
+        </div>
+    </main>
+</div>

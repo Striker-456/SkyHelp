@@ -29,6 +29,9 @@ namespace SkyHelp.Models
         [Required]
         [StringLength(50)]
         public string EstadoCuenta { get; set; }
+
+        [StringLength(20)]
+        public string? Telefono { get; set; }
         [JsonIgnore]
         public virtual Roles? Rol { get; set; }
         [JsonIgnore]

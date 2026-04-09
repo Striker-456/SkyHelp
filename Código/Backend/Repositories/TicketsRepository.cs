@@ -49,28 +49,31 @@ namespace SkyHelp.Repositories
         {
             try
             {
-                var ticketExistente = await _context.Tickets.FirstOrDefaultAsync(x => x.IdTicket == ticket.IdTicket);
+                if (ticket == null || ticket.IdTicket == Guid.Empty)
+                    throw new ArgumentException("Ticket nulo o sin ID");
+
+                // Obtener el ticket existente sin rastreo
+                var ticketExistente = await _context.Tickets.AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.IdTicket == ticket.IdTicket);
+                
                 if (ticketExistente == null)
-                {
-                    return false;
-                    throw new Exception("Ticket Para Actualizar No Existe");
-                }
-                ticketExistente.Descripcion = ticket.Descripcion;
-                ticketExistente.Categoria = ticket.Categoria;
-                ticketExistente.Prioridad = ticket.Prioridad;
-                ticketExistente.FechaCreacion = ticket.FechaCreacion;
+                    throw new KeyNotFoundException($"Ticket con ID {ticket.IdTicket} no encontrado");
+
+                // Actualizar solo el estado
                 ticketExistente.IdEstado = ticket.IdEstado;
-                ticketExistente.IdUsuario = ticket.IdUsuario;
-                ticketExistente.IdDomiciliario = ticket.IdDomiciliario;
-                ticketExistente.IdTecnico = ticket.IdTecnico;
-                _context.Tickets.Update(ticketExistente);
-                await _context.SaveChangesAsync();
-                return true;
+
+                // Ahora adjuntar y marcar como modificado
+                _context.Tickets.Attach(ticketExistente);
+                _context.Entry(ticketExistente).Property(x => x.IdEstado).IsModified = true;
+
+                var cambios = await _context.SaveChangesAsync();
+                return cambios > 0;
             }
             catch (Exception ex)
             {
-                return false;
-                throw new Exception(ex.Message.ToString());
+                System.Diagnostics.Debug.WriteLine($"Error en ActualizarTicket: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Inner: {ex.InnerException?.Message}");
+                throw;
             }
         }
 

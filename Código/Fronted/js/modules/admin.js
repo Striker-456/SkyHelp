@@ -29,10 +29,10 @@ AplicacionSkyHelp.prototype.obtenerContenidoTechnicos = async function() {
             <tr>
                 <td>
                     <div class="info-tecnico">
-                        <div class="avatar-tecnico">${getNombre(t.idUsuario).charAt(0)}</div>
+                        <div class="avatar-tecnico">${(t.nombreCompleto || t.nombre || '?').charAt(0)}</div>
                         <div class="datos-tecnico">
-                            <div class="nombre-tecnico">${getNombre(t.idUsuario)}</div>
-                            <div class="email-tecnico">${getCorreo(t.idUsuario)}</div>
+                            <div class="nombre-tecnico">${t.nombreCompleto || t.nombre || ''}</div>
+                            <div class="email-tecnico">${t.correo || ''}</div>
                         </div>
                     </div>
                 </td>

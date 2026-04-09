@@ -100,6 +100,7 @@ namespace SkyHelp.Controllers
                 {
                     new Claim(ClaimTypes.NameIdentifier, usuario.IdUsuario.ToString()),
                     new Claim(ClaimTypes.Name, usuario.Correo),
+                    new Claim("nombreCompleto", usuario.NombreCompleto ?? usuario.NombreUsuarios ?? usuario.Correo),
                     new Claim(ClaimTypes.Role, jwtRole)
                 },
                 expires: DateTime.Now.AddMinutes(30),

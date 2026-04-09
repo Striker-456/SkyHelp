@@ -9,6 +9,8 @@ namespace SkyHelp.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid IdTicket {  get ; set; } = Guid.NewGuid();
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int NumeroTicket { get; set; }
         [Required]
         [StringLength(200)]
         public string Descripcion { get; set; }
@@ -25,9 +27,8 @@ namespace SkyHelp.Models
         [Required]
         [ForeignKey("Usuario")]
         public Guid IdUsuario { get; set; }
-        [Required]
         [ForeignKey("Domiciliario")]
-        public Guid IdDomiciliario { get; set; }
+        public Guid? IdDomiciliario { get; set; }
         [Required]
         [ForeignKey("Tecnico")]
         public Guid IdTecnico { get; set; }

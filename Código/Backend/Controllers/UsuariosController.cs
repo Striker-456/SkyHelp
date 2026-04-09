@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace SkyHelp.Controllers
 {
-    [Route("api/[controller]")]// Definindo a ruta base para o controlador
+    [Route("api/[controller]")]
     [ApiController]
     public class UsuariosController : ControllerBase
     {
@@ -42,6 +42,24 @@ namespace SkyHelp.Controllers
             }
         }
 
+
+        [Authorize]
+        [HttpGet("ObtenerNombrePorId")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ObtenerNombrePorId(Guid id)
+        {
+            try
+            {
+                var usuario = await _UsuariosRepository.ObtenerUsuario(id);
+                if (usuario == null) return NotFound();
+                return Ok(new { usuario.IdUsuario, usuario.NombreCompleto, usuario.Correo });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener el usuario.");
+            }
+        }
 
         [Authorize(Roles = RoleNames.Administrador)]
         [HttpGet("ObtenerUsuarios")]// Definiendo que este método responde a solicitudes GET
@@ -115,6 +133,36 @@ namespace SkyHelp.Controllers
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error al Insertar Persona");
+            }
+        }
+
+        [Authorize]
+        [HttpPut("CambiarContrasena")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CambiarContrasena([FromBody] CambiarContrasenaRequest request)
+        {
+            try
+            {
+                var correo = User.Identity?.Name;
+                if (string.IsNullOrEmpty(correo))
+                    return Unauthorized();
+
+                var usuario = await _UsuariosRepository.ObtenerUsuarioPorCorreo(correo);
+                if (usuario == null)
+                    return NotFound("Usuario no encontrado.");
+
+                usuario.Contrasena = request.NuevaContrasena;
+                var resultado = await _UsuariosRepository.ActualizarUsuario(usuario);
+                if (!resultado)
+                    return BadRequest("No se pudo actualizar la contraseña.");
+
+                return Ok("Contraseña actualizada correctamente.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al cambiar la contraseña.");
             }
         }
 
@@ -201,3 +249,8 @@ namespace SkyHelp.Controllers
     }
 }
 
+
+public class CambiarContrasenaRequest
+{
+    public string NuevaContrasena { get; set; } = string.Empty;
+}
