@@ -11,13 +11,13 @@ namespace SkyHelp.Models
         public Guid IdArticulo { get; set; } = Guid.NewGuid();
         [Required]
         [StringLength(50)]
-        public string Titulo { get; set; }
+        public required string Titulo { get; set; }
         [Required]
         [StringLength(50)]
-        public string Categoria { get; set; }
+        public required string Categoria { get; set; }
         [Required]
         [StringLength(50)]
-        public string Contenido { get; set; }
+        public required string Contenido { get; set; }
         public DateTime? FechaPublicacion { get; set; } = DateTime.Now;
         public int  TotalVistas { get; set; } 
         public decimal CalificacionPromedio { get; set; }

@@ -11,12 +11,12 @@ namespace SkyHelp
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid IdEstadistica { get; set; } = Guid.NewGuid();
 
-        public string Periodo { get; set; }
+        public required string Periodo { get; set; }
 
         public DateTime? FechaInicio { get; set; } = DateTime.Now;
         public DateTime? FechaFin { get; set; } = DateTime.Now;
-        public string TipoGrafico { get; set; } 
-        public string Datos { get; set; }
+        public required string TipoGrafico { get; set; } 
+        public required string Datos { get; set; }
         public Guid IdUsuario { get; set; }
         public bool ExportadoExcel { get; set; }
         public bool ExportadoPDF { get; set; }

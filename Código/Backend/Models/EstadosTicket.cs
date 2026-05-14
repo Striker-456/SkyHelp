@@ -10,9 +10,9 @@ namespace SkyHelp.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid IdEstado { get; set; } = Guid.NewGuid();
         [Required]
-        public string NombreEstado { get; set; }
+        public required string NombreEstado { get; set; }
         [Required]
-        public string Descripcion { get; set; }
+        public required string Descripcion { get; set; }
         [JsonIgnore]
         public ICollection<Tickets>? Tickets { get; set; }
 

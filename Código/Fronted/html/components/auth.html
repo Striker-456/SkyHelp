@@ -78,12 +78,17 @@
 
                     <div class="grupo-formulario">
                         <label>Tipo de Usuario *</label>
-                        <select name="rol" required>
+                        <select name="rol" id="selector-rol" onchange="aplicacion.mostrarCampoPlaca()" required>
                             <option value="">Selecciona tu rol</option>
                             <option value="cliente">Cliente</option>
                             <option value="tecnico">Técnico</option>
                             <option value="domiciliario">Domiciliario</option>
                         </select>
+                    </div>
+
+                    <div class="grupo-formulario" id="campo-placa" style="display: none;">
+                        <label>Placa del Vehículo *</label>
+                        <input type="text" name="placa" placeholder="ABC-1234" maxlength="8">
                     </div>
 
                     <div class="grupo-formulario">

@@ -1,3 +1,4 @@
+using SkyHelp.Models;
 namespace SkyHelp.Repositories.Interfaces
 {
     public interface IPedidosRepository

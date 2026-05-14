@@ -30,3 +30,20 @@ AplicacionSkyHelp.prototype.mostrarToast = function(mensaje, tipo = 'exito') {
     toast.className = `toast toast-${tipo}`;
     setTimeout(() => toast.classList.add('oculto'), 3000);
 };
+
+AplicacionSkyHelp.prototype.mostrarConfirmacion = function(mensaje, titulo = '¿Confirmar?', onConfirmar, onCancelar) {
+    const contenido = `
+        <div class="modal-encabezado">
+            <h3>${titulo}</h3>
+            <button class="btn-cerrar-modal" onclick="aplicacion.cerrarModal()">✕</button>
+        </div>
+        <div class="modal-cuerpo" style="text-align: center; padding: 2rem;">
+            <p style="font-size: 1rem; color: var(--gris-700); margin-bottom: 2rem;">${mensaje}</p>
+        </div>
+        <div class="modal-pie" style="justify-content: center; gap: 1rem;">
+            <button class="btn btn-secundario" onclick="aplicacion.cerrarModal(); ${onCancelar ? onCancelar : ''}">Cancelar</button>
+            <button class="btn btn-primario" onclick="aplicacion.cerrarModal(); ${onConfirmar}">Confirmar</button>
+        </div>
+    `;
+    this.abrirModal(contenido);
+};

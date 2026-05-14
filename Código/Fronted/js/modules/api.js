@@ -97,11 +97,14 @@ const Api = {
         if (rol === 'Tecnico')       return this.get('/tickets/ObtenerTicketsAsignadosTecnico');
         return this.get('/tickets/ObtenerMisTickets');
     },
+    getTicketsPorDomiciliario(idDomiciliario) { return this.get(`/tickets/ObtenerTicketsAsignadosDomiciliario?idDomiciliario=${idDomiciliario}`); },
     crearTicket(ticket)           { return this.post('/tickets/CrearTicket', ticket); },
     actualizarTicket(ticket)      { return this.put('/tickets/ActualizarTicket', ticket); },
+    actualizarEstadoTicket(idTicket, idEstado) { return this.put('/tickets/ActualizarEstadoTicket', { idTicket, idEstado }); },
 
     // Usuarios
     getUsuarios()                 { return this.get('/usuarios/ObtenerUsuarios'); },
+    getNombreUsuarioPorId(id)     { return this.get(`/usuarios/ObtenerNombrePorId?id=${id}`); },
     crearUsuario(usuario)         { return this.post('/usuarios/CrearUsuario', usuario); },
     actualizarUsuario(usuario)    { return this.put('/usuarios/ActualizarUsuario', usuario); },
     eliminarUsuario(id)           { return this.delete(`/usuarios/EliminarUsuario?ID=${id}`); },
@@ -114,4 +117,11 @@ const Api = {
 
     // Domiciliarios
     getDomiciliarios()            { return this.get('/domiciliarios/ObtenerDomiciliarios'); },
+    getDomiciliarioActual()       { return this.get('/domiciliarios/ObtenerDomiciliarioActual'); },
+    crearDomiciliario(domiciliario) { return this.post('/domiciliarios/CrearDomiciliario', domiciliario); },
+
+    // Cambios de perfil
+    cambiarNombre(data)           { return this.put('/usuarios/CambiarNombre', data); },
+    cambiarCorreo(data)           { return this.put('/usuarios/CambiarCorreo', data); },
+    cambiarContrasena(data)       { return this.put('/usuarios/CambiarContrasena', data); },
 };

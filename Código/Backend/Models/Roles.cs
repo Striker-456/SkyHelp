@@ -11,9 +11,9 @@ namespace SkyHelp.Models
         public Guid IDRol { get; set; } = Guid.NewGuid(); // Llave primaria
         [Required]
         [StringLength(50)]  
-        public string NombreRol { get; set; }   
+        public required string NombreRol { get; set; }   
         [StringLength(200)]
-        public string Descripcion { get; set; }
+        public required string Descripcion { get; set; }
         [JsonIgnore]
         public ICollection<Usuarios>? Usuario { get; set; }// Relación uno a muchos con Usuarios
     }

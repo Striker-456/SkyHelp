@@ -1,6 +1,5 @@
 ﻿using SkyHelp;
 using Microsoft.EntityFrameworkCore;
-using SkyHelp;
 using SkyHelp.Models;
 
 namespace SkyHelp.Context
@@ -99,12 +98,13 @@ namespace SkyHelp.Context
                 entity.Property(e => e.EstadoActividad).IsRequired().HasMaxLength(20);
                 entity.Property(e => e.PlacaVehiculo).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.IDUsuario).IsRequired();
-                entity.HasOne(e => e.Usuario)
-                .WithMany(t => t.Domiciliarios)
-                .HasForeignKey(e => e.IDUsuario);
-                entity.ToTable("Domiciliarios");
-            });
+             entity.HasOne(e => e.Usuario)
+        .WithMany(t => t.Domiciliarios)
+        .HasForeignKey(e => e.IDUsuario)
+        .OnDelete(DeleteBehavior.Cascade); 
 
+    entity.ToTable("Domiciliarios");
+});
             //Configuracion de la entidada Reportes 
             modelBuilder.Entity<Reportes>(entity =>
             {
@@ -229,7 +229,8 @@ namespace SkyHelp.Context
                 // RELACIÓN: Tickets -> Tecnicos
                 entity.HasOne(e => e.Tecnico)
                       .WithMany(t => t.Tickets)
-                      .HasForeignKey(e => e.IdTecnico);
+                      .HasForeignKey(e => e.IdTecnico)
+                      .IsRequired(false);
                 // RELACIÓN: Tickets -> Domiciliarios
                 entity.HasOne(e => e.Domiciliario)
                       .WithMany(d => d.Tickets)

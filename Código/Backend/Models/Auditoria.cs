@@ -15,15 +15,15 @@ namespace SkyHelp.Models
         public Guid IDUsuario { get; set; }
         [Required]
         [StringLength(50)]
-        public string TipoEvento { get; set; }
+        public required string TipoEvento { get; set; }
         [Required]
         [StringLength(50)]
-        public string TablaAfectada { get; set; }
+        public required string TablaAfectada { get; set; }
         [Required]
         public Guid IDRegistro { get; set; } = Guid.NewGuid();
         [Required]
         [StringLength(50)]
-        public string Descripcion { get; set; }
+        public required string Descripcion { get; set; }
         [Required]
         public DateTime FechaEvento { get; set; }
         [JsonIgnore]

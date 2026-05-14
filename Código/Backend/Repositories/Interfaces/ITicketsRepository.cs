@@ -7,9 +7,12 @@ namespace SkyHelp.Repositories.Interfaces
         Task<List<Tickets>> ObtenerTickets();
         Task<List<Tickets>> ObtenerTicketsPorUsuario(Guid idUsuario);
         Task<List<Tickets>> ObtenerTicketsPorTecnico(Guid idTecnico);
+        Task<List<Tickets>> ObtenerTicketsPorDomiciliario(Guid idDomiciliario);
         Task<Tickets> ObtenerTicketPorId(Guid id);
         Task<bool> CrearTicket(Tickets ticket);
         Task<bool> ActualizarTicket(Tickets ticket);
+        Task<bool> ActualizarDomiciliarioTicket(Guid idTicket, Guid? idDomiciliario);
+        Task<bool> ActualizarEstadoTicket(Guid idTicket, Guid idEstado);
         Task<bool> EliminarTicket(Guid id);
 
     }

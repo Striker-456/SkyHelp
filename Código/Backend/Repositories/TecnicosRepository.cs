@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SkyHelp.Context;
 using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
-using SkyHelp.Repositories.Interfaces.SkyHelp.Repositories.Interfaces;
+
 
 namespace SkyHelp.Repositories
 {

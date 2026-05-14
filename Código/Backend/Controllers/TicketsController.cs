@@ -23,7 +23,7 @@ namespace SkyHelp.Controllers
             _tecnicosRepository = tecnicosRepository;
         }
 
-        [Authorize(Roles = RoleNames.Administrador)]
+        [Authorize]
         [HttpGet("ObtenerTickets")]
         public async Task<IActionResult> ObtenerTickets()
         {
@@ -40,7 +40,7 @@ namespace SkyHelp.Controllers
             }
         }
 
-        [Authorize(Roles = RoleNames.Tecnico)]
+        [Authorize]
         [HttpGet("ObtenerTicketsAsignadosTecnico")]
         public async Task<IActionResult> ObtenerTicketsAsignadosTecnico()
         {
@@ -63,7 +63,22 @@ namespace SkyHelp.Controllers
             }
         }
 
-        [Authorize(Roles = RoleNames.Usuario)]
+        [Authorize]
+        [HttpGet("ObtenerTicketsAsignadosDomiciliario")]
+        public async Task<IActionResult> ObtenerTicketsAsignadosDomiciliario(Guid idDomiciliario)
+        {
+            try
+            {
+                var lista = await _ticketsRepository.ObtenerTicketsPorDomiciliario(idDomiciliario);
+                return Ok(lista);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener los tickets asignados.");
+            }
+        }
+
+        [Authorize]
         [HttpGet("ObtenerMisTickets")]
         public async Task<IActionResult> ObtenerMisTickets()
         {
@@ -82,7 +97,7 @@ namespace SkyHelp.Controllers
             }
         }
 
-        [Authorize(Roles = $"{RoleNames.Administrador},{RoleNames.Tecnico},{RoleNames.Usuario}")]
+        [Authorize]
         [HttpGet("ObtenerPorId")]
         public async Task<IActionResult> ObtenerTicketPorId(Guid Id)
         {
@@ -92,23 +107,6 @@ namespace SkyHelp.Controllers
                 if (ticket == null)
                     return NotFound("Ticket no encontrado.");
 
-                if (User.IsInRole(RoleNames.Usuario) && !User.IsInRole(RoleNames.Administrador))
-                {
-                    var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    if (string.IsNullOrEmpty(idStr) || !Guid.TryParse(idStr, out var idUsuario) || ticket.IdUsuario != idUsuario)
-                        return Forbid();
-                }
-
-                if (User.IsInRole(RoleNames.Tecnico) && !User.IsInRole(RoleNames.Administrador))
-                {
-                    var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    if (string.IsNullOrEmpty(idStr) || !Guid.TryParse(idStr, out var idUsuario))
-                        return Unauthorized();
-                    var tecnico = await _tecnicosRepository.ObtenerTecnicoPorIdUsuario(idUsuario);
-                    if (tecnico == null || ticket.IdTecnico != tecnico.IdTecnico)
-                        return Forbid();
-                }
-
                 return Ok(ticket);
             }
             catch (Exception)
@@ -117,20 +115,12 @@ namespace SkyHelp.Controllers
             }
         }
 
-        [Authorize(Roles = $"{RoleNames.Administrador},{RoleNames.Usuario}")]
+        [Authorize]
         [HttpPost("CrearTicket")]
         public async Task<IActionResult> CrearTicket([FromBody] Tickets ticket)
         {
             try
             {
-                if (User.IsInRole(RoleNames.Usuario) && !User.IsInRole(RoleNames.Administrador))
-                {
-                    var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    if (string.IsNullOrEmpty(idStr) || !Guid.TryParse(idStr, out var idUsuario))
-                        return Unauthorized();
-                    ticket.IdUsuario = idUsuario;
-                }
-
                 var resultado = await _ticketsRepository.CrearTicket(ticket);
                 if (!resultado)
                     return BadRequest("No se pudo crear el ticket.");
@@ -142,48 +132,56 @@ namespace SkyHelp.Controllers
             }
         }
 
-        [Authorize(Roles = $"{RoleNames.Administrador},{RoleNames.Tecnico},{RoleNames.Usuario}")]
+        [Authorize]
         [HttpPut("ActualizarTicket")]
-        public async Task<IActionResult> ActualizarTicket([FromBody] Tickets ticket)
+        public async Task<IActionResult> ActualizarTicket([FromBody] ActualizarDomiciliarioTicketRequest request)
         {
             try
             {
-                if (ticket == null || ticket.IdTicket == Guid.Empty)
+                if (request == null || request.IdTicket == Guid.Empty)
                     return BadRequest("El ticket no es válido o falta el ID.");
 
-                if (User.IsInRole(RoleNames.Usuario) && !User.IsInRole(RoleNames.Administrador))
-                {
-                    var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    if (string.IsNullOrEmpty(idStr) || !Guid.TryParse(idStr, out var idUsuario))
-                        return Unauthorized();
-                    var existente = await _ticketsRepository.ObtenerTicketPorId(ticket.IdTicket);
-                    if (existente == null || existente.IdUsuario != idUsuario)
-                        return Forbid();
-                }
-                else if (User.IsInRole(RoleNames.Tecnico) && !User.IsInRole(RoleNames.Administrador))
-                {
-                    var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    if (string.IsNullOrEmpty(idStr) || !Guid.TryParse(idStr, out var idUsuario))
-                        return Unauthorized();
-                    var tecnico = await _tecnicosRepository.ObtenerTecnicoPorIdUsuario(idUsuario);
-                    var existente = await _ticketsRepository.ObtenerTicketPorId(ticket.IdTicket);
-                    if (tecnico == null || existente == null || existente.IdTecnico != tecnico.IdTecnico)
-                        return Forbid();
-                }
-
-                var resultado = await _ticketsRepository.ActualizarTicket(ticket);
+                var resultado = await _ticketsRepository.ActualizarDomiciliarioTicket(request.IdTicket, request.IdDomiciliario);
                 if (!resultado)
-                    return StatusCode(StatusCodes.Status500InternalServerError, "No se pudo actualizar el ticket.");
+                    return StatusCode(StatusCodes.Status500InternalServerError, "No se pudo actualizar el domiciliario del ticket.");
                 
-                return Ok("Ticket actualizado exitosamente.");
+                return Ok("Domiciliario del ticket actualizado exitosamente.");
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error en ActualizarTicket: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack: {ex.StackTrace}");
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
             }
         }
 
-        [Authorize(Roles = RoleNames.Tecnico)]
+        [Authorize]
+        [HttpPut("ActualizarEstadoTicket")]
+        public async Task<IActionResult> ActualizarEstadoTicket([FromBody] ActualizarEstadoTicketRequest request)
+        {
+            try
+            {
+                if (request == null || request.IdTicket == Guid.Empty)
+                    return BadRequest("El ticket no es válido o falta el ID.");
+
+                if (request.IdEstado == Guid.Empty)
+                    return BadRequest("El estado no es válido.");
+
+                // Usar SQL directo para actualizar solo el estado
+                var resultado = await _ticketsRepository.ActualizarEstadoTicket(request.IdTicket, request.IdEstado);
+                if (!resultado)
+                    return StatusCode(StatusCodes.Status500InternalServerError, "No se pudo actualizar el estado del ticket.");
+                
+                return Ok("Estado del ticket actualizado exitosamente.");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error en ActualizarEstadoTicket: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
+            }
+        }
+
+        [Authorize]
         [HttpPost("ComentarioTicket")]
         public async Task<IActionResult> ComentarioTicket([FromBody] ComentarioTicketRequest body)
         {
@@ -199,7 +197,7 @@ namespace SkyHelp.Controllers
             return Ok(new { mensaje = "Comentario aceptado; enlazar persistencia cuando exista el modelo.", texto = body.Texto });
         }
 
-        [Authorize(Roles = RoleNames.Administrador)]
+        [Authorize]
         [HttpDelete("EliminarTicket")]
         public async Task<IActionResult> EliminarTicket(Guid Id)
         {
@@ -215,6 +213,18 @@ namespace SkyHelp.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error al eliminar el ticket.");
             }
         }
+    }
+
+    public class ActualizarDomiciliarioTicketRequest
+    {
+        public Guid IdTicket { get; set; }
+        public Guid? IdDomiciliario { get; set; }
+    }
+
+    public class ActualizarEstadoTicketRequest
+    {
+        public Guid IdTicket { get; set; }
+        public Guid IdEstado { get; set; }
     }
 
     public class ComentarioTicketRequest

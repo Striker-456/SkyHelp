@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SkyHelp.Repositories;
 using SkyHelp.Repositories.Interfaces;
-using SkyHelp.Repositories.Interfaces.SkyHelp.Repositories.Interfaces;
 using System.Net.Security;
 
 namespace SkyHelp.Context

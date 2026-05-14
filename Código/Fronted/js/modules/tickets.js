@@ -4,19 +4,21 @@
 AplicacionSkyHelp.prototype.obtenerContenidoTickets = async function() {
     try {
         const rol = this.usuarioActual.rol;
-        const promesas = [Api.getTickets(), Api.getEstadosTickets(), Api.getTecnicos()];
-
-        // Solo admin puede ver todos los usuarios
-        if (rol === 'administrador') {
-            promesas.push(Api.getUsuarios());
-        }
+        const promesas = [
+            Api.getTickets(), 
+            Api.getEstadosTickets(), 
+            Api.getTecnicos().catch(() => []),
+            Api.getUsuarios().catch(() => []),
+            Api.getDomiciliarios().catch(() => [])
+        ];
 
         const resultados = await Promise.allSettled(promesas);
 
         datosSkyHelp.tickets  = resultados[0].status === 'fulfilled' ? (resultados[0].value || []) : [];
         datosSkyHelp.estados  = resultados[1].status === 'fulfilled' ? (resultados[1].value || []) : [];
         datosSkyHelp.tecnicos = resultados[2].status === 'fulfilled' ? (resultados[2].value || []) : [];
-        datosSkyHelp.usuarios = resultados[3]?.status === 'fulfilled' ? (resultados[3].value || []) : [];
+        datosSkyHelp.usuarios = resultados[3].status === 'fulfilled' ? (resultados[3].value || []) : [];
+        datosSkyHelp.domiciliarios = resultados[4].status === 'fulfilled' ? (resultados[4].value || []) : [];
     } catch (e) {
         datosSkyHelp.tickets = [];
         this.mostrarToast('Error al cargar tickets: ' + e.message, 'error');
@@ -79,9 +81,15 @@ AplicacionSkyHelp.prototype.renderizarFilasTickets = function(tickets) {
         // Si es el usuario actual, usar nombre de sesión
         const miId = this.usuarioActual.id || sessionStorage.getItem('skyhelp_id');
         if (idUsuario === miId) return this.usuarioActual.nombre;
+        
+        // Buscar en la lista de usuarios cargada
         const u = (datosSkyHelp.usuarios || []).find(u => u.idUsuario === idUsuario);
-        if (u) return u.nombreCompleto || u.nombreUsuarios || u.correo;
-        // Para técnicos que no tienen lista de usuarios, mostrar ID corto
+        if (u) {
+            // Priorizar nombreCompleto sobre correo (soportar ambas variantes de case)
+            return u.nombreCompleto || u.NombreCompleto || u.nombreUsuarios || u.NombreUsuarios || u.correo || u.Correo;
+        }
+        
+        // Si no está en la lista, retornar ID corto
         return idUsuario ? `Cliente ${idUsuario.substring(0,6)}` : '—';
     };
 
@@ -89,7 +97,6 @@ AplicacionSkyHelp.prototype.renderizarFilasTickets = function(tickets) {
         if (!idTecnico) return 'Sin asignar';
         const t = (datosSkyHelp.tecnicos || []).find(t => t.idTecnico === idTecnico);
         if (!t) return 'Sin asignar';
-        // El DTO de técnicos ya trae nombreCompleto directamente
         return t.nombreCompleto || getNombre(t.idUsuario);
     };
 
@@ -107,6 +114,9 @@ AplicacionSkyHelp.prototype.renderizarFilasTickets = function(tickets) {
         const estado = getEstado(ticket.idEstado);
         const cliente = getNombre(ticket.idUsuario);
         const tecnico = getTecnico(ticket.idTecnico);
+        const esResuelto = estado.toLowerCase().includes('resuel');
+        const puedeResolver = (this.usuarioActual.rol === 'tecnico' || this.usuarioActual.rol === 'administrador') && !esResuelto;
+        
         return `
         <tr>
             <td><strong>${numero}</strong></td>
@@ -120,6 +130,7 @@ AplicacionSkyHelp.prototype.renderizarFilasTickets = function(tickets) {
                 <div class="acciones-ticket">
                     <button class="btn btn-primario" style="padding:0.5rem 1rem;font-size:0.8125rem;" onclick="aplicacion.verDetalleTicket('${id}')">Ver</button>
                     ${this.usuarioActual.rol !== 'usuario' ? `<button class="btn btn-secundario" style="padding:0.5rem 1rem;font-size:0.8125rem;" onclick="aplicacion.mostrarModalEditarTicket('${id}')">Editar</button>` : ''}
+                    ${puedeResolver ? `<button class="btn btn-exito" style="padding:0.5rem 1rem;font-size:0.8125rem;background-color:#10b981;color:white;border:none;" onclick="aplicacion.resolverTicket('${id}')">Resolver</button>` : ''}
                 </div>
             </td>
         </tr>`;
@@ -135,18 +146,50 @@ AplicacionSkyHelp.prototype.filtrarTickets = function() {
     const filtroPrioridad = document.getElementById('filtro-prioridad')?.value || 'todos';
 
     const estados = datosSkyHelp.estados || [];
+    const usuarios = datosSkyHelp.usuarios || [];
+    const tecnicos = datosSkyHelp.tecnicos || [];
+
     const getEstadoNombre = (idEstado) => {
         const e = estados.find(e => e.idEstado === idEstado);
         return e ? e.nombreEstado : '';
     };
 
+    const getNombre = (idUsuario) => {
+        const miId = this.usuarioActual.id || sessionStorage.getItem('skyhelp_id');
+        if (idUsuario === miId) return this.usuarioActual.nombre;
+        const u = usuarios.find(u => u.idUsuario === idUsuario);
+        if (u) {
+            return u.nombreCompleto || u.NombreCompleto || u.nombreUsuarios || u.NombreUsuarios || u.correo || u.Correo;
+        }
+        return idUsuario ? `Cliente ${idUsuario.substring(0,6)}` : '—';
+    };
+
+    const getTecnico = (idTecnico) => {
+        if (!idTecnico) return 'Sin asignar';
+        const t = tecnicos.find(t => t.idTecnico === idTecnico);
+        if (!t) return 'Sin asignar';
+        return t.nombreCompleto || getNombre(t.idUsuario);
+    };
+
     const filtrados = datosSkyHelp.tickets.filter(ticket => {
         const estadoNombre = getEstadoNombre(ticket.idEstado);
-        const coincideBusqueda = (ticket.idTicket || '').toLowerCase().includes(terminoBusqueda) ||
+        const nombreCliente = getNombre(ticket.idUsuario);
+        const nombreTecnico = getTecnico(ticket.idTecnico);
+        const numeroTicket = ticket.numeroTicket ? `#${ticket.numeroTicket}` : '';
+
+        // Buscar en múltiples campos
+        const coincideBusqueda = terminoBusqueda === '' || 
+                                 (ticket.numeroTicket && ticket.numeroTicket.toString().includes(terminoBusqueda)) ||
+                                 (ticket.idTicket || '').toLowerCase().includes(terminoBusqueda) ||
                                  (ticket.categoria || '').toLowerCase().includes(terminoBusqueda) ||
-                                 (ticket.descripcion || '').toLowerCase().includes(terminoBusqueda);
+                                 (ticket.descripcion || '').toLowerCase().includes(terminoBusqueda) ||
+                                 nombreCliente.toLowerCase().includes(terminoBusqueda) ||
+                                 nombreTecnico.toLowerCase().includes(terminoBusqueda) ||
+                                 (ticket.prioridad || '').toLowerCase().includes(terminoBusqueda);
+
         const coincideEstado    = filtroEstado === 'todos' || estadoNombre === filtroEstado;
         const coincidePrioridad = filtroPrioridad === 'todos' || ticket.prioridad === filtroPrioridad;
+        
         return coincideBusqueda && coincideEstado && coincidePrioridad;
     });
 
@@ -156,7 +199,7 @@ AplicacionSkyHelp.prototype.filtrarTickets = function() {
     }
 };
 
-AplicacionSkyHelp.prototype.verDetalleTicket = function(id) {
+AplicacionSkyHelp.prototype.verDetalleTicket = async function(id) {
     const ticket = datosSkyHelp.tickets.find(t => (t.idTicket || t.id) === id);
     if (!ticket) return;
 
@@ -164,16 +207,39 @@ AplicacionSkyHelp.prototype.verDetalleTicket = function(id) {
     const estadoObj = estados.find(e => e.idEstado === ticket.idEstado);
     const estadoNombre = estadoObj ? estadoObj.nombreEstado : '';
 
-    const tecnicos = datosSkyHelp.tecnicos || [];
-    const usuarios = datosSkyHelp.usuarios || [];
+    let tecnicos = datosSkyHelp.tecnicos || [];
+    let usuarios = datosSkyHelp.usuarios || [];
+    let domiciliarios = datosSkyHelp.domiciliarios || [];
+    
+    // Si no hay técnicos o domiciliarios cargados, cargarlos ahora
+    if (!tecnicos.length || !domiciliarios.length) {
+        try {
+            const resultados = await Promise.allSettled([
+                tecnicos.length ? Promise.resolve(tecnicos) : Api.getTecnicos().catch(() => []),
+                domiciliarios.length ? Promise.resolve(domiciliarios) : Api.getDomiciliarios().catch(() => [])
+            ]);
+            tecnicos = resultados[0].status === 'fulfilled' ? (resultados[0].value || []) : [];
+            domiciliarios = resultados[1].status === 'fulfilled' ? (resultados[1].value || []) : [];
+            
+            // Guardar en cache global
+            datosSkyHelp.tecnicos = tecnicos;
+            datosSkyHelp.domiciliarios = domiciliarios;
+        } catch(e) {
+            console.error('Error cargando técnicos y domiciliarios:', e);
+        }
+    }
+    
     const tecnicoObj = tecnicos.find(t => t.idTecnico === ticket.idTecnico);
+    const domiciliarioObj = domiciliarios.find(d => d.idDomiciliario === ticket.idDomiciliario);
+    
     const getNombre = (idUsuario) => {
         const miId = this.usuarioActual.id || sessionStorage.getItem('skyhelp_id');
         if (idUsuario === miId) return this.usuarioActual.nombre;
         const u = usuarios.find(u => u.idUsuario === idUsuario);
-        return u ? (u.nombreCompleto || u.nombreUsuarios) : '—';
+        return u ? (u.nombreCompleto || u.NombreCompleto || u.nombreUsuarios || u.NombreUsuarios) : '—';
     };
-    const tecnicoNombre = tecnicoObj ? (tecnicoObj.nombreCompleto || getNombre(tecnicoObj.idUsuario)) : 'Sin asignar';
+    const tecnicoNombre = tecnicoObj ? (tecnicoObj.NombreCompleto || tecnicoObj.nombreCompleto || getNombre(tecnicoObj.idUsuario)) : 'Sin asignar';
+    const domiciliarioNombre = domiciliarioObj ? (domiciliarioObj.NombreCompleto || domiciliarioObj.nombreCompleto) : 'Sin asignar';
     const clienteNombre = getNombre(ticket.idUsuario) || '—';
 
     const fecha = ticket.fechaCreacion ? new Date(ticket.fechaCreacion).toLocaleDateString() : '—';
@@ -237,6 +303,10 @@ AplicacionSkyHelp.prototype.verDetalleTicket = function(id) {
                     <div class="valor">${tecnicoNombre}</div>
                 </div>
                 <div class="info-ticket-item">
+                    <div class="etiqueta">DOMICILIARIO ASIGNADO</div>
+                    <div class="valor">${domiciliarioNombre}</div>
+                </div>
+                <div class="info-ticket-item">
                     <div class="etiqueta">FECHA DE CREACIÓN</div>
                     <div class="valor">${fecha}</div>
                 </div>
@@ -275,7 +345,7 @@ AplicacionSkyHelp.prototype.mostrarModalNuevoTicket = async function() {
 
     const getNombre = (idUsuario) => {
         const u = usuarios.find(u => u.idUsuario === idUsuario);
-        return u ? (u.nombreCompleto || u.nombreUsuarios) : 'Técnico';
+        return u ? (u.nombreCompleto || u.NombreCompleto || u.nombreUsuarios || u.NombreUsuarios) : 'Técnico';
     };
 
     const opcionesTecnicos = `<option value="">Sin asignar</option>` +
@@ -471,7 +541,7 @@ AplicacionSkyHelp.prototype.mostrarModalEditarTicket = async function(id) {
 
     const getNombreUsuario = (idUsuario) => {
         const u = usuarios.find(u => u.idUsuario === idUsuario);
-        return u ? (u.nombreCompleto || u.nombreUsuarios) : '';
+        return u ? (u.nombreCompleto || u.NombreCompleto || u.nombreUsuarios || u.NombreUsuarios) : '';
     };
 
     const prioridades = ['Baja', 'Media', 'Alta', 'Crítica'];
@@ -485,7 +555,10 @@ AplicacionSkyHelp.prototype.mostrarModalEditarTicket = async function(id) {
         tecnicos.map(t => `<option value="${t.idTecnico}" ${t.idTecnico === ticket.idTecnico ? 'selected' : ''}>${t.nombreCompleto || getNombreUsuario(t.idUsuario)}</option>`).join('');
 
     const opcionesDomiciliarios = `<option value="">Sin asignar</option>` +
-        domiciliarios.map(d => `<option value="${d.idDomiciliario}" ${d.idDomiciliario === ticket.idDomiciliario ? 'selected' : ''}>${d.nombreCompleto || d.email || ''}</option>`).join('');
+        domiciliarios.map(d => {
+            const idDomiTicket = ticket.idDomiciliario || ticket.IdDomiciliario;
+            return `<option value="${d.idDomiciliario}" ${d.idDomiciliario === idDomiTicket ? 'selected' : ''}>${d.nombreCompleto || d.email || ''}</option>`;
+        }).join('');
 
     const numeroDisplay = ticket.numeroTicket ? `#${ticket.numeroTicket}` : id.substring(0,8) + '...';
     const esTecnico = this.usuarioActual.rol === 'tecnico';
@@ -555,32 +628,84 @@ AplicacionSkyHelp.prototype.guardarEdicionTicket = async function(evento, id) {
         return;
     }
 
-    const idEstadoSeleccionado = datos.get('idEstado');
-    if (!idEstadoSeleccionado) {
-        this.mostrarToast('Error: El estado es requerido', 'error');
-        return;
-    }
+    // Obtener el domiciliario del formulario
+    const idDomiciliarioForm = datos.get('idDomiciliario');
 
-    // Enviar TODOS los campos requeridos
-    const ticketActualizado = {
+    // Construir objeto con solo el domiciliario
+    const request = {
         idTicket: id,
-        descripcion: ticket.descripcion,
-        categoria: ticket.categoria,
-        prioridad: ticket.prioridad,
-        idEstado: idEstadoSeleccionado,
-        idTecnico: ticket.idTecnico
+        idDomiciliario: idDomiciliarioForm && idDomiciliarioForm.trim() ? idDomiciliarioForm : null
     };
 
-    console.log('Enviando ticket actualizado:', ticketActualizado);
+    console.log('Enviando actualización de domiciliario:', request);
 
     try {
-        await Api.actualizarTicket(ticketActualizado);
+        await Api.actualizarTicket(request);
         this.cerrarModal();
-        this.mostrarToast(`✅ Ticket actualizado exitosamente`);
+        this.mostrarToast(`✅ Domiciliario asignado exitosamente`);
         if (this.seccionActual === 'tickets') this.cargarContenido('tickets');
         else if (this.seccionActual === 'dashboard') this.cargarContenido('dashboard');
     } catch (e) {
         console.error('Error completo:', e);
         this.mostrarToast('Error al actualizar ticket: ' + e.message, 'error');
+    }
+};
+
+AplicacionSkyHelp.prototype.resolverTicket = async function(id) {
+    const ticket = datosSkyHelp.tickets.find(t => (t.idTicket || t.id) === id);
+    if (!ticket) {
+        this.mostrarToast('Error: Ticket no encontrado', 'error');
+        return;
+    }
+
+    // Mostrar confirmación personalizada
+    this.mostrarConfirmacion(
+        '¿Estás seguro de que deseas marcar este ticket como resuelto?',
+        'Resolver Ticket',
+        `aplicacion.confirmarResolverTicket('${id}')`,
+        ''
+    );
+};
+
+AplicacionSkyHelp.prototype.confirmarResolverTicket = async function(id) {
+    try {
+        // Obtener el estado "Resuelto"
+        let estados = datosSkyHelp.estados || [];
+        if (!estados.length) {
+            estados = await Api.getEstadosTickets() || [];
+        }
+        
+        const estadoResuelto = estados.find(e => e.nombreEstado?.toLowerCase().includes('resuel'));
+        if (!estadoResuelto) {
+            throw new Error('No se encontró el estado Resuelto en la base de datos');
+        }
+
+        const ticket = datosSkyHelp.tickets.find(t => (t.idTicket || t.id) === id);
+        if (!ticket) {
+            throw new Error('Ticket no encontrado');
+        }
+
+        // Actualizar el ticket con el estado resuelto
+        const ticketActualizado = {
+            idTicket: id,
+            descripcion: ticket.descripcion,
+            categoria: ticket.categoria,
+            prioridad: ticket.prioridad,
+            idEstado: estadoResuelto.idEstado,
+            idTecnico: ticket.idTecnico
+        };
+
+        await Api.actualizarTicket(ticketActualizado);
+        this.mostrarToast('✅ Ticket marcado como resuelto');
+        
+        // Recargar la lista de tickets
+        if (this.seccionActual === 'tickets') {
+            this.cargarContenido('tickets');
+        } else if (this.seccionActual === 'dashboard') {
+            this.cargarContenido('dashboard');
+        }
+    } catch (e) {
+        console.error('Error al resolver ticket:', e);
+        this.mostrarToast('Error al resolver ticket: ' + e.message, 'error');
     }
 };

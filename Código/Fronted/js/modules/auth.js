@@ -50,6 +50,8 @@ AplicacionSkyHelp.prototype.manejarRegistro = async function(evento) {
     const rolNombre = datos.get('rol');
     const contrasena = datos.get('contrasena');
     const confirmarContrasena = datos.get('confirmarContrasena');
+    const placa = datos.get('placa');
+    const telefono = datos.get('telefono');
 
     if (contrasena !== confirmarContrasena) {
         alert('Las contraseñas no coinciden');
@@ -61,6 +63,11 @@ AplicacionSkyHelp.prototype.manejarRegistro = async function(evento) {
         return;
     }
 
+    if (rolNombre === 'domiciliario' && !placa) {
+        alert('Por favor ingresa la placa del vehículo');
+        return;
+    }
+
     this.mostrarCarga();
 
     try {
@@ -69,14 +76,16 @@ AplicacionSkyHelp.prototype.manejarRegistro = async function(evento) {
         const rol = roles.find(r => normalizarTexto(r.nombreRol) === normalizarTexto(rolNombre));
         if (!rol) throw new Error('Rol no encontrado: ' + rolNombre);
 
-        await Api.crearUsuario({
+        const nuevoUsuario = {
             nombreUsuarios: nombre.split(' ')[0],
             nombreCompleto: nombre,
             correo,
             contrasena,
             idRol: rol.idRol,
             estadoCuenta: 'Activo'
-        });
+        };
+
+        await Api.crearUsuario(nuevoUsuario);
 
         // Iniciar sesión automáticamente tras registro
         const respuesta = await Api.login(correo, contrasena);
@@ -86,14 +95,35 @@ AplicacionSkyHelp.prototype.manejarRegistro = async function(evento) {
         const nombreSesion = payloadReg['nombreCompleto']
             || payloadReg['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] 
             || correo;
+        const idUsuario = payloadReg['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || '';
 
         Api.guardarSesion(respuesta.token, respuesta.role, nombreSesion, correo);
+        sessionStorage.setItem('skyhelp_id', idUsuario);
+
+        // Si es domiciliario, crear el registro en la tabla de domiciliarios
+        if (rolNombre === 'domiciliario') {
+            try {
+                const domiciliario = {
+                    nombreCompleto: nombre,
+                    telefono: telefono || '',
+                    email: correo,
+                    placaVehiculo: placa.toUpperCase(),
+                    estadoActividad: 'Activo',
+                    IDUsuario: idUsuario
+                };
+                await Api.crearDomiciliario(domiciliario);
+            } catch (error) {
+                console.error('Error al crear domiciliario:', error);
+                // No detener el flujo si falla la creación del domiciliario
+            }
+        }
 
         this.usuarioActual = {
             correo,
             nombre: nombreSesion,
             rol: respuesta.role.toLowerCase(),
-            token: respuesta.token
+            token: respuesta.token,
+            id: idUsuario
         };
 
         this.ocultarCarga();
@@ -125,4 +155,33 @@ AplicacionSkyHelp.prototype.restaurarSesion = function() {
         return true;
     }
     return false;
+};
+
+// Mostrar/ocultar campo de placa según el rol seleccionado
+AplicacionSkyHelp.prototype.mostrarCampoPlaca = function() {
+    console.log('mostrarCampoPlaca ejecutada');
+    const selectorRol = document.getElementById('selector-rol');
+    const campoPlaca = document.getElementById('campo-placa');
+    
+    console.log('selectorRol:', selectorRol);
+    console.log('campoPlaca:', campoPlaca);
+    console.log('valor del rol:', selectorRol?.value);
+    
+    if (!campoPlaca) {
+        console.error('No se encontró el elemento campo-placa');
+        return;
+    }
+    
+    const inputPlaca = campoPlaca.querySelector('input[name="placa"]');
+    
+    if (selectorRol.value === 'domiciliario') {
+        console.log('Mostrando campo de placa');
+        campoPlaca.style.display = 'block';
+        inputPlaca.required = true;
+    } else {
+        console.log('Ocultando campo de placa');
+        campoPlaca.style.display = 'none';
+        inputPlaca.required = false;
+        inputPlaca.value = '';
+    }
 };

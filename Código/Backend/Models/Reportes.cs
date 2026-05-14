@@ -11,13 +11,13 @@ namespace SkyHelp.Models
         public Guid IdReporte { get; set; } = Guid.NewGuid();
         [Required]
         [StringLength(50)]
-        public string Titulo { get; set; }
+        public required string Titulo { get; set; }
         [Required]
         [StringLength(500)]
-        public string Descripcion { get; set; }
+        public required string Descripcion { get; set; }
         [Required]
         [StringLength(50)]
-        public string TipoReporte { get; set; }
+        public required string TipoReporte { get; set; }
         [Required]
         public DateTime? FechaGeneracion { get; set; } = DateTime.Now;
         [Required]
@@ -27,7 +27,7 @@ namespace SkyHelp.Models
         public Guid IdOrigen { get; set; } = Guid.NewGuid();
         [Required]  
 
-        public String OrigenTabla { get; set; }
+        public required String OrigenTabla { get; set; }
         [JsonIgnore]
         public virtual Usuarios? Usuario { get; set; }
 

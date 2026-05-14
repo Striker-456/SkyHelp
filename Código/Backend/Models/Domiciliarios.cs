@@ -12,18 +12,18 @@ namespace SkyHelp
         public Guid IdDomiciliario { get; set; }
         [Required]
         [StringLength(50)]
-        public string NombreCompleto { get; set; }
+        public required string NombreCompleto { get; set; }
         [Required]
         [StringLength(50)]
-        public string Telefono { get; set; }
+        public required string Telefono { get; set; }
         [Required]
         [StringLength(100)]
-        public string Email { get; set; }
+        public required string Email { get; set; }
         [Required]
         [StringLength(50)]
-        public string PlacaVehiculo { get; set; }
+        public required string PlacaVehiculo { get; set; }
         [Required]
-        public string EstadoActividad { get; set; }
+        public required string EstadoActividad { get; set; }
         public Guid IDUsuario { get; set; }
         [JsonIgnore]
         public virtual Usuarios? Usuario { get; set; }

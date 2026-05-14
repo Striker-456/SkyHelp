@@ -16,11 +16,11 @@ namespace SkyHelp
         public Guid IdDomiciliario { get; set; }
         public DateTime? FechaPedido { get; set; } = DateTime.Now;
         [Required]
-        public string DireccionEntrega { get; set; }
+        public required string DireccionEntrega { get; set; }
         [Required]
-        public string EstadoPedido { get; set; }
+        public required string EstadoPedido { get; set; }
 
-        public string Observaciones  { get; set; }
+        public required string Observaciones  { get; set; }
 
         [JsonIgnore]
         public virtual Usuarios? Usuario { get; set; }

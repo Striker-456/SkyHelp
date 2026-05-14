@@ -41,6 +41,12 @@ class AplicacionSkyHelp {
     
     // Gestión de Vistas
     mostrarVista(nombreVista) {
+        // Si intenta mostrar la landing page pero ya hay sesión activa, redirige al dashboard
+        if (nombreVista === 'inicio' && this.usuarioActual) {
+            this.mostrarApp();
+            return;
+        }
+        
         const vistas = document.querySelectorAll('.vista');
         vistas.forEach(vista => vista.classList.remove('activa'));
         

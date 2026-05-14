@@ -13,13 +13,13 @@ namespace SkyHelp.Models
         public int NumeroTicket { get; set; }
         [Required]
         [StringLength(200)]
-        public string Descripcion { get; set; }
+        public required string Descripcion { get; set; }
         [Required]
         [StringLength(50)]
-        public string Categoria { get; set; }
+        public required string Categoria { get; set; }
         [Required]
         [StringLength(50)]
-        public string Prioridad { get; set; }
+        public required string Prioridad { get; set; }
         [Required]
         public DateTime? FechaCreacion { get; set; } = DateTime.Now;
         [Required]
@@ -29,9 +29,8 @@ namespace SkyHelp.Models
         public Guid IdUsuario { get; set; }
         [ForeignKey("Domiciliario")]
         public Guid? IdDomiciliario { get; set; }
-        [Required]
         [ForeignKey("Tecnico")]
-        public Guid IdTecnico { get; set; }
+        public Guid? IdTecnico { get; set; }
         [JsonIgnore]
         public virtual Usuarios? Usuario { get; set; }
         [JsonIgnore]

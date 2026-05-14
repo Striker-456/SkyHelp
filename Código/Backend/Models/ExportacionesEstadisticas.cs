@@ -11,9 +11,9 @@ namespace SkyHelp
         public Guid IdExportado { get; set; } = Guid.NewGuid();
         [ForeignKey("Estadistica")]
         public Guid IdEstadistica { get; set; }
-        public string ExportadoPor { get; set; }
+        public required string ExportadoPor { get; set; }
         public DateTime? FechaExportacion { get; set; } = DateTime.Now;
-        public string Formato { get; set; }
+        public required string Formato { get; set; }
         [JsonIgnore]
         public virtual Estadisticas? Estadistica { get; set; }
 

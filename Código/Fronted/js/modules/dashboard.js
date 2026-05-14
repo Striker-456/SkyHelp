@@ -134,6 +134,10 @@ AplicacionSkyHelp.prototype.obtenerDashboardCliente = async function() {
     const resueltos = tickets.filter(t => getEstado(t.idEstado).toLowerCase() === 'resuelto').length;
     const ticketActivo = activos[0];
 
+    // Guardar datos en cache global para acceso desde onclick
+    datosSkyHelp.ticketsClienteCache = tickets;
+    datosSkyHelp.estadosCache = estados;
+
     return `
         <div class="deslizar-arriba cli-dashboard">
             <div class="cli-hero">
@@ -154,15 +158,15 @@ AplicacionSkyHelp.prototype.obtenerDashboardCliente = async function() {
             </div>
 
             <div class="cli-stats">
-                <div class="cli-stat cli-stat-azul">
+                <div class="cli-stat cli-stat-azul" onclick="aplicacion.mostrarTicketsClientePorFiltro('total')">
                     <div class="cli-stat-num">${tickets.length}</div>
                     <div class="cli-stat-lbl">Total</div>
                 </div>
-                <div class="cli-stat cli-stat-naranja">
+                <div class="cli-stat cli-stat-naranja" onclick="aplicacion.mostrarTicketsClientePorFiltro('activos')">
                     <div class="cli-stat-num">${activos.length}</div>
                     <div class="cli-stat-lbl">Activos</div>
                 </div>
-                <div class="cli-stat cli-stat-verde">
+                <div class="cli-stat cli-stat-verde" onclick="aplicacion.mostrarTicketsClientePorFiltro('resueltos')">
                     <div class="cli-stat-num">${resueltos}</div>
                     <div class="cli-stat-lbl">Resueltos</div>
                 </div>
@@ -241,16 +245,41 @@ AplicacionSkyHelp.prototype.obtenerDashboardCliente = async function() {
 };
 
 AplicacionSkyHelp.prototype.obtenerDashboardDomiciliario = async function() {
-    let pedidos = [];
+    let tickets = [];
+    let estados = [];
+    let domiciliarioId = null;
+
     try {
-        pedidos = await Api.get('/pedidos/ObtenerPedidos') || [];
+        // Obtener el ID del domiciliario actual
+        const domiciliarioActual = await Api.getDomiciliarioActual();
+        if (domiciliarioActual) {
+            domiciliarioId = domiciliarioActual.idDomiciliario;
+        }
+
+        // Obtener tickets asignados a este domiciliario
+        if (domiciliarioId) {
+            tickets = await Api.getTicketsPorDomiciliario(domiciliarioId) || [];
+        }
+        
+        // Obtener estados
+        estados = await Api.getEstadosTickets() || [];
+        
+        datosSkyHelp.tickets = tickets;
+        datosSkyHelp.estados = estados;
     } catch (e) {
-        pedidos = [];
+        console.error('Error cargando entregas:', e);
+        tickets = [];
+        estados = [];
     }
 
-    const enRuta      = pedidos.filter(p => (p.estado||'').toLowerCase().includes('ruta')).length;
-    const pendientes  = pedidos.filter(p => (p.estado||'').toLowerCase().includes('pendiente')).length;
-    const completadas = pedidos.filter(p => (p.estado||'').toLowerCase().includes('complet')).length;
+    const getEstado = (idEstado) => {
+        const e = estados.find(e => e.idEstado === idEstado);
+        return e ? e.nombreEstado : '';
+    };
+
+    const enRuta      = tickets.filter(t => getEstado(t.idEstado).toLowerCase().includes('ruta')).length;
+    const pendientes  = tickets.filter(t => getEstado(t.idEstado).toLowerCase().includes('pendiente') || getEstado(t.idEstado).toLowerCase().includes('preparacion')).length;
+    const completadas = tickets.filter(t => getEstado(t.idEstado).toLowerCase().includes('resuelto')).length;
 
     return `
         <div class="deslizar-arriba">
@@ -267,7 +296,7 @@ AplicacionSkyHelp.prototype.obtenerDashboardDomiciliario = async function() {
             <div class="dom-stats">
                 <div class="dom-stat dom-stat-azul">
                     <div class="dom-stat-icono">🚚</div>
-                    <div class="dom-stat-num">${pedidos.length}</div>
+                    <div class="dom-stat-num">${tickets.length}</div>
                     <div class="dom-stat-label">Total</div>
                 </div>
                 <div class="dom-stat dom-stat-amarillo">
@@ -292,7 +321,7 @@ AplicacionSkyHelp.prototype.obtenerDashboardDomiciliario = async function() {
                 Entregas Asignadas
             </div>
 
-            ${pedidos.length === 0 ? `
+            ${tickets.length === 0 ? `
                 <div class="cli-sin-tickets">
                     <div style="font-size:3rem;margin-bottom:1rem;">📦</div>
                     <div style="font-weight:700;font-size:1.125rem;color:var(--gris-800);margin-bottom:0.5rem;">Sin entregas asignadas</div>
@@ -300,13 +329,18 @@ AplicacionSkyHelp.prototype.obtenerDashboardDomiciliario = async function() {
                 </div>
             ` : `
                 <div class="dom-lista-entregas">
-                    ${pedidos.map(p => `
+                    ${tickets.map(ticket => `
                         <div class="dom-entrega-card">
-                            <div class="dom-entrega-tipo-badge">📦 Pedido</div>
+                            <div class="dom-entrega-tipo-badge">📦 ${ticket.categoria || 'Entrega'}</div>
                             <div class="dom-entrega-body">
                                 <div class="dom-entrega-top">
-                                    <span class="dom-entrega-equipo">${p.descripcion || p.idPedido || ''}</span>
-                                    <span class="insignia-estado insignia-azul">${p.estado || ''}</span>
+                                    <span class="dom-entrega-equipo">${ticket.descripcion || ticket.idTicket || ''}</span>
+                                    <span class="insignia-estado insignia-azul">${getEstado(ticket.idEstado)}</span>
+                                </div>
+                                <div class="dom-entrega-acciones">
+                                    <button class="btn btn-secundario" onclick="aplicacion.verDetalleTicketDomiciliario('${ticket.idTicket || ticket.id}')">Detalles</button>
+                                    <button class="btn btn-primario" onclick="aplicacion.marcarPreparando('${ticket.idTicket || ticket.id}')">Preparar</button>
+                                    <button class="btn btn-exito" onclick="aplicacion.iniciarRecorrido('${ticket.idTicket || ticket.id}')">Empezar Recorrido</button>
                                 </div>
                             </div>
                         </div>
@@ -315,4 +349,210 @@ AplicacionSkyHelp.prototype.obtenerDashboardDomiciliario = async function() {
             `}
         </div>
     `;
+};
+
+AplicacionSkyHelp.prototype.mostrarTicketsClientePorFiltro = function(filtro) {
+    const tickets = datosSkyHelp.ticketsClienteCache || [];
+    const estados = datosSkyHelp.estadosCache || [];
+    const self = this; // Guardar referencia a 'this'
+
+    const getEstado = (idEstado) => {
+        const e = estados.find(e => e.idEstado === idEstado);
+        return e ? e.nombreEstado : '';
+    };
+
+    let ticketsFiltrados = tickets;
+    let titulo = '';
+
+    if (filtro === 'activos') {
+        ticketsFiltrados = tickets.filter(t => getEstado(t.idEstado).toLowerCase() !== 'resuelto');
+        titulo = 'Tickets Activos';
+    } else if (filtro === 'resueltos') {
+        ticketsFiltrados = tickets.filter(t => getEstado(t.idEstado).toLowerCase() === 'resuelto');
+        titulo = 'Tickets Resueltos';
+    } else {
+        titulo = 'Todos los Tickets';
+    }
+
+    const contenido = `
+        <div class="modal-encabezado">
+            <div>
+                <h3>${titulo}</h3>
+            </div>
+            <button class="btn-cerrar-modal" onclick="aplicacion.cerrarModal()">✕</button>
+        </div>
+        <div class="modal-cuerpo">
+            ${ticketsFiltrados.length === 0 ? `
+                <div style="text-align:center;padding:2rem;color:var(--gris-500);">
+                    <div style="font-size:2rem;margin-bottom:1rem;">📭</div>
+                    <div>No hay tickets en esta categoría</div>
+                </div>
+            ` : `
+                <div class="lista-tickets-modal">
+                    ${ticketsFiltrados.map(ticket => {
+                        const estadoNombre = getEstado(ticket.idEstado);
+                        const claseEstado = self.obtenerClaseInsigniaEstado(estadoNombre);
+                        const clasePrioridad = self.obtenerClaseInsigniaPrioridad(ticket.prioridad);
+                        return `
+                        <div class="ticket-item-modal" onclick="aplicacion.verDetalleTicket('${ticket.idTicket || ticket.id}')">
+                            <div class="ticket-item-header">
+                                <strong>#${(ticket.idTicket || ticket.id || '').substring(0, 8)}</strong>
+                                <span class="insignia-estado ${claseEstado}">${estadoNombre}</span>
+                            </div>
+                            <div class="ticket-item-categoria">${ticket.categoria || ''}</div>
+                            <div class="ticket-item-descripcion">${ticket.descripcion || ''}</div>
+                            <div class="ticket-item-footer">
+                                <span class="insignia-prioridad ${clasePrioridad}">${ticket.prioridad || ''}</span>
+                                <span class="ticket-item-fecha">${new Date(ticket.fechaCreacion).toLocaleDateString('es-ES')}</span>
+                            </div>
+                        </div>
+                    `;
+                    }).join('')}
+                </div>
+            `}
+        </div>
+        <div class="modal-pie">
+            <button class="btn btn-primario" onclick="aplicacion.cerrarModal()">Cerrar</button>
+        </div>
+    `;
+
+    this.abrirModal(contenido, true);
+};
+
+AplicacionSkyHelp.prototype.verDetalleTicketDomiciliario = async function(idTicket) {
+    try {
+        const ticket = await Api.get(`/tickets/ObtenerPorId?Id=${idTicket}`);
+        if (!ticket) {
+            this.mostrarToast('No se pudo cargar el ticket', 'error');
+            return;
+        }
+
+        const estados = datosSkyHelp.estados || await Api.getEstadosTickets();
+        const self = this; // Guardar referencia a 'this'
+        
+        const getEstado = (idEstado) => {
+            const e = estados.find(e => e.idEstado === idEstado);
+            return e ? e.nombreEstado : '';
+        };
+
+        const estadoNombre = getEstado(ticket.idEstado);
+        const claseEstado = self.obtenerClaseInsigniaEstado(estadoNombre);
+        const clasePrioridad = self.obtenerClaseInsigniaPrioridad(ticket.prioridad);
+
+        const contenido = `
+            <div class="modal-encabezado">
+                <div>
+                    <h3>Detalles del Ticket</h3>
+                </div>
+                <button class="btn-cerrar-modal" onclick="aplicacion.cerrarModal()">✕</button>
+            </div>
+            <div class="modal-cuerpo">
+                <div class="info-ticket-grid">
+                    <div class="info-ticket-item">
+                        <div class="etiqueta">ID TICKET</div>
+                        <div class="valor">${idTicket.substring(0, 8)}</div>
+                    </div>
+                    <div class="info-ticket-item">
+                        <div class="etiqueta">CATEGORÍA</div>
+                        <div class="valor">${ticket.categoria || '—'}</div>
+                    </div>
+                    <div class="info-ticket-item">
+                        <div class="etiqueta">DESCRIPCIÓN</div>
+                        <div class="valor">${ticket.descripcion || '—'}</div>
+                    </div>
+                    <div class="info-ticket-item">
+                        <div class="etiqueta">ESTADO</div>
+                        <div class="valor"><span class="insignia-estado ${claseEstado}">${estadoNombre}</span></div>
+                    </div>
+                    <div class="info-ticket-item">
+                        <div class="etiqueta">PRIORIDAD</div>
+                        <div class="valor"><span class="insignia-prioridad ${clasePrioridad}">${ticket.prioridad || '—'}</span></div>
+                    </div>
+                    <div class="info-ticket-item">
+                        <div class="etiqueta">FECHA DE CREACIÓN</div>
+                        <div class="valor">${new Date(ticket.fechaCreacion).toLocaleDateString('es-ES')}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-pie">
+                <button class="btn btn-primario" onclick="aplicacion.cerrarModal()">Cerrar</button>
+            </div>
+        `;
+
+        this.abrirModal(contenido, true);
+    } catch (e) {
+        console.error('Error al cargar detalles:', e);
+        this.mostrarToast('❌ Error al cargar los detalles del ticket', 'error');
+    }
+};
+
+AplicacionSkyHelp.prototype.marcarPreparando = async function(idTicket) {
+    try {
+        const estados = datosSkyHelp.estados || await Api.getEstadosTickets();
+        const estadoPreparacion = estados.find(e => e.nombreEstado.toLowerCase().includes('preparacion'));
+        
+        if (!estadoPreparacion) {
+            this.mostrarToast('Estado "En preparación" no encontrado', 'error');
+            return;
+        }
+
+        await Api.actualizarEstadoTicket(idTicket, estadoPreparacion.idEstado);
+        this.mostrarToast('✅ Ticket marcado como "En preparación"', 'exito');
+        this.cerrarModal();
+        // Recargar el dashboard
+        await this.cargarContenido('dashboard');
+    } catch (e) {
+        console.error('Error al marcar como preparando:', e);
+        this.mostrarToast('❌ Error al actualizar el estado', 'error');
+    }
+};
+
+AplicacionSkyHelp.prototype.iniciarRecorrido = async function(idTicket) {
+    const contenido = `
+        <div class="modal-encabezado">
+            <div>
+                <h3>Tiempo Estimado de Entrega</h3>
+            </div>
+            <button class="btn-cerrar-modal" onclick="aplicacion.cerrarModal()">✕</button>
+        </div>
+        <div class="modal-cuerpo">
+            <div style="display:flex;flex-direction:column;gap:1rem;">
+                <button class="btn btn-primario" style="padding:1rem;font-size:1rem;" onclick="aplicacion.confirmarRecorrido('${idTicket}', '5-8 horas')">
+                    ⏱️ 5-8 horas
+                </button>
+                <button class="btn btn-primario" style="padding:1rem;font-size:1rem;" onclick="aplicacion.confirmarRecorrido('${idTicket}', '10-12 horas')">
+                    ⏱️ 10-12 horas
+                </button>
+                <button class="btn btn-primario" style="padding:1rem;font-size:1rem;" onclick="aplicacion.confirmarRecorrido('${idTicket}', '24 horas')">
+                    ⏱️ 24 horas
+                </button>
+            </div>
+        </div>
+        <div class="modal-pie">
+            <button class="btn btn-secundario" onclick="aplicacion.cerrarModal()">Cancelar</button>
+        </div>
+    `;
+
+    this.abrirModal(contenido, true);
+};
+
+AplicacionSkyHelp.prototype.confirmarRecorrido = async function(idTicket, tiempoEstimado) {
+    try {
+        const estados = datosSkyHelp.estados || await Api.getEstadosTickets();
+        const estadoEnRuta = estados.find(e => e.nombreEstado.toLowerCase().includes('ruta'));
+        
+        if (!estadoEnRuta) {
+            this.mostrarToast('Estado "En ruta" no encontrado', 'error');
+            return;
+        }
+
+        await Api.actualizarEstadoTicket(idTicket, estadoEnRuta.idEstado);
+        this.mostrarToast(`✅ Recorrido iniciado - Tiempo estimado: ${tiempoEstimado}`, 'exito');
+        this.cerrarModal();
+        // Recargar el dashboard
+        await this.cargarContenido('dashboard');
+    } catch (e) {
+        console.error('Error al iniciar recorrido:', e);
+        this.mostrarToast('❌ Error al iniciar el recorrido', 'error');
+    }
 };

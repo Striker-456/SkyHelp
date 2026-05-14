@@ -26,10 +26,8 @@ namespace SkyHelp.Controllers
             try
             {
                 var lista = await _tecnicosRepository.ObtenerTecnicos();
-                if (lista == null || !lista.Any())
-                    return NotFound("No se encontraron técnicos.");
-
-                var resultado = lista.Select(t => new {
+                
+                var resultado = (lista ?? new List<Tecnicos>()).Select(t => new {
                     t.IdTecnico,
                     t.IdUsuario,
                     t.FechaRegistro,

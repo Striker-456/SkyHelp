@@ -27,6 +27,11 @@ namespace SkyHelp.Repositories
             return await _context.Tickets.Where(t => t.IdTecnico == idTecnico).ToListAsync();
         }
 
+        public async Task<List<Tickets>> ObtenerTicketsPorDomiciliario(Guid idDomiciliario)
+        {
+            return await _context.Tickets.Where(t => t.IdDomiciliario == idDomiciliario).ToListAsync();
+        }
+
         public async Task<Tickets> ObtenerTicketPorId(Guid id)
         {
             return await _context.Tickets.FirstOrDefaultAsync(x => x.IdTicket == id);
@@ -52,20 +57,31 @@ namespace SkyHelp.Repositories
                 if (ticket == null || ticket.IdTicket == Guid.Empty)
                     throw new ArgumentException("Ticket nulo o sin ID");
 
-                // Obtener el ticket existente sin rastreo
-                var ticketExistente = await _context.Tickets.AsNoTracking()
+                // Obtener el ticket existente
+                var ticketExistente = await _context.Tickets
+                    .AsNoTracking()
                     .FirstOrDefaultAsync(x => x.IdTicket == ticket.IdTicket);
                 
                 if (ticketExistente == null)
                     throw new KeyNotFoundException($"Ticket con ID {ticket.IdTicket} no encontrado");
 
-                // Actualizar solo el estado
-                ticketExistente.IdEstado = ticket.IdEstado;
+                // Crear una copia con solo los campos que queremos actualizar
+                var ticketActualizado = new Tickets
+                {
+                    IdTicket = ticketExistente.IdTicket,
+                    NumeroTicket = ticketExistente.NumeroTicket,
+                    FechaCreacion = ticketExistente.FechaCreacion,
+                    IdUsuario = ticketExistente.IdUsuario,
+                    // Actualizar solo si vienen con valores válidos
+                    Descripcion = !string.IsNullOrWhiteSpace(ticket.Descripcion) ? ticket.Descripcion : ticketExistente.Descripcion,
+                    Categoria = !string.IsNullOrWhiteSpace(ticket.Categoria) ? ticket.Categoria : ticketExistente.Categoria,
+                    Prioridad = !string.IsNullOrWhiteSpace(ticket.Prioridad) ? ticket.Prioridad : ticketExistente.Prioridad,
+                    IdEstado = ticket.IdEstado != Guid.Empty ? ticket.IdEstado : ticketExistente.IdEstado,
+                    IdTecnico = ticket.IdTecnico != Guid.Empty ? ticket.IdTecnico : ticketExistente.IdTecnico,
+                    IdDomiciliario = ticket.IdDomiciliario != Guid.Empty ? ticket.IdDomiciliario : ticketExistente.IdDomiciliario
+                };
 
-                // Ahora adjuntar y marcar como modificado
-                _context.Tickets.Attach(ticketExistente);
-                _context.Entry(ticketExistente).Property(x => x.IdEstado).IsModified = true;
-
+                _context.Tickets.Update(ticketActualizado);
                 var cambios = await _context.SaveChangesAsync();
                 return cambios > 0;
             }
@@ -73,6 +89,51 @@ namespace SkyHelp.Repositories
             {
                 System.Diagnostics.Debug.WriteLine($"Error en ActualizarTicket: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"Inner: {ex.InnerException?.Message}");
+                throw;
+            }
+        }
+
+        public async Task<bool> ActualizarDomiciliarioTicket(Guid idTicket, Guid? idDomiciliario)
+        {
+            try
+            {
+                if (idTicket == Guid.Empty)
+                    throw new ArgumentException("ID del ticket inválido");
+
+                // Usar SQL directo para actualizar solo el domiciliario
+                var resultado = await _context.Tickets
+                    .Where(t => t.IdTicket == idTicket)
+                    .ExecuteUpdateAsync(s => s.SetProperty(t => t.IdDomiciliario, idDomiciliario));
+
+                return resultado > 0;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error en ActualizarDomiciliarioTicket: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<bool> ActualizarEstadoTicket(Guid idTicket, Guid idEstado)
+        {
+            try
+            {
+                if (idTicket == Guid.Empty)
+                    throw new ArgumentException("ID del ticket inválido");
+
+                if (idEstado == Guid.Empty)
+                    throw new ArgumentException("ID del estado inválido");
+
+                // Usar SQL directo para actualizar solo el estado
+                var resultado = await _context.Tickets
+                    .Where(t => t.IdTicket == idTicket)
+                    .ExecuteUpdateAsync(s => s.SetProperty(t => t.IdEstado, idEstado));
+
+                return resultado > 0;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error en ActualizarEstadoTicket: {ex.Message}");
                 throw;
             }
         }

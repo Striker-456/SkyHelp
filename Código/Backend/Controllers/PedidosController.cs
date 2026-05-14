@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SkyHelp;
 using SkyHelp.Authorization;
 using SkyHelp.Repositories.Interfaces;
-using SkyHelp.Repositories.Interfaces.SkyHelp.Repositories.Interfaces;
+
 using System.Security.Claims;
 
 namespace SkyHelp.Controllers

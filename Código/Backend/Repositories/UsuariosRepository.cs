@@ -37,18 +37,34 @@ namespace SkyHelp.Repositories
                 var usuarioExistente = await _context.Usuarios.FirstOrDefaultAsync(x => x.IdUsuario == id);
                 if (usuarioExistente == null)
                 {
-                    return false;
-                    throw new Exception("Usuario Para Actualizar No Existe");
+                    throw new Exception("Usuario para eliminar no existe");
                 }
 
+                // Eliminar registros relacionados primero
+                // Eliminar domiciliarios asociados
+                var domiciliarios = await _context.Domiciliarios.Where(d => d.IDUsuario == id).ToListAsync();
+                _context.Domiciliarios.RemoveRange(domiciliarios);
+
+                // Eliminar técnicos asociados
+                var tecnicos = await _context.Tecnicos.Where(t => t.IdUsuario == id).ToListAsync();
+                _context.Tecnicos.RemoveRange(tecnicos);
+
+                // Eliminar tickets asociados (como cliente)
+                var ticketsCliente = await _context.Tickets.Where(t => t.IdUsuario == id).ToListAsync();
+                _context.Tickets.RemoveRange(ticketsCliente);
+
+                // Eliminar auditorías asociadas
+                var auditorias = await _context.Auditoria.Where(a => a.IDUsuario == id).ToListAsync();
+                _context.Auditoria.RemoveRange(auditorias);
+
+                // Finalmente, eliminar el usuario
                 _context.Usuarios.Remove(usuarioExistente);
                 await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
             {
-                return false;
-                throw new Exception(ex.Message.ToString());
+                throw new Exception(ex.Message);
             }
         }
 
@@ -59,8 +75,7 @@ namespace SkyHelp.Repositories
                 var usuarioExistente = await _context.Usuarios.FirstOrDefaultAsync(x => x.IdUsuario == usuario.IdUsuario);
                 if (usuarioExistente == null)
                 {
-                    return false;
-                    throw new Exception("Usuario Para Actualizar No Existe");
+                    throw new Exception("Usuario para actualizar no existe");
                 }
 
                 usuarioExistente.NombreUsuarios = usuario.NombreUsuarios;
@@ -75,15 +90,13 @@ namespace SkyHelp.Repositories
                     usuarioExistente.Contrasena = Seguridad.EncriptarSHA256(usuario.Contrasena);
                 }
 
-
                 _context.Usuarios.Update(usuarioExistente);
                 await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
             {
-                return false;
-                throw new Exception(ex.Message.ToString());
+                throw new Exception(ex.Message);
             }
         }
 
@@ -91,7 +104,6 @@ namespace SkyHelp.Repositories
         {
             try
             {
-
                 usuario.Contrasena = Seguridad.EncriptarSHA256(usuario.Contrasena);
 
                 if (usuario.IdUsuario == Guid.Empty)
@@ -105,8 +117,7 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
-                return false;
-                throw new Exception(ex.Message.ToString());
+                throw new Exception(ex.Message);
             }
         }
     }

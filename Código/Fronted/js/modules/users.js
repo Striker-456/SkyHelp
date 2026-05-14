@@ -245,15 +245,22 @@ AplicacionSkyHelp.prototype.guardarEdicionUsuario = async function(evento, idUsu
     const datos = new FormData(evento.target);
 
     try {
-        await Api.actualizarUsuario({
+        const datosActualizar = {
             idUsuario:      idUsuario,
             nombreUsuarios: datos.get('nombreUsuarios'),
             nombreCompleto: datos.get('nombreCompleto'),
             correo:         datos.get('correo'),
-            contrasena:     datos.get('contrasena') || '',
-            idRol:          datos.get('idRol'),
-            estadoCuenta:   datos.get('estadoCuenta')
-        });
+            estadoCuenta:   datos.get('estadoCuenta'),
+            idRol:          datos.get('idRol') // Incluir el rol
+        };
+
+        // Solo incluir contraseña si se proporciona
+        const contrasena = datos.get('contrasena');
+        if (contrasena) {
+            datosActualizar.contrasena = contrasena;
+        }
+
+        await Api.actualizarUsuario(datosActualizar);
 
         this.cerrarModal();
         this.mostrarToast('✅ Usuario actualizado correctamente');

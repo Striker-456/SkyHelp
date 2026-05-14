@@ -16,19 +16,19 @@ namespace SkyHelp.Models
         public Guid IdRol { get; set; }
         [Required]
         [StringLength(50)]
-        public string NombreUsuarios { get; set; }
+        public required string NombreUsuarios { get; set; }
         [Required]
         [StringLength(100)]
-        public string NombreCompleto { get; set; }
+        public required string NombreCompleto { get; set; }
         [Required]
         [StringLength(50)]
-        public string Correo { get; set; }
+        public required string Correo { get; set; }
         [Required]
         [StringLength(50)]
-        public string Contrasena { get; set; }
+        public required string Contrasena { get; set; }
         [Required]
         [StringLength(50)]
-        public string EstadoCuenta { get; set; }
+        public required string EstadoCuenta { get; set; }
 
         [StringLength(20)]
         public string? Telefono { get; set; }

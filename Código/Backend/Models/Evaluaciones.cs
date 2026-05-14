@@ -16,7 +16,7 @@ namespace SkyHelp.Models
         [Required]
         public int Calificacion { get; set; }
         [Required]
-        public string Comentario { get; set; }
+        public required string Comentario { get; set; }
         [Required]
         public DateTime? FechaEvaluacion { get; set; } = DateTime.Now;
         [JsonIgnore]

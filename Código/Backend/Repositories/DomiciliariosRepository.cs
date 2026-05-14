@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SkyHelp.Context;
 using SkyHelp.Models;
-using SkyHelp.Repositories.Interfaces.SkyHelp.Repositories.Interfaces;
+using SkyHelp.Repositories.Interfaces;
 
 namespace SkyHelp.Repositories
 {
@@ -83,17 +83,46 @@ namespace SkyHelp.Repositories
 
                     if (domiciliarioExistente == null)
                     {
-                        return false;
                         throw new Exception("Domiciliario para eliminar no existe");
                     }
 
+                    // Desasignar tickets asociados al domiciliario (no eliminarlos)
+                    var ticketsAsociados = await _context.Tickets.Where(t => t.IdDomiciliario == id).ToListAsync();
+                    foreach (var ticket in ticketsAsociados)
+                    {
+                        ticket.IdDomiciliario = null;
+                    }
+                    if (ticketsAsociados.Any())
+                    {
+                        _context.Tickets.UpdateRange(ticketsAsociados);
+                        await _context.SaveChangesAsync(); // Guardar primero los cambios en tickets
+                    }
+
+                    // Eliminar evaluaciones asociadas a los tickets del domiciliario
+                    var evaluacionesAsociadas = await _context.Evaluaciones
+                        .Where(e => ticketsAsociados.Select(t => t.IdTicket).Contains(e.IdTicket))
+                        .ToListAsync();
+                    if (evaluacionesAsociadas.Any())
+                    {
+                        _context.Evaluaciones.RemoveRange(evaluacionesAsociadas);
+                        await _context.SaveChangesAsync(); // Guardar eliminación de evaluaciones
+                    }
+
+                    // Eliminar pedidos asociados al domiciliario
+                    var pedidosAsociados = await _context.Pedidos.Where(p => p.IdDomiciliario == id).ToListAsync();
+                    if (pedidosAsociados.Any())
+                    {
+                        _context.Pedidos.RemoveRange(pedidosAsociados);
+                        await _context.SaveChangesAsync(); // Guardar eliminación de pedidos
+                    }
+
+                    // Finalmente, eliminar el domiciliario
                     _context.Domiciliarios.Remove(domiciliarioExistente);
                     await _context.SaveChangesAsync();
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    return false;
                     throw new Exception(ex.Message.ToString());
                 }
             }
