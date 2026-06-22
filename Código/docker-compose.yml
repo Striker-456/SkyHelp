@@ -1,0 +1,32 @@
+
+services:
+
+  skyhelp-api:
+    build:
+      context: ./Backend
+    container_name: skyhelp-api
+    ports:
+      - "5191:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+    depends_on:
+      - sqlserver
+
+  skyhelp-front:
+    build:
+      context: ./Fronted
+    container_name: skyhelp-front
+    ports:
+      - "3000:80"
+    depends_on:
+      - skyhelp-api
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: skyhelp-db
+    environment:
+      SA_PASSWORD: "Flow3064240_"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"

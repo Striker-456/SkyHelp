@@ -117,7 +117,7 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw; // propaga la excepción original con todo el inner exception
             }
         }
     }

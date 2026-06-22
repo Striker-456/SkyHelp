@@ -127,9 +127,9 @@ namespace SkyHelp.Controllers
                 return Ok("Usuario Creado Correctamente");
             }
             catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al Insertar Persona");
-            }
+{ 
+    return StatusCode(500, ex.ToString());
+}
         }
 
         [Authorize]
