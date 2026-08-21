@@ -4,6 +4,24 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using SkyHelp.Context;
 using Microsoft.OpenApi.Models;
+using System.Security.Cryptography.Xml;
+using System.Text;
+
+var builder = WebApplication.CreateBuilder(args);
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+
+csproject original : using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
+using SkyHelp.Context;
+using Microsoft.OpenApi.Models;
 
 using System.Security.Cryptography.Xml;
 using System.Text;
@@ -63,7 +81,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigin",
         builder => builder
             .AllowAnyOrigin()  // Permitir cualquier origen
-            .AllowAnyMethod()  // Permitir cualquier m�todo HTTP
+            .AllowAnyMethod()  // Permitir cualquier m todo HTTP
             .AllowAnyHeader()); // Permitir cualquier cabecera
 });
 var jwtKey = builder.Configuration["Jwt:Key"];
