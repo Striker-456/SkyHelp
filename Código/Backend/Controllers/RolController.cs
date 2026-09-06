@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SkyHelp.Authorization;
 using SkyHelp.Models;
 using SkyHelp.Repositories;
 using SkyHelp.Repositories.Interfaces;
@@ -62,6 +63,7 @@ namespace SkyHelp.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener el rol.");
             }
         }
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpPost("AsignarRol")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -82,6 +84,7 @@ namespace SkyHelp.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error al asignar el rol.");
             }
         }
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpPut("ActualizarRol")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -105,6 +108,7 @@ namespace SkyHelp.Controllers
         }
 
 
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpDelete("EliminarRol")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

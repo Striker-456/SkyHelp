@@ -35,7 +35,7 @@ namespace SkyHelp.Controllers
             return Guid.TryParse(idStr, out var id) ? id : Guid.Empty;
         }
 
-        [Authorize]
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpGet("ObtenerTickets")]
         public async Task<IActionResult> ObtenerTickets()
         {

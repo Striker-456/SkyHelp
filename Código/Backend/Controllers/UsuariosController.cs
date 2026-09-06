@@ -16,10 +16,12 @@ namespace SkyHelp.Controllers
     public class UsuariosController : ControllerBase
     {
         private readonly IUsuariosRepository _UsuariosRepository;
+        private readonly IRolRepository _rolRepository;
         private readonly IAuditoriaService _auditoriaService;
-        public UsuariosController(IUsuariosRepository usuariosRepository, IAuditoriaService auditoriaService)// Constructor de la clase con inyección de dependencia
+        public UsuariosController(IUsuariosRepository usuariosRepository, IRolRepository rolRepository, IAuditoriaService auditoriaService)// Constructor de la clase con inyección de dependencia
         {
             _UsuariosRepository = usuariosRepository;// inyección de dependencia del repositorio de usuarios
+            _rolRepository = rolRepository;
             _auditoriaService = auditoriaService;
         }
 
@@ -73,7 +75,7 @@ namespace SkyHelp.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpGet("ObtenerUsuarios")]// Definiendo que este método responde a solicitudes GET
         [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]// Indicando que este método puede retornar un estado 500 Internal Server Error
@@ -129,6 +131,18 @@ namespace SkyHelp.Controllers
         {
             try
             {
+                // El rol solicitado viene del cliente: si pide el rol Administrador, solo se
+                // permite cuando quien llama YA está autenticado como Administrador (p. ej. el
+                // modal de "Nuevo Usuario" del panel admin). El auto-registro público nunca
+                // puede otorgarse a sí mismo el rol de administrador.
+                var rolSolicitado = await _rolRepository.ObtenerRolesPorID(usuario.IdRol);
+                var esRolAdministrador = rolSolicitado != null &&
+                    RoleClaimMapper.ToJwtRole(rolSolicitado.NombreRol) == RoleNames.Administrador;
+                var llamanteEsAdmin = User.Identity?.IsAuthenticated == true && User.IsInRole(RoleNames.Administrador);
+
+                if (esRolAdministrador && !llamanteEsAdmin)
+                    return Forbid();
+
                 var Resultado = await _UsuariosRepository.CrearUsuario(usuario);
 
                 if (!Resultado)
@@ -276,7 +290,7 @@ namespace SkyHelp.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpPut("ActualizarUsuario")]// Definiendo que este método responde a solicitudes PUT
         [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
         [ProducesResponseType(StatusCodes.Status404NotFound)]// Indicando que este método puede retornar un estado 404 Not Found
@@ -318,7 +332,7 @@ namespace SkyHelp.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error al Actualizar Usuario");
             }
         }
-        [Authorize]
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpDelete("EliminarUsuario")]// Definiendo que este método responde a solicitudes DELETE
         [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
         [ProducesResponseType(StatusCodes.Status404NotFound)]// Indicando que este método puede retornar un estado 404 Not Found
