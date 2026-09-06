@@ -135,9 +135,11 @@ AplicacionSkyHelp.prototype.manejarRegistro = async function(evento) {
 };
 
 AplicacionSkyHelp.prototype.cerrarSesion = function() {
-    Api.limpiarSesion();
-    this.usuarioActual = null;
-    this.mostrarInicio();
+    Api.logout().catch(() => {}).finally(() => {
+        Api.limpiarSesion();
+        this.usuarioActual = null;
+        this.mostrarInicio();
+    });
 };
 
 // Restaurar sesión si ya hay token guardado

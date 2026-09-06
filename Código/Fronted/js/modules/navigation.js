@@ -48,8 +48,18 @@ AplicacionSkyHelp.prototype.obtenerItemsNavPorRol = function(rol) {
                 icono: '<svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'
             },
             {
+                id: 'auditoria',
+                etiqueta: 'Auditorías',
+                icono: '<svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>'
+            },
+            {
                 id: 'reportes',
                 etiqueta: 'Reportes',
+                icono: '<svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>'
+            },
+            {
+                id: 'estadisticas',
+                etiqueta: 'Estadísticas',
                 icono: '<svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>'
             },
             {
@@ -143,7 +153,9 @@ AplicacionSkyHelp.prototype.navegarA = function(seccion) {
         tickets: 'Gestión de Tickets',
         tecnicos: 'Gestión de Técnicos',
         usuarios: 'Gestión de Usuarios',
-        reportes: 'Reportes y Estadísticas',
+        auditoria: 'Auditorías',
+        reportes: 'Reportes',
+        estadisticas: 'Estadísticas',
         configuracion: 'Configuración',
         conocimiento: 'Base de Conocimientos',
         perfil: 'Mi Perfil',
@@ -174,8 +186,14 @@ AplicacionSkyHelp.prototype.cargarContenido = async function(seccion) {
         case 'usuarios':
             contenido = await this.obtenerContenidoUsuarios();
             break;
+        case 'auditoria':
+            contenido = await this.obtenerContenidoAuditoria();
+            break;
         case 'reportes':
             contenido = await this.obtenerContenidoReportes();
+            break;
+        case 'estadisticas':
+            contenido = await this.obtenerContenidoEstadisticas();
             break;
         case 'configuracion':
             contenido = this.obtenerContenidoConfiguracion();

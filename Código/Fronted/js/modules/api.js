@@ -1,7 +1,5 @@
 
-alert("ESTE ES MI API.JS");
-
-const API_BASE = 'https://localhost:7062';
+const API_BASE = 'https://bv5lqzhq-5191.use2.devtunnels.ms';
 
 const Api = {
     // Obtener token almacenado
@@ -76,6 +74,25 @@ const Api = {
     put(endpoint, body)   { return this.request('PUT', endpoint, body); },
     delete(endpoint)      { return this.request('DELETE', endpoint); },
 
+    // Petición binaria (descarga de archivos) — reutiliza los mismos headers/manejo de 401.
+    async requestBlob(endpoint) {
+        const respuesta = await fetch(`${API_BASE}${endpoint}`, { headers: this.headers() });
+
+        if (respuesta.status === 401) {
+            this.limpiarSesion();
+            window.location.reload();
+            return null;
+        }
+        if (!respuesta.ok) {
+            const error = await respuesta.text();
+            throw new Error(error || `Error ${respuesta.status}`);
+        }
+
+        const disposicion = respuesta.headers.get('Content-Disposition') || '';
+        const match = disposicion.match(/filename="?([^"]+)"?/);
+        return { blob: await respuesta.blob(), nombreArchivo: match ? match[1] : 'descarga' };
+    },
+
     // Auth
    async login(correo, contrasena) {
     const respuesta = await fetch(`${API_BASE}/api/Auth/login`, {
@@ -91,6 +108,8 @@ const Api = {
 
     return respuesta.json();
 },
+
+    logout() { return this.post('/api/Auth/logout'); },
 
     // Roles
     getRoles()                    { return this.get('/api/rol/ObtenerRoles'); },
@@ -129,4 +148,34 @@ const Api = {
     cambiarNombre(data)           { return this.put('/api/usuarios/CambiarNombre', data); },
     cambiarCorreo(data)           { return this.put('/api/usuarios/CambiarCorreo', data); },
     cambiarContrasena(data)       { return this.put('/api/usuarios/CambiarContrasena', data); },
+
+    // Auditorías
+    getAuditorias(filtros = {}) {
+        const params = new URLSearchParams();
+        if (filtros.usuario) params.set('usuario', filtros.usuario);
+        if (filtros.accion)  params.set('accion', filtros.accion);
+        if (filtros.modulo)  params.set('modulo', filtros.modulo);
+        if (filtros.desde)   params.set('desde', filtros.desde);
+        if (filtros.hasta)   params.set('hasta', filtros.hasta);
+        const query = params.toString();
+        return this.get(`/api/auditorias/ObtenerAuditorias${query ? `?${query}` : ''}`);
+    },
+    getAuditoriaPorId(id) { return this.get(`/api/auditorias/ObtenerAuditoriaPorID?id=${id}`); },
+
+    // Reportes
+    generarReporte(request)       { return this.post('/api/reportes/GenerarReporte', request); },
+    getReportesRecientes()        { return this.get('/api/reportes/ObtenerReportesRecientes'); },
+    exportarReporte(idReporte, formato) {
+        const rutas = { csv: 'ExportarCsv', excel: 'ExportarExcel', pdf: 'ExportarPdf' };
+        return this.requestBlob(`/api/reportes/${rutas[formato]}/${idReporte}`);
+    },
+
+    // Estadísticas
+    getResumenEstadisticas(desde, hasta) {
+        const params = new URLSearchParams();
+        if (desde) params.set('desde', desde);
+        if (hasta) params.set('hasta', hasta);
+        const query = params.toString();
+        return this.get(`/api/estadisticas/ResumenEstadisticas${query ? `?${query}` : ''}`);
+    },
 };
