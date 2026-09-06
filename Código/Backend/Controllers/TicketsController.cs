@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SkyHelp.Authorization;
 using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
+using SkyHelp.Services.Interfaces;
 using System.Security.Claims;
 
 namespace SkyHelp.Controllers
@@ -14,13 +15,24 @@ namespace SkyHelp.Controllers
     {
         private readonly ITicketsRepository _ticketsRepository;
         private readonly ITecnicosRepository _tecnicosRepository;
+        private readonly IAuditoriaService _auditoriaService;
 
         public TicketsController(
             ITicketsRepository ticketsRepository,
-            ITecnicosRepository tecnicosRepository)
+            ITecnicosRepository tecnicosRepository,
+            IAuditoriaService auditoriaService)
         {
             _ticketsRepository = ticketsRepository;
             _tecnicosRepository = tecnicosRepository;
+            _auditoriaService = auditoriaService;
+        }
+
+        private string? ObtenerIp() => HttpContext.Connection.RemoteIpAddress?.ToString();
+
+        private Guid ObtenerIdActor()
+        {
+            var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Guid.TryParse(idStr, out var id) ? id : Guid.Empty;
         }
 
         [Authorize]
@@ -124,6 +136,8 @@ namespace SkyHelp.Controllers
                 var resultado = await _ticketsRepository.CrearTicket(ticket);
                 if (!resultado)
                     return BadRequest("No se pudo crear el ticket.");
+                await _auditoriaService.RegistrarAsync(ObtenerIdActor(), "Crear", "Tickets", ticket.IdTicket,
+                    $"Ticket #{ticket.NumeroTicket} creado.", ObtenerIp());
                 return Ok("Ticket creado exitosamente.");
             }
             catch (Exception)
@@ -144,7 +158,9 @@ namespace SkyHelp.Controllers
                 var resultado = await _ticketsRepository.ActualizarDomiciliarioTicket(request.IdTicket, request.IdDomiciliario);
                 if (!resultado)
                     return StatusCode(StatusCodes.Status500InternalServerError, "No se pudo actualizar el domiciliario del ticket.");
-                
+
+                await _auditoriaService.RegistrarAsync(ObtenerIdActor(), "Actualizar", "Tickets", request.IdTicket,
+                    "Domiciliario del ticket actualizado.", ObtenerIp());
                 return Ok("Domiciliario del ticket actualizado exitosamente.");
             }
             catch (Exception ex)
@@ -171,7 +187,9 @@ namespace SkyHelp.Controllers
                 var resultado = await _ticketsRepository.ActualizarEstadoTicket(request.IdTicket, request.IdEstado);
                 if (!resultado)
                     return StatusCode(StatusCodes.Status500InternalServerError, "No se pudo actualizar el estado del ticket.");
-                
+
+                await _auditoriaService.RegistrarAsync(ObtenerIdActor(), "Actualizar", "Tickets", request.IdTicket,
+                    "Estado del ticket actualizado.", ObtenerIp());
                 return Ok("Estado del ticket actualizado exitosamente.");
             }
             catch (Exception ex)
@@ -206,6 +224,8 @@ namespace SkyHelp.Controllers
                 var resultado = await _ticketsRepository.EliminarTicket(Id);
                 if (!resultado)
                     return NotFound("Ticket no encontrado o no se pudo eliminar.");
+                await _auditoriaService.RegistrarAsync(ObtenerIdActor(), "Eliminar", "Tickets", Id,
+                    "Ticket eliminado.", ObtenerIp());
                 return Ok("Ticket eliminado exitosamente.");
             }
             catch (Exception)

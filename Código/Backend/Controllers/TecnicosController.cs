@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SkyHelp.Authorization;
 using SkyHelp.Repositories.Interfaces;
+using SkyHelp.Services.Interfaces;
+using System.Security.Claims;
 
 namespace SkyHelp.Controllers
 {
@@ -11,9 +13,19 @@ namespace SkyHelp.Controllers
     public class TecnicosController : ControllerBase
     {
         private readonly ITecnicosRepository _tecnicosRepository;
-        public TecnicosController(ITecnicosRepository tecnicosRepository)
+        private readonly IAuditoriaService _auditoriaService;
+        public TecnicosController(ITecnicosRepository tecnicosRepository, IAuditoriaService auditoriaService)
         {
             _tecnicosRepository = tecnicosRepository;
+            _auditoriaService = auditoriaService;
+        }
+
+        private string? ObtenerIp() => HttpContext.Connection.RemoteIpAddress?.ToString();
+
+        private Guid ObtenerIdActor()
+        {
+            var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Guid.TryParse(idStr, out var id) ? id : Guid.Empty;
         }
         // OBTENER TODOS
         [Authorize]
@@ -78,6 +90,8 @@ namespace SkyHelp.Controllers
                 {
                     return BadRequest("No se pudo crear el técnico.");
                 }
+                await _auditoriaService.RegistrarAsync(ObtenerIdActor(), "Crear", "Técnicos", tecnico.IdTecnico,
+                    "Técnico creado.", ObtenerIp());
                 return Ok("Técnico creado exitosamente.");
             }
             catch (Exception)
@@ -100,6 +114,8 @@ namespace SkyHelp.Controllers
                 {
                     return NotFound("No se pudo actualizar el técnico.");
                 }
+                await _auditoriaService.RegistrarAsync(ObtenerIdActor(), "Actualizar", "Técnicos", tecnico.IdTecnico,
+                    "Técnico actualizado.", ObtenerIp());
                 return Ok("Técnico actualizado exitosamente.");
             }
             catch (Exception)
@@ -122,6 +138,8 @@ namespace SkyHelp.Controllers
                 {
                     return NotFound("No se pudo eliminar el técnico.");
                 }
+                await _auditoriaService.RegistrarAsync(ObtenerIdActor(), "Eliminar", "Técnicos", id,
+                    "Técnico eliminado.", ObtenerIp());
                 return Ok("Técnico eliminado exitosamente.");
             }
             catch (Exception)

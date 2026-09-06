@@ -22,10 +22,12 @@ namespace SkyHelp.Models
         [Required]
         public Guid IDRegistro { get; set; } = Guid.NewGuid();
         [Required]
-        [StringLength(50)]
+        [StringLength(300)]
         public required string Descripcion { get; set; }
         [Required]
         public DateTime FechaEvento { get; set; }
+        [StringLength(45)]
+        public string? DireccionIp { get; set; }
         [JsonIgnore]
         public virtual Usuarios? Usuario { get; set; }
 

@@ -7,24 +7,7 @@ using Microsoft.OpenApi.Models;
 using System.Security.Cryptography.Xml;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(args);
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-
-csproject original : using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.IdentityModel.Tokens;
-using SkyHelp.Context;
-using Microsoft.OpenApi.Models;
-
-using System.Security.Cryptography.Xml;
-using System.Text;
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,9 +17,6 @@ builder.Configuration
     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
     .AddEnvironmentVariables();
-
-// Add services to the container.
-
 
 builder.Services.AddExternal(builder.Configuration);
 builder.Services.AddControllers()
@@ -80,10 +60,11 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
         builder => builder
-            .AllowAnyOrigin()  // Permitir cualquier origen
-            .AllowAnyMethod()  // Permitir cualquier m todo HTTP
-            .AllowAnyHeader()); // Permitir cualquier cabecera
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 });
+
 var jwtKey = builder.Configuration["Jwt:Key"];
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];
 var jwtAudience = builder.Configuration["Jwt:Audience"];
@@ -116,9 +97,9 @@ builder.Services.AddAuthentication(x =>
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
 });
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -127,7 +108,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Needed for browser-based frontend calls from a different origin.
 app.UseCors("AllowSpecificOrigin");
 
 app.UseAuthentication();
@@ -165,7 +145,6 @@ if (Directory.Exists(frontendPath))
         FileProvider = new PhysicalFileProvider(frontendPath),
         RequestPath = ""
     });
-    // Solo hacer fallback a index.html para rutas que NO sean /api
     app.MapFallback(async context =>
     {
         if (context.Request.Path.StartsWithSegments("/api"))

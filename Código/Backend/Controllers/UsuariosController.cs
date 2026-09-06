@@ -5,6 +5,7 @@ using SkyHelp.Authorization;
 using SkyHelp.EncriptarSHA256;
 using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
+using SkyHelp.Services.Interfaces;
 using System.Security.Claims;
 
 
@@ -15,9 +16,19 @@ namespace SkyHelp.Controllers
     public class UsuariosController : ControllerBase
     {
         private readonly IUsuariosRepository _UsuariosRepository;
-        public UsuariosController(IUsuariosRepository usuariosRepository)// Constructor de la clase con inyección de dependencia
+        private readonly IAuditoriaService _auditoriaService;
+        public UsuariosController(IUsuariosRepository usuariosRepository, IAuditoriaService auditoriaService)// Constructor de la clase con inyección de dependencia
         {
             _UsuariosRepository = usuariosRepository;// inyección de dependencia del repositorio de usuarios
+            _auditoriaService = auditoriaService;
+        }
+
+        private string? ObtenerIp() => HttpContext.Connection.RemoteIpAddress?.ToString();
+
+        private Guid ObtenerIdActor(Guid fallback)
+        {
+            var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Guid.TryParse(idStr, out var id) ? id : fallback;
         }
 
         [Authorize]
@@ -124,6 +135,8 @@ namespace SkyHelp.Controllers
                 {
                     return BadRequest("No se puede Crear Usuario");
                 }
+                await _auditoriaService.RegistrarAsync(usuario.IdUsuario, "Crear", "Usuarios", usuario.IdUsuario,
+                    $"Usuario {usuario.Correo} creado.", ObtenerIp());
                 return Ok("Usuario Creado Correctamente");
             }
             catch (Exception ex)
@@ -296,6 +309,8 @@ namespace SkyHelp.Controllers
                 {
                     return BadRequest("No se puede Actualizar Usuario");
                 }
+                await _auditoriaService.RegistrarAsync(ObtenerIdActor(usuario.IdUsuario), "Actualizar", "Usuarios", usuario.IdUsuario,
+                    $"Usuario {usuarioActualizado.Correo} actualizado.", ObtenerIp());
                 return Ok("Usuario Actualizado Correctamente");
             }
             catch (Exception ex)
@@ -318,6 +333,8 @@ namespace SkyHelp.Controllers
                 {
                     return BadRequest("No se Pudo Eliminar Al Usuario");
                 }
+                await _auditoriaService.RegistrarAsync(ObtenerIdActor(ID), "Eliminar", "Usuarios", ID,
+                    $"Usuario {ID} eliminado.", ObtenerIp());
                 return Ok("Usuario Eliminado Correctamente");
             }
             catch (Exception ex)

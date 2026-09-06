@@ -124,10 +124,18 @@ namespace SkyHelp.Repositories
                 if (idEstado == Guid.Empty)
                     throw new ArgumentException("ID del estado inválido");
 
-                // Usar SQL directo para actualizar solo el estado
+                var estado = await _context.EstadosTickets.AsNoTracking().FirstOrDefaultAsync(e => e.IdEstado == idEstado);
+                var esEstadoTerminal = estado != null &&
+                    (estado.NombreEstado.Equals("Resuelto", StringComparison.OrdinalIgnoreCase) ||
+                     estado.NombreEstado.Equals("Cerrado", StringComparison.OrdinalIgnoreCase));
+                DateTime? fechaCierre = esEstadoTerminal ? DateTime.Now : null;
+
+                // Usar SQL directo para actualizar solo el estado (y la fecha de cierre derivada de él)
                 var resultado = await _context.Tickets
                     .Where(t => t.IdTicket == idTicket)
-                    .ExecuteUpdateAsync(s => s.SetProperty(t => t.IdEstado, idEstado));
+                    .ExecuteUpdateAsync(s => s
+                        .SetProperty(t => t.IdEstado, idEstado)
+                        .SetProperty(t => t.FechaCierre, fechaCierre));
 
                 return resultado > 0;
             }

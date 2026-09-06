@@ -22,6 +22,7 @@ namespace SkyHelp.Models
         public required string Prioridad { get; set; }
         [Required]
         public DateTime? FechaCreacion { get; set; } = DateTime.Now;
+        public DateTime? FechaCierre { get; set; }
         [Required]
         public Guid IdEstado { get; set; }
         [Required]

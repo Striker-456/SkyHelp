@@ -8,6 +8,7 @@ using SkyHelp.EncriptarSHA256;
 using SkyHelp.Context;
 using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
+using SkyHelp.Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -22,12 +23,29 @@ namespace SkyHelp.Controllers
         private readonly IUsuariosRepository _usuariosRepository;
         private readonly IConfiguration _configuration;
         private readonly SkyHelpContext _context;
+        private readonly IAuditoriaService _auditoriaService;
 
-        public AuthController(IUsuariosRepository usuariosRepository, IConfiguration configuration, SkyHelpContext context)
+        public AuthController(IUsuariosRepository usuariosRepository, IConfiguration configuration, SkyHelpContext context, IAuditoriaService auditoriaService)
         {
             _usuariosRepository = usuariosRepository;
             _configuration = configuration;
             _context = context;
+            _auditoriaService = auditoriaService;
+        }
+
+        private string? ObtenerIp() => HttpContext.Connection.RemoteIpAddress?.ToString();
+
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (Guid.TryParse(idStr, out var idUsuario))
+            {
+                await _auditoriaService.RegistrarAsync(idUsuario, "Cierre de sesión", "Auth", idUsuario,
+                    $"Cierre de sesión de {User.Identity?.Name}.", ObtenerIp());
+            }
+            return Ok();
         }
         [HttpPost("login")]
         public async Task<IActionResult> Login(Login login)
@@ -108,6 +126,10 @@ namespace SkyHelp.Controllers
             );
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+
+            await _auditoriaService.RegistrarAsync(usuario.IdUsuario, "Inicio de sesión", "Auth", usuario.IdUsuario,
+                $"Inicio de sesión exitoso como {jwtRole}.", ObtenerIp());
+
             return Ok(new { Token = tokenString, Role = jwtRole });
         }
     }

@@ -28,6 +28,12 @@ namespace SkyHelp.Models
         [Required]  
 
         public required String OrigenTabla { get; set; }
+
+        // Datos ya calculados del reporte (JSON de ReporteGeneradoDto), guardados para poder exportarlos
+        // después sin tener que recalcularlos.
+        [Column(TypeName = "nvarchar(max)")]
+        public string? Datos { get; set; }
+
         [JsonIgnore]
         public virtual Usuarios? Usuario { get; set; }
 

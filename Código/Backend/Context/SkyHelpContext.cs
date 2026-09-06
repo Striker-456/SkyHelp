@@ -80,8 +80,9 @@ namespace SkyHelp.Context
                 entity.Property(e => e.TipoEvento).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.TablaAfectada).IsRequired();
                 entity.Property(e => e.IDRegistro).IsRequired();
-                entity.Property(e => e.Descripcion).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.Descripcion).IsRequired().HasMaxLength(300);
                 entity.Property(e => e.FechaEvento).IsRequired();
+                entity.Property(e => e.DireccionIp).HasMaxLength(45);
                 entity.HasOne(e => e.Usuario)
                       .WithMany(t => t.Auditorias)
                       .HasForeignKey(e => e.IDUsuario);
