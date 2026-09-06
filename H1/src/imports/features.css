@@ -1,0 +1,146 @@
+/* Sección de Características */
+.caracteristicas {
+  padding: 6rem 0;
+  background: white;
+  position: relative;
+  z-index: 1;
+}
+
+.encabezado-seccion {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.encabezado-seccion h2 {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 800;
+  color: var(--gris-900);
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.encabezado-seccion p {
+  font-size: 1.0625rem;
+  color: var(--gris-500);
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.cuadricula-caracteristicas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .cuadricula-caracteristicas { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .cuadricula-caracteristicas { grid-template-columns: 1fr; }
+}
+
+.tarjeta-caracteristica {
+  background: var(--gris-50);
+  border-radius: 1.25rem;
+  overflow: hidden;
+  border: 1.5px solid var(--gris-200);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.tarjeta-caracteristica:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  border-color: var(--color-primario);
+}
+
+.imagen-caracteristica {
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.tarjeta-caracteristica:hover .imagen-caracteristica img,
+.tarjeta-caracteristica:hover .imagen-caracteristica {
+  transform: scale(1.05);
+  transition: transform 0.4s ease;
+}
+
+.superposicion-caracteristica {
+  position: absolute;
+  inset: 0;
+  opacity: 0.6;
+}
+
+.degradado-rojo { background: linear-gradient(135deg, var(--color-primario), var(--color-naranja)); }
+.degradado-rosa { background: linear-gradient(135deg, var(--color-rosa), #ec4899); }
+.degradado-purpura { background: linear-gradient(135deg, var(--color-purpura), #8b5cf6); }
+.degradado-azul { background: linear-gradient(135deg, var(--color-azul), #06b6d4); }
+.degradado-amarillo { background: linear-gradient(135deg, var(--color-amarillo), var(--color-naranja)); }
+.degradado-verde { background: linear-gradient(135deg, var(--color-verde), #059669); }
+
+.icono-caracteristica {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  background: white;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  transition: transform 0.4s ease;
+}
+
+.tarjeta-caracteristica:hover .icono-caracteristica {
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
+.icono-caracteristica svg {
+  width: 32px;
+  height: 32px;
+  color: var(--color-primario);
+}
+
+.contenido-caracteristica {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.contenido-caracteristica h3 {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  margin-bottom: 0.625rem;
+  color: var(--gris-900);
+}
+
+.contenido-caracteristica p {
+  color: var(--gris-500);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  flex: 1;
+}
+
+.enlace-caracteristica {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-primario);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: gap 0.2s ease;
+}
+
+.tarjeta-caracteristica:hover .enlace-caracteristica {
+  gap: 0.875rem;
+}

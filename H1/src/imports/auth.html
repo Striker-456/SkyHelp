@@ -1,0 +1,127 @@
+<!-- PÁGINA DE LOGIN -->
+<div id="pagina-login" class="vista">
+    <div class="contenedor-login">
+        <div class="encabezado-login">
+            <button class="btn-atras" onclick="aplicacion.mostrarInicio()">
+                <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </button>
+            <div class="logo">
+                <div class="logo-icono">S</div>
+                <span class="logo-texto">SkyHelp</span>
+            </div>
+        </div>
+
+        <div class="tarjeta-login">
+            <div class="pestanas">
+                <button class="pestana activa" data-pestana="login" onclick="aplicacion.cambiarPestana('login')">Iniciar Sesión</button>
+                <button class="pestana" data-pestana="registro" onclick="aplicacion.cambiarPestana('registro')">Registrarse</button>
+            </div>
+
+            <!-- Pestaña de Login -->
+            <div id="pestana-login" class="contenido-pestana activa">
+                <div class="encabezado-formulario">
+                    <h2>Bienvenido de vuelta</h2>
+                    <p>Ingresa a tu cuenta SkyHelp</p>
+                </div>
+
+                <form id="formulario-login" onsubmit="aplicacion.manejarLogin(event)">
+                    <div class="grupo-formulario">
+                        <label>Correo Electrónico</label>
+                        <input type="email" name="correo" placeholder="correo@ejemplo.com" required>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label>Contraseña</label>
+                        <div class="entrada-contrasena">
+                            <input type="password" name="contrasena" id="contrasena-login" placeholder="••••••••" required>
+                            <button type="button" class="alternar-contrasena" onclick="aplicacion.alternarContrasena('contrasena-login')">
+                                <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="pie-formulario">
+                        <label class="etiqueta-checkbox">
+                            <input type="checkbox">
+                            Recordarme
+                        </label>
+                        <a href="#" class="enlace">¿Olvidaste tu contraseña?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primario btn-bloque">Iniciar Sesión</button>
+
+                    <div class="cuentas-demo">
+                        <p>Cuentas Demo:</p>
+                        <div class="lista-demo">
+                            <div>👤 <strong>Admin:</strong> admin@skyhelp.com / admin123</div>
+                            <div>🔧 <strong>Técnico:</strong> tecnico@skyhelp.com / tecnico123</div>
+                            <div>👥 <strong>Cliente:</strong> cliente@skyhelp.com / cliente123</div>
+                            <div>🚚 <strong>Domiciliario:</strong> domiciliario@skyhelp.com / domiciliario123</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Pestaña de Registro -->
+            <div id="pestana-registro" class="contenido-pestana">
+                <div class="encabezado-formulario">
+                    <h2>Crear Cuenta</h2>
+                    <p>Regístrate en SkyHelp</p>
+                </div>
+
+                <form id="formulario-registro" onsubmit="aplicacion.manejarRegistro(event)">
+                    <div class="fila-formulario">
+                        <div class="grupo-formulario">
+                            <label>Nombre Completo *</label>
+                            <input type="text" name="nombre" placeholder="Tu nombre" required>
+                        </div>
+                        <div class="grupo-formulario">
+                            <label>Teléfono</label>
+                            <input type="tel" name="telefono" placeholder="+57 123 456 7890">
+                        </div>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label>Correo Electrónico *</label>
+                        <input type="email" name="correo" placeholder="correo@ejemplo.com" required>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label>Tipo de Usuario *</label>
+                        <select name="rol" required>
+                            <option value="">Selecciona tu rol</option>
+                            <option value="cliente">Cliente</option>
+                            <option value="tecnico">Técnico</option>
+                            <option value="domiciliario">Domiciliario</option>
+                        </select>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label>Empresa (Opcional)</label>
+                        <input type="text" name="empresa" placeholder="Nombre de tu empresa">
+                    </div>
+
+                    <div class="fila-formulario">
+                        <div class="grupo-formulario">
+                            <label>Contraseña *</label>
+                            <input type="password" name="contrasena" id="contrasena-registro" placeholder="••••••••" required>
+                        </div>
+                        <div class="grupo-formulario">
+                            <label>Confirmar Contraseña *</label>
+                            <input type="password" name="confirmarContrasena" id="confirmar-contrasena" placeholder="••••••••" required>
+                        </div>
+                    </div>
+
+                    <div class="pie-formulario">
+                        <label class="etiqueta-checkbox">
+                            <input type="checkbox" required>
+                            Acepto los <a href="#" class="enlace">términos y condiciones</a>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primario btn-bloque">Crear Cuenta</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

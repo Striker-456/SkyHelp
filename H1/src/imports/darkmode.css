@@ -1,0 +1,207 @@
+/* ===== MODO OSCURO ===== */
+body.modo-oscuro {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+/* ===== MODO CLARO — valores explícitos para evitar blanco sobre blanco ===== */
+body:not(.modo-oscuro) .barra-lateral,
+body:not(.modo-oscuro) .encabezado-app,
+body:not(.modo-oscuro) .tarjeta,
+body:not(.modo-oscuro) .tarjeta-estadistica-dashboard,
+body:not(.modo-oscuro) .item-ticket-cliente,
+body:not(.modo-oscuro) .modal,
+body:not(.modo-oscuro) .modal-encabezado,
+body:not(.modo-oscuro) .filtros select,
+body:not(.modo-oscuro) .entrada-busqueda,
+body:not(.modo-oscuro) .grupo-formulario input,
+body:not(.modo-oscuro) .grupo-formulario select,
+body:not(.modo-oscuro) .grupo-formulario textarea,
+body:not(.modo-oscuro) .btn-secundario,
+body:not(.modo-oscuro) .dom-entrega-card,
+body:not(.modo-oscuro) .item-chat-lista {
+  background-color: #ffffff;
+}
+
+body:not(.modo-oscuro) .contenido-principal,
+body:not(.modo-oscuro) .area-contenido {
+  background-color: #f9fafb;
+}
+
+body:not(.modo-oscuro) .modal-pie {
+  background-color: #f9fafb;
+}
+
+/* ===== MODO OSCURO — overrides ===== */
+
+/* Layout */
+body.modo-oscuro .barra-lateral { background: #1e293b; border-right-color: #334155; }
+body.modo-oscuro .encabezado-barra { border-bottom-color: #334155; }
+body.modo-oscuro .pie-barra { border-top-color: #334155; }
+body.modo-oscuro .contenido-principal { background: #0f172a; }
+body.modo-oscuro .area-contenido { background: #0f172a; }
+body.modo-oscuro .encabezado-app { background: #1e293b; border-bottom-color: #334155; }
+body.modo-oscuro .encabezado-app h1 { color: #f8fafc; }
+
+/* Nav */
+body.modo-oscuro .item-nav { color: #cbd5e1; }
+body.modo-oscuro .item-nav:hover { background: #334155; color: white; }
+body.modo-oscuro .nombre-usuario { color: #f1f5f9; }
+body.modo-oscuro .rol-usuario { color: #94a3b8; }
+
+/* Botones header */
+body.modo-oscuro .boton-icono { color: #94a3b8; background: #334155; border-color: #475569; }
+body.modo-oscuro .boton-icono:hover { background: #475569; color: white; }
+body.modo-oscuro .alternar-barra { color: #94a3b8; }
+body.modo-oscuro .alternar-barra:hover { background: #334155; color: white; }
+
+/* Tarjetas */
+body.modo-oscuro .tarjeta { background: #1e293b; border-color: #334155; color: #f1f5f9; }
+body.modo-oscuro .tarjeta h3 { color: #f1f5f9; }
+body.modo-oscuro .tarjeta-estadistica-dashboard { background: #1e293b; border-color: #334155; }
+body.modo-oscuro .etiqueta-estadistica-dashboard { color: #94a3b8; }
+body.modo-oscuro .valor-estadistica-dashboard { color: #f8fafc; }
+
+/* Tablas */
+body.modo-oscuro table { color: #e2e8f0; }
+body.modo-oscuro thead { background: #334155; }
+body.modo-oscuro th { color: #94a3b8; }
+body.modo-oscuro td { border-top-color: #334155; color: #cbd5e1; }
+body.modo-oscuro tr:hover { background: #334155; }
+
+/* Modales */
+body.modo-oscuro .modal { background: #1e293b; color: #f1f5f9; }
+body.modo-oscuro .modal-encabezado { background: #1e293b; border-bottom-color: #334155; }
+body.modo-oscuro .modal-encabezado h3 { color: #f8fafc; }
+body.modo-oscuro .modal-pie { background: #0f172a; border-top-color: #334155; }
+body.modo-oscuro .btn-cerrar-modal { background: #334155; color: #cbd5e1; }
+body.modo-oscuro .info-ticket-item { background: #334155; border-color: #475569; }
+body.modo-oscuro .info-ticket-item .etiqueta { color: #94a3b8; }
+body.modo-oscuro .info-ticket-item .valor { color: #f1f5f9; }
+body.modo-oscuro .contenido-timeline { background: #334155; border-color: #475569; }
+body.modo-oscuro .contenido-timeline .accion { color: #f1f5f9; }
+body.modo-oscuro .contenido-timeline .tiempo { color: #64748b; }
+body.modo-oscuro .evento-timeline::after { background: #334155; }
+body.modo-oscuro .detalle-stats-banda { background: #334155; border-color: #475569; }
+body.modo-oscuro .detalle-item { background: #334155; border-color: #475569; }
+body.modo-oscuro .detalle-item:hover { background: #1e293b; border-color: var(--color-primario); }
+
+/* Formularios */
+body.modo-oscuro .grupo-formulario input,
+body.modo-oscuro .grupo-formulario select,
+body.modo-oscuro .grupo-formulario textarea { background: #334155; border-color: #475569; color: #f1f5f9; }
+body.modo-oscuro .grupo-formulario input:focus,
+body.modo-oscuro .grupo-formulario select:focus,
+body.modo-oscuro .grupo-formulario textarea:focus { background: #1e293b; border-color: var(--color-primario); }
+body.modo-oscuro .grupo-formulario label { color: #cbd5e1; }
+body.modo-oscuro .grupo-formulario input:disabled { background: #1e293b; color: #64748b; }
+
+/* Botones */
+body.modo-oscuro .btn-secundario { background: #334155; color: #e2e8f0; border-color: #475569; }
+body.modo-oscuro .btn-secundario:hover { background: #475569; border-color: var(--color-primario); }
+body.modo-oscuro .btn-cerrar-sesion { background: #334155; border-color: #475569; color: #cbd5e1; }
+body.modo-oscuro .btn-cerrar-sesion:hover { background: var(--color-primario); color: white; border-color: var(--color-primario); }
+
+/* Tickets */
+body.modo-oscuro .encabezado-tickets { background: transparent; }
+body.modo-oscuro .entrada-busqueda { background: #334155; border-color: #475569; color: #f1f5f9; }
+body.modo-oscuro .filtros select { background: #334155; color: #f1f5f9; border-color: #475569; }
+
+/* Dashboard cliente */
+body.modo-oscuro .bienvenida-texto h2 { color: #f8fafc; }
+body.modo-oscuro .bienvenida-texto p { color: #94a3b8; }
+body.modo-oscuro .item-ticket-cliente { background: #1e293b; border-color: #334155; }
+body.modo-oscuro .item-ticket-cliente:hover { border-color: var(--color-primario); }
+body.modo-oscuro .ticket-cliente-titulo { color: #f1f5f9; }
+body.modo-oscuro .ticket-cliente-desc { color: #94a3b8; }
+body.modo-oscuro .item-estado { color: #cbd5e1; }
+body.modo-oscuro .estado-label { color: #64748b; }
+body.modo-oscuro .btn-accion-rapida { background: #334155; border-color: #475569; color: #cbd5e1; }
+body.modo-oscuro .btn-accion-rapida:hover { background: #1e293b; border-color: var(--color-primario); color: var(--color-primario); }
+
+/* Chat */
+body.modo-oscuro .chat-mensajes { background: #0f172a; }
+body.modo-oscuro .burbuja-otro { background: #1e293b; color: #f1f5f9; border-color: #334155; }
+body.modo-oscuro .chat-input-area { background: #1e293b; border-top-color: #334155; }
+body.modo-oscuro .chat-input-wrap { background: #334155; border-color: #475569; }
+body.modo-oscuro .chat-input-wrap:focus-within { background: #1e293b; }
+body.modo-oscuro .chat-textarea { color: #f1f5f9; }
+body.modo-oscuro .chat-barra-progreso-mini { background: #1e293b; border-bottom-color: #334155; }
+body.modo-oscuro .chat-progreso-label { color: #94a3b8; }
+body.modo-oscuro .chat-fecha-separador span { color: #64748b; }
+body.modo-oscuro .chat-fecha-separador::before,
+body.modo-oscuro .chat-fecha-separador::after { background: #334155; }
+body.modo-oscuro .item-chat-lista { background: #1e293b; border-color: #334155; }
+body.modo-oscuro .chat-lista-nombre { color: #f1f5f9; }
+body.modo-oscuro .chat-lista-ultimo { color: #64748b; }
+
+/* Wizard */
+body.modo-oscuro .tipo-equipo-card { background: #334155; border-color: #475569; }
+body.modo-oscuro .tipo-equipo-nombre { color: #cbd5e1; }
+body.modo-oscuro .problema-rapido { background: #334155; border-color: #475569; color: #cbd5e1; }
+body.modo-oscuro .wizard-resumen { background: #334155; border-color: #475569; }
+body.modo-oscuro .wizard-resumen-titulo { color: #f1f5f9; }
+body.modo-oscuro .wizard-resumen-item { color: #94a3b8; }
+body.modo-oscuro .wizard-resumen-item strong { color: #f1f5f9; }
+body.modo-oscuro .prioridad-card { background: #334155; border-color: #475569; }
+body.modo-oscuro .prioridad-card span { color: #cbd5e1; }
+body.modo-oscuro .wizard-seccion-titulo { color: #f1f5f9; }
+
+/* Domiciliario */
+body.modo-oscuro .dom-entrega-card { background: #1e293b; border-color: #334155; }
+body.modo-oscuro .dom-entrega-equipo { color: #f1f5f9; }
+body.modo-oscuro .dom-entrega-notas { background: #334155; color: #94a3b8; }
+body.modo-oscuro .dom-entrega-footer { border-top-color: #334155; }
+body.modo-oscuro .dom-seccion-titulo { color: #f1f5f9; }
+body.modo-oscuro .dom-distancia { background: #334155; color: #94a3b8; }
+body.modo-oscuro .dom-entrega-cliente { color: #94a3b8; }
+body.modo-oscuro .dom-entrega-dir { color: #94a3b8; }
+body.modo-oscuro .dom-entrega-id { color: #64748b; }
+
+/* Perfil */
+body.modo-oscuro .perfil-nombre { color: #f8fafc; }
+body.modo-oscuro .perfil-correo { color: #64748b; }
+body.modo-oscuro .perfil-stats-mini { border-top-color: #334155; }
+body.modo-oscuro .perfil-stat-lbl { color: #64748b; }
+
+/* Scrollbar */
+body.modo-oscuro ::-webkit-scrollbar-track { background: #1e293b; }
+body.modo-oscuro ::-webkit-scrollbar-thumb { background: #475569; }
+
+/* ===== LANDING MODO OSCURO ===== */
+body.modo-oscuro .encabezado-inicio { background: rgba(15,23,42,0.97); border-bottom-color: #334155; }
+body.modo-oscuro .logo-texto { background: linear-gradient(135deg,#f87171,#f472b6); -webkit-background-clip:text; background-clip:text; }
+body.modo-oscuro .hero { background: linear-gradient(160deg,#0f172a 0%,#1e293b 50%,#0f172a 100%); }
+body.modo-oscuro .titulo-hero { color: #f8fafc; }
+body.modo-oscuro .descripcion-hero { color: #94a3b8; }
+body.modo-oscuro .insignia { background: #1e293b; border-color: #334155; color: #f87171; }
+body.modo-oscuro .hero-stat-label { color: #64748b; }
+body.modo-oscuro .tarjeta-showcase { background: #1e293b; border-color: #334155; }
+body.modo-oscuro .valor-metrica { color: #f1f5f9; }
+body.modo-oscuro .etiqueta-metrica { color: #64748b; }
+body.modo-oscuro .metrica { background: #334155; }
+body.modo-oscuro .caracteristicas { background: #0f172a; }
+body.modo-oscuro .encabezado-seccion h2 { color: #f8fafc; }
+body.modo-oscuro .encabezado-seccion p { color: #64748b; }
+body.modo-oscuro .tarjeta-caracteristica { background: #1e293b; border-color: #334155; }
+body.modo-oscuro .contenido-caracteristica h3 { color: #f1f5f9; }
+body.modo-oscuro .contenido-caracteristica p { color: #94a3b8; }
+body.modo-oscuro .beneficios { background: #0f172a; }
+body.modo-oscuro .tarjeta-beneficios { background: #1e293b; border-color: #334155; }
+body.modo-oscuro .contenido-beneficios h2 { color: #f8fafc; }
+body.modo-oscuro .contenido-beneficios > p { color: #94a3b8; }
+body.modo-oscuro .item-beneficio { background: #334155; border-color: #475569; }
+body.modo-oscuro .item-beneficio span { color: #cbd5e1; }
+body.modo-oscuro .cta { background: #0f172a; }
+body.modo-oscuro .pie-pagina { background: #020617; }
+body.modo-oscuro .btn-tema-landing { background: #1e293b; border-color: #334155; color: #94a3b8; }
+
+/* ===== TRANSICIÓN SUAVE (solo propiedades específicas, no global) ===== */
+.barra-lateral, .encabezado-app, .tarjeta, .tarjeta-estadistica-dashboard,
+.item-ticket-cliente, .modal, .modal-encabezado, .modal-pie,
+.contenido-principal, .area-contenido, .item-nav, .btn-secundario,
+.entrada-busqueda, .dom-entrega-card, .item-chat-lista,
+.encabezado-inicio, .hero, .tarjeta-showcase, .tarjeta-caracteristica,
+.tarjeta-beneficios, .item-beneficio, .caracteristicas, .beneficios, .cta {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.2s ease;
+}

@@ -1,0 +1,181 @@
+/* Gestión de Vistas */
+.vista {
+  display: none;
+}
+
+.vista.activa {
+  display: block;
+}
+
+/* Iconos */
+.icono {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2;
+}
+
+.icono-estrella {
+  width: 16px;
+  height: 16px;
+}
+
+/* Botones Mejorados */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  transition: var(--transicion);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition:
+    width 0.6s,
+    height 0.6s;
+}
+
+.btn:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primario {
+  background: linear-gradient(
+    135deg,
+    var(--color-primario) 0%,
+    var(--color-rosa) 100%
+  );
+  color: white;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.btn-primario:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.5);
+}
+
+.btn-secundario {
+  background: white;
+  color: var(--gris-700);
+  border: 2px solid var(--gris-300);
+  box-shadow: var(--sombra-sm);
+}
+
+.btn-secundario:hover:not(:disabled) {
+  background: var(--gris-50);
+  border-color: var(--color-primario);
+  transform: translateY(-1px);
+}
+
+.btn-blanco {
+  background: white;
+  color: var(--color-primario);
+  box-shadow: var(--sombra-lg);
+}
+
+.btn-blanco:hover:not(:disabled) {
+  background: var(--gris-50);
+  transform: scale(1.05);
+}
+
+.btn-contorno {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  color: white;
+  border: 2px solid white;
+}
+
+.btn-contorno:hover:not(:disabled) {
+  background: white;
+  color: var(--color-primario);
+}
+
+.btn-lg {
+  padding: 1rem 2.5rem;
+  font-size: 1.0625rem;
+  border-radius: 1rem;
+}
+
+.btn-bloque {
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-cerrar-sesion {
+  background: var(--gris-100);
+  color: var(--gris-700);
+  width: 100%;
+  justify-content: center;
+  border-radius: 0.75rem;
+}
+
+.btn-cerrar-sesion:hover {
+  background: var(--color-primario);
+  color: white;
+}
+
+.btn-atras {
+  background: transparent;
+  border: none;
+  padding: 0.625rem;
+  cursor: pointer;
+  border-radius: 0.75rem;
+  color: var(--gris-600);
+  transition: var(--transicion);
+}
+
+.btn-atras:hover {
+  background: var(--gris-100);
+  color: var(--color-primario);
+}
+
+.boton-icono {
+  position: relative;
+  background: transparent;
+  border: none;
+  padding: 0.625rem;
+  cursor: pointer;
+  border-radius: 0.75rem;
+  color: var(--gris-600);
+  transition: var(--transicion);
+}
+
+.boton-icono:hover {
+  background: var(--gris-100);
+  color: var(--color-primario);
+}
+
+.insignia-notificacion {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: var(--color-primario);
+  color: white;
+  font-size: 0.625rem;
+  font-weight: 700;
+  padding: 0.15rem 0.4rem;
+  border-radius: 9999px;
+  box-shadow: var(--sombra-md);
+}

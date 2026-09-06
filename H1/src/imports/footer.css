@@ -1,0 +1,51 @@
+/* Pie de Página */
+.pie-pagina {
+  background: var(--gris-900);
+  color: white;
+  padding: 4rem 0;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.logo-pie {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.descripcion-pie {
+  color: var(--gris-400);
+  margin-bottom: 1.5rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.enlaces-pie {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  font-size: 0.9375rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.enlaces-pie a {
+  color: var(--gris-400);
+  text-decoration: none;
+  transition: var(--transicion);
+}
+
+.enlaces-pie a:hover {
+  color: white;
+}
+
+.derechos-autor {
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--gris-800);
+  font-size: 0.9375rem;
+  color: var(--gris-400);
+}
