@@ -1,5 +1,8 @@
 
-const API_BASE = 'https://bv5lqzhq-5191.use2.devtunnels.ms';
+// El backend sirve este frontend desde su propio origen (ver Program.cs),
+// así que usamos ese mismo origen sin importar si se accede por localhost,
+// por un devtunnel o en producción.
+const API_BASE = 'http://localhost:5191';
 
 const Api = {
     // Obtener token almacenado
