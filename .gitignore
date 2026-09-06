@@ -1,0 +1,24 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+
+# Visual Studio
+.vs/
+
+# Node / Vite (H1)
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Secrets locales (usar User Secrets / variables de entorno en su lugar)
+appsettings.*.local.json
+.env
+.env.*
+
+# Sistema operativo / editores
+.DS_Store
+Thumbs.db
+*.log
