@@ -107,7 +107,7 @@ namespace SkyHelp.Controllers
                 {
                     return NotFound("Usuario no encontrado."); // Retornando una respuesta HTTP 404 si no se encuentra el usuario
                 }
-                if (User.IsInRole(RoleNames.Usuario) && !User.IsInRole(RoleNames.Administrador))
+                if (!User.IsInRole(RoleNames.Administrador))
                 {
                     var self = await _UsuariosRepository.ObtenerUsuarioPorCorreo(User.Identity?.Name ?? "");
                     if (self == null || self.IdUsuario != ID)

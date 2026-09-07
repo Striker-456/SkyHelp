@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SkyHelp.Authorization;
 using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
 
@@ -65,6 +66,7 @@ namespace SkyHelp.Controllers
         }
 
         // CREAR
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpPost("CrearEstadoTicket")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -88,6 +90,7 @@ namespace SkyHelp.Controllers
         }
 
         // ACTUALIZAR
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpPut("ActualizarEstadoTicket")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -111,6 +114,7 @@ namespace SkyHelp.Controllers
         }
 
         // ELIMINAR
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpDelete("EliminarEstadoTicket")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

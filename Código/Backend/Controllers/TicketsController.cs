@@ -15,15 +15,18 @@ namespace SkyHelp.Controllers
     {
         private readonly ITicketsRepository _ticketsRepository;
         private readonly ITecnicosRepository _tecnicosRepository;
+        private readonly IDomiciliariosRepository _domiciliariosRepository;
         private readonly IAuditoriaService _auditoriaService;
 
         public TicketsController(
             ITicketsRepository ticketsRepository,
             ITecnicosRepository tecnicosRepository,
+            IDomiciliariosRepository domiciliariosRepository,
             IAuditoriaService auditoriaService)
         {
             _ticketsRepository = ticketsRepository;
             _tecnicosRepository = tecnicosRepository;
+            _domiciliariosRepository = domiciliariosRepository;
             _auditoriaService = auditoriaService;
         }
 
@@ -33,6 +36,29 @@ namespace SkyHelp.Controllers
         {
             var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return Guid.TryParse(idStr, out var id) ? id : Guid.Empty;
+        }
+
+        // Admin: acceso total. Dueño del ticket, técnico asignado o domiciliario asignado: acceso al propio.
+        private async Task<bool> PuedeGestionarTicket(Tickets ticket)
+        {
+            if (User.IsInRole(RoleNames.Administrador)) return true;
+
+            var idActor = ObtenerIdActor();
+            if (ticket.IdUsuario == idActor) return true;
+
+            if (User.IsInRole(RoleNames.Tecnico))
+            {
+                var tecnico = await _tecnicosRepository.ObtenerTecnicoPorIdUsuario(idActor);
+                if (tecnico != null && ticket.IdTecnico == tecnico.IdTecnico) return true;
+            }
+
+            if (User.IsInRole(RoleNames.Domiciliario))
+            {
+                var domiciliario = await _domiciliariosRepository.ObtenerDomiciliarioPorIdUsuario(idActor);
+                if (domiciliario != null && ticket.IdDomiciliario == domiciliario.IdDomiciliario) return true;
+            }
+
+            return false;
         }
 
         [Authorize(Roles = RoleNames.Administrador)]
@@ -81,6 +107,13 @@ namespace SkyHelp.Controllers
         {
             try
             {
+                if (!User.IsInRole(RoleNames.Administrador))
+                {
+                    var domiciliario = await _domiciliariosRepository.ObtenerDomiciliarioPorIdUsuario(ObtenerIdActor());
+                    if (domiciliario == null || domiciliario.IdDomiciliario != idDomiciliario)
+                        return Forbid();
+                }
+
                 var lista = await _ticketsRepository.ObtenerTicketsPorDomiciliario(idDomiciliario);
                 return Ok(lista);
             }
@@ -118,6 +151,8 @@ namespace SkyHelp.Controllers
                 var ticket = await _ticketsRepository.ObtenerTicketPorId(Id);
                 if (ticket == null)
                     return NotFound("Ticket no encontrado.");
+                if (!await PuedeGestionarTicket(ticket))
+                    return Forbid();
 
                 return Ok(ticket);
             }
@@ -155,6 +190,12 @@ namespace SkyHelp.Controllers
                 if (request == null || request.IdTicket == Guid.Empty)
                     return BadRequest("El ticket no es válido o falta el ID.");
 
+                var ticketExistente = await _ticketsRepository.ObtenerTicketPorId(request.IdTicket);
+                if (ticketExistente == null)
+                    return NotFound("Ticket no encontrado.");
+                if (!await PuedeGestionarTicket(ticketExistente))
+                    return Forbid();
+
                 var resultado = await _ticketsRepository.ActualizarDomiciliarioTicket(request.IdTicket, request.IdDomiciliario);
                 if (!resultado)
                     return StatusCode(StatusCodes.Status500InternalServerError, "No se pudo actualizar el domiciliario del ticket.");
@@ -182,6 +223,12 @@ namespace SkyHelp.Controllers
 
                 if (request.IdEstado == Guid.Empty)
                     return BadRequest("El estado no es válido.");
+
+                var ticketExistente = await _ticketsRepository.ObtenerTicketPorId(request.IdTicket);
+                if (ticketExistente == null)
+                    return NotFound("Ticket no encontrado.");
+                if (!await PuedeGestionarTicket(ticketExistente))
+                    return Forbid();
 
                 // Usar SQL directo para actualizar solo el estado
                 var resultado = await _ticketsRepository.ActualizarEstadoTicket(request.IdTicket, request.IdEstado);
@@ -215,7 +262,7 @@ namespace SkyHelp.Controllers
             return Ok(new { mensaje = "Comentario aceptado; enlazar persistencia cuando exista el modelo.", texto = body.Texto });
         }
 
-        [Authorize]
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpDelete("EliminarTicket")]
         public async Task<IActionResult> EliminarTicket(Guid Id)
         {
