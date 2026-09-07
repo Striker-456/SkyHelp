@@ -11,9 +11,11 @@ namespace SkyHelp.Repositories
     public class UsuariosRepository : IUsuariosRepository
     {
         private readonly SkyHelpContext _context;
-        public UsuariosRepository(SkyHelpContext context)
+        private readonly ILogger<UsuariosRepository> _logger;
+        public UsuariosRepository(SkyHelpContext context, ILogger<UsuariosRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
         public async Task<Usuarios> ObtenerUsuario(Guid id)
         {
@@ -64,7 +66,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                _logger.LogError(ex, "Error al eliminar el usuario {IdUsuario}", id);
+                throw;
             }
         }
 
@@ -87,7 +90,7 @@ namespace SkyHelp.Repositories
 
                 if (!string.IsNullOrWhiteSpace(usuario.Contrasena))
                 {
-                    usuarioExistente.Contrasena = Seguridad.EncriptarSHA256(usuario.Contrasena);
+                    usuarioExistente.Contrasena = Seguridad.Hashear(usuario.Contrasena);
                 }
 
                 _context.Usuarios.Update(usuarioExistente);
@@ -96,7 +99,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                _logger.LogError(ex, "Error al actualizar el usuario {IdUsuario}", usuario.IdUsuario);
+                throw;
             }
         }
 
@@ -104,7 +108,7 @@ namespace SkyHelp.Repositories
         {
             try
             {
-                usuario.Contrasena = Seguridad.EncriptarSHA256(usuario.Contrasena);
+                usuario.Contrasena = Seguridad.Hashear(usuario.Contrasena);
 
                 if (usuario.IdUsuario == Guid.Empty)
                 {
@@ -117,6 +121,7 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al crear el usuario {Correo}", usuario.Correo);
                 throw; // propaga la excepción original con todo el inner exception
             }
         }

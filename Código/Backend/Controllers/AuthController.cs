@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SkyHelp.Authorization;
@@ -16,6 +17,7 @@ using System.Text;
 namespace SkyHelp.Controllers
 {
 
+    [EnableRateLimiting("auth")]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -92,8 +94,16 @@ namespace SkyHelp.Controllers
             if (usuario == null)
                 return Unauthorized();
 
-            if (Seguridad.EncriptarSHA256(login.Contrasena) != usuario.Contrasena)
+            if (!Seguridad.Verificar(login.Contrasena, usuario.Contrasena))
                 return Unauthorized("Credenciales inválidas.");
+
+            // Migración silenciosa: si la contraseña todavía está en el formato SHA-256 legado,
+            // se re-hashea con BCrypt ahora que sabemos que la contraseña en texto plano es correcta.
+            if (Seguridad.EsHashLegado(usuario.Contrasena))
+            {
+                usuario.Contrasena = login.Contrasena;
+                await _usuariosRepository.ActualizarUsuario(usuario);
+            }
 
             var rol = await _context.Roles.FirstOrDefaultAsync(r => r.IDRol == usuario.IdRol);
             if (rol == null || string.IsNullOrWhiteSpace(rol.NombreRol))

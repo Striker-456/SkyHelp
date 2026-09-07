@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using SkyHelp.Authorization;
 using SkyHelp.EncriptarSHA256;
 using SkyHelp.Models;
@@ -122,6 +123,7 @@ namespace SkyHelp.Controllers
         }
         
         [AllowAnonymous]
+        [EnableRateLimiting("auth")]
         [HttpPost("CrearUsuario")]// Definiendo que este método responde a solicitudes GET
         [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
         [ProducesResponseType(StatusCodes.Status404NotFound)]// Indicando que este método puede retornar un estado 404 Not Found
@@ -177,7 +179,7 @@ namespace SkyHelp.Controllers
                     return NotFound("Usuario no encontrado.");
 
                 // Verificar contraseña actual
-                if (Seguridad.EncriptarSHA256(request.ContrasenaActual) != usuario.Contrasena)
+                if (!Seguridad.Verificar(request.ContrasenaActual, usuario.Contrasena))
                     return BadRequest("Contraseña actual inválida.");
 
                 usuario.Contrasena = request.NuevaContrasena;
@@ -211,7 +213,7 @@ namespace SkyHelp.Controllers
                     return NotFound("Usuario no encontrado.");
 
                 // Verificar contraseña
-                if (Seguridad.EncriptarSHA256(request.Contrasena) != usuario.Contrasena)
+                if (!Seguridad.Verificar(request.Contrasena, usuario.Contrasena))
                     return BadRequest("Contraseña inválida.");
 
                 // Crear objeto para actualizar sin cambiar contraseña
@@ -257,7 +259,7 @@ namespace SkyHelp.Controllers
                     return NotFound("Usuario no encontrado.");
 
                 // Verificar contraseña
-                if (Seguridad.EncriptarSHA256(request.Contrasena) != usuario.Contrasena)
+                if (!Seguridad.Verificar(request.Contrasena, usuario.Contrasena))
                     return BadRequest("Contraseña inválida.");
 
                 // Verificar que el nuevo correo no exista

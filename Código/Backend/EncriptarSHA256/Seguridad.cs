@@ -1,25 +1,39 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace SkyHelp.EncriptarSHA256
 {
+    // El nombre del namespace se conserva para no tocar todos los using existentes,
+    // pero desde ahora las contraseñas nuevas se protegen con BCrypt (con sal
+    // aleatoria por contraseña), no con SHA-256 plano.
     public static class Seguridad
     {
-        public static string EncriptarSHA256(string texto)
-        {
-            using (SHA256 sha256 =SHA256.Create())
-            {
-                byte[] bytes = Encoding.UTF8.GetBytes(texto);
-                byte[] hash = sha256.ComputeHash(bytes);
-                return Convert.ToBase64String(hash);
+        // Hashes legados (previos a esta migración) son SHA-256 + Base64: 44 caracteres,
+        // sin el prefijo "$2" que usa BCrypt. Se siguen aceptando solo para poder verificar
+        // el login de cuentas viejas; ContrasenaEsBCrypt distingue ambos formatos.
+        private static bool ContrasenaEsBCrypt(string hash) => hash.StartsWith("$2");
 
-                StringBuilder resultado = new StringBuilder();
-                for (int i = 0; i < hash.Length; i++)
-                {
-                    resultado.Append(hash[i].ToString("x2"));
-                }
-                return resultado.ToString();
-            }
+        public static string Hashear(string contrasenaPlano) => BCrypt.Net.BCrypt.HashPassword(contrasenaPlano);
+
+        // Devuelve true si la contraseña en texto plano coincide con el hash almacenado,
+        // sin importar si ese hash es BCrypt (formato actual) o SHA-256 (formato legado).
+        public static bool Verificar(string contrasenaPlano, string hashAlmacenado)
+        {
+            if (string.IsNullOrEmpty(hashAlmacenado)) return false;
+
+            if (ContrasenaEsBCrypt(hashAlmacenado))
+                return BCrypt.Net.BCrypt.Verify(contrasenaPlano, hashAlmacenado);
+
+            return EncriptarSHA256Legado(contrasenaPlano) == hashAlmacenado;
+        }
+
+        public static bool EsHashLegado(string hashAlmacenado) => !string.IsNullOrEmpty(hashAlmacenado) && !ContrasenaEsBCrypt(hashAlmacenado);
+
+        private static string EncriptarSHA256Legado(string texto)
+        {
+            using var sha256 = SHA256.Create();
+            var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(texto));
+            return Convert.ToBase64String(hash);
         }
     }
 }

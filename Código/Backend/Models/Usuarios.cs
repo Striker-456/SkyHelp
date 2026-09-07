@@ -24,7 +24,7 @@ namespace SkyHelp.Models
         [StringLength(50)]
         public required string Correo { get; set; }
         [Required]
-        [StringLength(50)]
+        [StringLength(100)]
         public required string Contrasena { get; set; }
         [Required]
         [StringLength(50)]
