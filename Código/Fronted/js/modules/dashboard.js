@@ -189,10 +189,6 @@ AplicacionSkyHelp.prototype.obtenerDashboardCliente = async function() {
                         <span>Prioridad: ${ticketActivo.prioridad || '—'}</span>
                     </div>
                     <div class="cli-ticket-acciones">
-                        <button class="cli-btn-chat" onclick="event.stopPropagation();aplicacion.abrirChatTicket('${ticketActivo.idTicket||ticketActivo.id}')">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:16px;height:16px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                            Chat
-                        </button>
                         <button class="cli-btn-ver" onclick="event.stopPropagation();aplicacion.verDetalleTicket('${ticketActivo.idTicket||ticketActivo.id}')">
                             Ver detalles →
                         </button>

@@ -104,11 +104,6 @@ AplicacionSkyHelp.prototype.obtenerItemsNavPorRol = function(rol) {
         return [
             ...itemsComunes,
             {
-                id: 'chat',
-                etiqueta: 'Mis Chats',
-                icono: '<svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
-            },
-            {
                 id: 'perfil',
                 etiqueta: 'Mi Perfil',
                 icono: '<svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'
@@ -159,8 +154,7 @@ AplicacionSkyHelp.prototype.navegarA = function(seccion) {
         configuracion: 'Configuración',
         conocimiento: 'Base de Conocimientos',
         perfil: 'Mi Perfil',
-        historial: 'Historial de Entregas',
-        chat: 'Mis Chats'
+        historial: 'Historial de Entregas'
     };
     document.getElementById('titulo-pagina').textContent = titulos[seccion] || 'Dashboard';
     
@@ -203,9 +197,6 @@ AplicacionSkyHelp.prototype.cargarContenido = async function(seccion) {
             break;
         case 'perfil':
             contenido = await this.obtenerContenidoPerfil();
-            break;
-        case 'chat':
-            contenido = await this.obtenerContenidoChats();
             break;
         case 'historial':
             contenido = await this.obtenerContenidoHistorial();

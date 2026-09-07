@@ -25,7 +25,7 @@ class AplicacionSkyHelp {
                 document.querySelectorAll('.item-nav').forEach(item => {
                     item.classList.toggle('activo', item.dataset.seccion === e.state.seccion);
                 });
-                const titulos = { dashboard:'Dashboard', tickets:'Gestión de Tickets', tecnicos:'Gestión de Técnicos', usuarios:'Gestión de Usuarios', reportes:'Reportes y Estadísticas', configuracion:'Configuración', conocimiento:'Base de Conocimientos', perfil:'Mi Perfil', historial:'Historial de Entregas', chat:'Mis Chats' };
+                const titulos = { dashboard:'Dashboard', tickets:'Gestión de Tickets', tecnicos:'Gestión de Técnicos', usuarios:'Gestión de Usuarios', auditoria:'Auditorías', reportes:'Reportes', estadisticas:'Estadísticas', configuracion:'Configuración', conocimiento:'Base de Conocimientos', perfil:'Mi Perfil', historial:'Historial de Entregas' };
                 const titulo = document.getElementById('titulo-pagina');
                 if (titulo) titulo.textContent = titulos[e.state.seccion] || 'Dashboard';
             }
