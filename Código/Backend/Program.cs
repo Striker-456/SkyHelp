@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
@@ -58,11 +59,33 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.AddCors(options =>
 {
+    // Restringido a localhost (cualquier puerto, para desarrollo) y *.devtunnels.ms
+    // (túneles de desarrollo). Antes era AllowAnyOrigin(), lo cual no tiene sentido
+    // ya que el mismo backend sirve el frontend desde su propio origen.
     options.AddPolicy("AllowSpecificOrigin",
-        builder => builder
-            .AllowAnyOrigin()
+        corsBuilder => corsBuilder
+            .SetIsOriginAllowed(origin =>
+            {
+                if (!Uri.TryCreate(origin, UriKind.Absolute, out var uri)) return false;
+                return uri.IsLoopback || uri.Host.EndsWith(".devtunnels.ms", StringComparison.OrdinalIgnoreCase);
+            })
             .AllowAnyMethod()
             .AllowAnyHeader());
+});
+
+builder.Services.AddRateLimiter(options =>
+{
+    // Frena fuerza bruta de login y spam de registro de cuentas.
+    // Partición por IP: un cliente abusivo no debe agotar la cuota de los demás.
+    options.AddPolicy("auth", httpContext => System.Threading.RateLimiting.RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "sin-ip",
+        factory: _ => new System.Threading.RateLimiting.FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 10,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0
+        }));
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 });
 
 var jwtKey = builder.Configuration["Jwt:Key"];
@@ -100,6 +123,28 @@ builder.Services.AddAuthentication(x =>
 
 var app = builder.Build();
 
+// Red de seguridad: cualquier excepción no controlada por un try/catch local
+// (o que se les escape) termina aquí en vez de tumbar la respuesta sin registro.
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        var feature = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
+        if (feature?.Error is Exception ex)
+        {
+            var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "Excepción no controlada en {Path}", context.Request.Path);
+        }
+
+        context.Response.ContentType = "application/json";
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(new
+        {
+            mensaje = "Ocurrió un error interno. Intenta de nuevo más tarde."
+        }));
+    });
+});
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -109,6 +154,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("AllowSpecificOrigin");
+
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.Use(async (context, next) =>

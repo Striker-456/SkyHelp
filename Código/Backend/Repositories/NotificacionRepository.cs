@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SkyHelp.Context;
 using SkyHelp.Repositories.Interfaces;
 
@@ -7,9 +7,11 @@ namespace SkyHelp.Repositories
     public class NotificacionRepository : INotificacionesRepository
     {
         private readonly SkyHelpContext _context;
-        public NotificacionRepository(SkyHelpContext context)
+        private readonly ILogger<NotificacionRepository> _logger;
+        public NotificacionRepository(SkyHelpContext context, ILogger<NotificacionRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<List<Notificaciones>> ObtenerNotificaciones()
@@ -37,8 +39,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al crear la notificación para el usuario {IdUsuario}", notificacion.IdUsuario);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
 
@@ -50,7 +52,6 @@ namespace SkyHelp.Repositories
                 if (notificacionExistente == null)
                 {
                     return false;
-                    throw new Exception("Notificación para eliminar no existe.");
                 }
                 _context.Notificaciones.Remove(notificacionExistente);
                 await _context.SaveChangesAsync();
@@ -58,12 +59,9 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al eliminar la notificación {IdNotificacion}", id);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
-
-
-
     }
 }

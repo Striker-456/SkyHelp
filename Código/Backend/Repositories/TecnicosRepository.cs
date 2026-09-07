@@ -9,9 +9,11 @@ namespace SkyHelp.Repositories
     public class TecnicosRepository : ITecnicosRepository
     {
         private readonly SkyHelpContext _context;
-        public TecnicosRepository(SkyHelpContext context)
+        private readonly ILogger<TecnicosRepository> _logger;
+        public TecnicosRepository(SkyHelpContext context, ILogger<TecnicosRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
         public async Task<List<Tecnicos>> ObtenerTecnicos()
         {
@@ -39,8 +41,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al crear el técnico para el usuario {IdUsuario}", tecnico.IdUsuario);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
         public async Task<bool> ActualizarTecnico(Tecnicos tecnico)
@@ -51,7 +53,6 @@ namespace SkyHelp.Repositories
                 if (tecnicoExistente == null)
                 {
                     return false;
-                    throw new Exception("Técnico para actualizar no existe");
                 }
                 tecnicoExistente.IdUsuario = tecnico.IdUsuario;
                 tecnicoExistente.FechaRegistro = tecnico.FechaRegistro;
@@ -61,8 +62,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al actualizar el técnico {IdTecnico}", tecnico.IdTecnico);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
         public async Task<bool> EliminarTecnico(Guid id)
@@ -73,7 +74,6 @@ namespace SkyHelp.Repositories
                 if (tecnicoExistente == null)
                 {
                     return false;
-                    throw new Exception("Técnico para eliminar no existe");
                 }
                 _context.Tecnicos.Remove(tecnicoExistente);
                 await _context.SaveChangesAsync();
@@ -81,8 +81,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al eliminar el técnico {IdTecnico}", id);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
     }

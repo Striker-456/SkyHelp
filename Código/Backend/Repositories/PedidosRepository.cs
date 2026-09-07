@@ -7,13 +7,15 @@ namespace SkyHelp.Repositories
     public class PedidosRepository : IPedidosRepository
     {
         private readonly SkyHelpContext _context;// Inyección de dependencia del contexto de la base de datos
+        private readonly ILogger<PedidosRepository> _logger;
 
-        public PedidosRepository(SkyHelpContext context)
+        public PedidosRepository(SkyHelpContext context, ILogger<PedidosRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
-      public async Task<List<Pedidos>> ObtenerPedidos()
+        public async Task<List<Pedidos>> ObtenerPedidos()
         {
             return await _context.Pedidos.ToListAsync();
         }
@@ -37,8 +39,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al crear el pedido para el usuario {IdUsuario}", pedido.IdUsuario);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
         public async Task<bool> ActualizarPedido(Pedidos pedido)
@@ -49,7 +51,6 @@ namespace SkyHelp.Repositories
                 if (pedidoExistente == null)
                 {
                     return false;
-                    throw new Exception("Pedido Para Actualizar No Existe");
                 }
                 pedidoExistente.IdUsuario = pedido.IdUsuario;
                 pedidoExistente.IdDomiciliario = pedido.IdDomiciliario;
@@ -63,8 +64,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al actualizar el pedido {IdPedido}", pedido.IdPedido);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
 
@@ -76,7 +77,6 @@ namespace SkyHelp.Repositories
                 if (pedidoExistente == null)
                 {
                     return false;
-                    throw new Exception("Pedido Para Eliminar No Existe");
                 }
                 _context.Pedidos.Remove(pedidoExistente);
                 await _context.SaveChangesAsync();
@@ -84,11 +84,9 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al eliminar el pedido {IdPedido}", id);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
     }
-
-   
 }

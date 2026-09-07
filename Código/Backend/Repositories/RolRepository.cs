@@ -1,4 +1,4 @@
-﻿using SkyHelp;
+using SkyHelp;
 using Microsoft.EntityFrameworkCore;
 using SkyHelp.Context;
 using SkyHelp.Repositories.Interfaces;
@@ -9,9 +9,11 @@ namespace SkyHelp.Repositories
     public class RolRepository : IRolRepository
     {
         private readonly SkyHelpContext _context;// Inyección de dependencia del contexto de la base de datos
-        public RolRepository(SkyHelpContext context)
+        private readonly ILogger<RolRepository> _logger;
+        public RolRepository(SkyHelpContext context, ILogger<RolRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
         public async Task<List<Roles>> ObtenerRoles()
         {
@@ -31,8 +33,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al crear el rol {NombreRol}", roles.NombreRol);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
         public async Task<bool> ActualizarRol(Roles rol)
@@ -43,7 +45,6 @@ namespace SkyHelp.Repositories
                 if (rolExistente == null)
                 {
                     return false;
-                    throw new Exception("Rol Para Actualizar No Existe");
                 }
                 rolExistente.NombreRol = rol.NombreRol;
                 rolExistente.Descripcion = rol.Descripcion;
@@ -53,11 +54,11 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al actualizar el rol {IDRol}", rol.IDRol);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
-       
+
         public async Task<bool> EliminarRol(Guid id)
         {
             try
@@ -66,7 +67,6 @@ namespace SkyHelp.Repositories
                 if (rolExistente == null)
                 {
                     return false;
-                    throw new Exception("Rol Para Eliminar No Existe");
                 }
                 _context.Roles.Remove(rolExistente);
                 await _context.SaveChangesAsync();
@@ -74,8 +74,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al eliminar el rol {IDRol}", id);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
     }

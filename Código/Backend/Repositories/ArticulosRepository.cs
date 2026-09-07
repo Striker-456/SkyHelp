@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SkyHelp;
 using SkyHelp.Context;
 using SkyHelp.Models;
@@ -9,9 +9,11 @@ namespace SkyHelp.Repositories
     public class ArticulosRepository : IArticulosRepository
     {
         private readonly SkyHelpContext _context;
-        public ArticulosRepository(SkyHelpContext context)
+        private readonly ILogger<ArticulosRepository> _logger;
+        public ArticulosRepository(SkyHelpContext context, ILogger<ArticulosRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
         // OBTENER TODOS
         public async Task<List<Articulos>> ObtenerArticulos()
@@ -34,8 +36,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al crear el artículo {Titulo}", articulo.Titulo);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
         // ACTUALIZAR
@@ -47,7 +49,6 @@ namespace SkyHelp.Repositories
                 if (articuloExistente == null)
                 {
                     return false;
-                    throw new Exception("Artículo para actualizar no existe.");
                 }
                 articuloExistente.Titulo = articulo.Titulo;
                 articuloExistente.Categoria = articulo.Categoria;
@@ -62,8 +63,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al actualizar el artículo {IdArticulo}", articulo.IdArticulo);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
         // ELIMINAR
@@ -75,7 +76,6 @@ namespace SkyHelp.Repositories
                 if (articuloExistente == null)
                 {
                     return false;
-                    throw new Exception("Artículo para eliminar no existe.");
                 }
                 _context.Articulos.Remove(articuloExistente);
                 await _context.SaveChangesAsync();
@@ -83,8 +83,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al eliminar el artículo {IdArticulo}", id);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SkyHelp.Context;
 using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
@@ -8,9 +8,11 @@ namespace SkyHelp.Repositories
     public class EstadosTicketsRepository : IEstadosTicketsRepository
     {
         private readonly SkyHelpContext _context;// Inyección de dependencia del contexto de la base de datos
-        public EstadosTicketsRepository(SkyHelpContext context)
+        private readonly ILogger<EstadosTicketsRepository> _logger;
+        public EstadosTicketsRepository(SkyHelpContext context, ILogger<EstadosTicketsRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<List<EstadosTicket>> ObtenerEstadosTickets()
@@ -31,8 +33,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al crear el estado de ticket {NombreEstado}", estadoTicket.NombreEstado);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
 
@@ -44,7 +46,6 @@ namespace SkyHelp.Repositories
                 if (estadoTicketExistente == null)
                 {
                     return false;
-                    throw new Exception("Estado de ticket para actualizar no existe.");
                 }
                 estadoTicketExistente.NombreEstado = estadoTicket.NombreEstado;
                 estadoTicketExistente.Descripcion = estadoTicket.Descripcion;
@@ -54,8 +55,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al actualizar el estado de ticket {IdEstado}", estadoTicket.IdEstado);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
 
@@ -67,7 +68,6 @@ namespace SkyHelp.Repositories
                 if (estadoTicketExistente == null)
                 {
                     return false;
-                    throw new Exception("Estado de ticket para eliminar no existe.");
                 }
                 _context.EstadosTickets.Remove(estadoTicketExistente);
                 await _context.SaveChangesAsync();
@@ -75,8 +75,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al eliminar el estado de ticket {IdEstado}", id);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SkyHelp.Context;
 using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
@@ -8,10 +8,12 @@ namespace SkyHelp.Repositories
     public class EvaluacionesRepository : IEvaluacionesRepository
     {
         private readonly SkyHelpContext _context;
+        private readonly ILogger<EvaluacionesRepository> _logger;
 
-        public EvaluacionesRepository(SkyHelpContext context)
+        public EvaluacionesRepository(SkyHelpContext context, ILogger<EvaluacionesRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<List<Evaluaciones>> ObtenerEvaluaciones()
@@ -34,8 +36,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al crear la evaluación del ticket {IdTicket}", evaluacion.IdTicket);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
 
@@ -47,7 +49,6 @@ namespace SkyHelp.Repositories
                 if (evaluacionExistente == null)
                 {
                     return false;
-                    throw new Exception("Evaluación para actualizar no existe.");
                 }
                 evaluacionExistente.IdUsuario = evaluacion.IdUsuario;
                 evaluacionExistente.IdTicket = evaluacion.IdTicket;
@@ -60,8 +61,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al actualizar la evaluación {IdEvaluacion}", evaluacion.IdEvaluacion);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
 
@@ -73,7 +74,6 @@ namespace SkyHelp.Repositories
                 if (evaluacionExistente == null)
                 {
                     return false;
-                    throw new Exception("Evaluación para eliminar no existe.");
                 }
                 _context.Evaluaciones.Remove(evaluacionExistente);
                 await _context.SaveChangesAsync();
@@ -81,8 +81,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al eliminar la evaluación {IdEvaluacion}", id);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
     }

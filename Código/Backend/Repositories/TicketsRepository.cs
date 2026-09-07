@@ -8,9 +8,11 @@ namespace SkyHelp.Repositories
     public class TicketsRepository : ITicketsRepository
     {
         private readonly SkyHelpContext _context;// Inyección de dependencia del contexto de la base de datos
-        public TicketsRepository(SkyHelpContext context)
+        private readonly ILogger<TicketsRepository> _logger;
+        public TicketsRepository(SkyHelpContext context, ILogger<TicketsRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
         public async Task<List<Tickets>> ObtenerTickets()
         {
@@ -46,8 +48,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al crear el ticket {@Ticket}", new { ticket.IdUsuario, ticket.Categoria, ticket.IdEstado });
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
         public async Task<bool> ActualizarTicket(Tickets ticket)
@@ -61,7 +63,7 @@ namespace SkyHelp.Repositories
                 var ticketExistente = await _context.Tickets
                     .AsNoTracking()
                     .FirstOrDefaultAsync(x => x.IdTicket == ticket.IdTicket);
-                
+
                 if (ticketExistente == null)
                     throw new KeyNotFoundException($"Ticket con ID {ticket.IdTicket} no encontrado");
 
@@ -87,8 +89,7 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error en ActualizarTicket: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"Inner: {ex.InnerException?.Message}");
+                _logger.LogError(ex, "Error al actualizar el ticket {IdTicket}", ticket?.IdTicket);
                 throw;
             }
         }
@@ -109,7 +110,7 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error en ActualizarDomiciliarioTicket: {ex.Message}");
+                _logger.LogError(ex, "Error al actualizar el domiciliario del ticket {IdTicket}", idTicket);
                 throw;
             }
         }
@@ -141,7 +142,7 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error en ActualizarEstadoTicket: {ex.Message}");
+                _logger.LogError(ex, "Error al actualizar el estado del ticket {IdTicket}", idTicket);
                 throw;
             }
         }
@@ -154,7 +155,6 @@ namespace SkyHelp.Repositories
                 if (ticketExistente == null)
                 {
                     return false;
-                    throw new Exception("Ticket Para Eliminar No Existe");
                 }
                 _context.Tickets.Remove(ticketExistente);
                 await _context.SaveChangesAsync();
@@ -162,8 +162,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al eliminar el ticket {IdTicket}", id);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
     }
