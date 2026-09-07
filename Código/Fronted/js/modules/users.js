@@ -137,7 +137,7 @@ AplicacionSkyHelp.prototype.guardarNuevoUsuario = async function(evento) {
             const usuarios = await Api.getUsuarios();
             const nuevoUsuario = usuarios.find(u => u.correo === datos.get('correo'));
             if (nuevoUsuario) {
-                await Api.post('/tecnicos/CrearTecnico', {
+                await Api.post('/api/tecnicos/CrearTecnico', {
                     idUsuario: nuevoUsuario.idUsuario,
                     fechaRegistro: new Date().toISOString()
                 });

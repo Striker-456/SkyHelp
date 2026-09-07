@@ -1,7 +1,4 @@
 
-// El backend sirve este frontend desde su propio origen (ver Program.cs),
-// así que usamos ese mismo origen sin importar si se accede por localhost,
-// por un devtunnel o en producción.
 const API_BASE = 'http://localhost:5191';
 
 const Api = {
@@ -146,6 +143,9 @@ const Api = {
     getDomiciliarios()            { return this.get('/api/domiciliarios/ObtenerDomiciliarios'); },
     getDomiciliarioActual()       { return this.get('/api/domiciliarios/ObtenerDomiciliarioActual'); },
     crearDomiciliario(domiciliario) { return this.post('/api/domiciliarios/CrearDomiciliario', domiciliario); },
+
+    // Pedidos
+    getPedidosAsignadosDomi()     { return this.get('/api/pedidos/ObtenerPedidosAsignadosDomi'); },
 
     // Cambios de perfil
     cambiarNombre(data)           { return this.put('/api/usuarios/CambiarNombre', data); },

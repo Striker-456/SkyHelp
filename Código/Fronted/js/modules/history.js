@@ -4,7 +4,7 @@
 AplicacionSkyHelp.prototype.obtenerContenidoHistorial = async function() {
     let pedidos = [];
     try {
-        pedidos = await Api.get('/pedidos/ObtenerPedidos') || [];
+        pedidos = await Api.getPedidosAsignadosDomi() || [];
     } catch (e) {
         pedidos = [];
     }

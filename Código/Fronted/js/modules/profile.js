@@ -111,7 +111,7 @@ AplicacionSkyHelp.prototype.guardarPerfil = async function(evento) {
 
     try {
         if (contrasena) {
-            await Api.put('/usuarios/CambiarContrasena', { nuevaContrasena: contrasena });
+            await Api.put('/api/usuarios/CambiarContrasena', { nuevaContrasena: contrasena });
             this.mostrarToast('✅ Contraseña actualizada. Vuelve a iniciar sesión.');
             setTimeout(() => this.cerrarSesion(), 2000);
             return;
@@ -125,7 +125,7 @@ AplicacionSkyHelp.prototype.guardarPerfil = async function(evento) {
         // Enviar al backend si no es admin (admin usa ActualizarUsuario)
         const idUsuario = this.usuarioActual.id || sessionStorage.getItem('skyhelp_id');
         if (idUsuario) {
-            await Api.put('/usuarios/ActualizarMiPerfil', {
+            await Api.put('/api/usuarios/ActualizarMiPerfil', {
                 idUsuario,
                 nombreUsuarios: this.usuarioActual.nombre.split(' ')[0],
                 nombreCompleto: this.usuarioActual.nombre,
