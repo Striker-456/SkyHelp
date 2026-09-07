@@ -18,11 +18,13 @@ namespace SkyHelp.Controllers
     {
         private readonly IUsuariosRepository _UsuariosRepository;
         private readonly IRolRepository _rolRepository;
+        private readonly ITecnicosRepository _tecnicosRepository;
         private readonly IAuditoriaService _auditoriaService;
-        public UsuariosController(IUsuariosRepository usuariosRepository, IRolRepository rolRepository, IAuditoriaService auditoriaService)// Constructor de la clase con inyección de dependencia
+        public UsuariosController(IUsuariosRepository usuariosRepository, IRolRepository rolRepository, ITecnicosRepository tecnicosRepository, IAuditoriaService auditoriaService)// Constructor de la clase con inyección de dependencia
         {
             _UsuariosRepository = usuariosRepository;// inyección de dependencia del repositorio de usuarios
             _rolRepository = rolRepository;
+            _tecnicosRepository = tecnicosRepository;
             _auditoriaService = auditoriaService;
         }
 
@@ -32,6 +34,20 @@ namespace SkyHelp.Controllers
         {
             var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return Guid.TryParse(idStr, out var id) ? id : fallback;
+        }
+
+        // Garantiza que todo usuario con rol Técnico tenga su fila en Tecnicos, sin importar si
+        // se le asignó el rol al crearlo o al editarlo después — evita que un técnico "exista"
+        // en Usuarios pero sea invisible en la lista de técnicos y en las asignaciones de tickets.
+        private async Task AsegurarRegistroTecnico(Guid idRol, Guid idUsuario)
+        {
+            var rol = await _rolRepository.ObtenerRolesPorID(idRol);
+            if (rol == null || RoleClaimMapper.ToJwtRole(rol.NombreRol) != RoleNames.Tecnico)
+                return;
+
+            var existente = await _tecnicosRepository.ObtenerTecnicoPorIdUsuario(idUsuario);
+            if (existente == null)
+                await _tecnicosRepository.CrearTecnico(new Tecnicos { IdUsuario = idUsuario, FechaRegistro = DateTime.Now });
         }
 
         [Authorize]
@@ -154,6 +170,7 @@ namespace SkyHelp.Controllers
                 {
                     return BadRequest("No se puede Crear Usuario");
                 }
+                await AsegurarRegistroTecnico(usuario.IdRol, usuario.IdUsuario);
                 await _auditoriaService.RegistrarAsync(usuario.IdUsuario, "Crear", "Usuarios", usuario.IdUsuario,
                     $"Usuario {usuario.Correo} creado.", ObtenerIp());
                 return Ok("Usuario Creado Correctamente");
@@ -328,6 +345,7 @@ namespace SkyHelp.Controllers
                 {
                     return BadRequest("No se puede Actualizar Usuario");
                 }
+                await AsegurarRegistroTecnico(usuarioActualizado.IdRol, usuarioActualizado.IdUsuario);
                 await _auditoriaService.RegistrarAsync(ObtenerIdActor(usuario.IdUsuario), "Actualizar", "Usuarios", usuario.IdUsuario,
                     $"Usuario {usuarioActualizado.Correo} actualizado.", ObtenerIp());
                 return Ok("Usuario Actualizado Correctamente");

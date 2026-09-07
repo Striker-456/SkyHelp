@@ -146,17 +146,8 @@ AplicacionSkyHelp.prototype.guardarNuevoUsuario = async function(evento) {
             estadoCuenta: 'Activo'
         });
 
-        // Si es técnico, crear registro en tabla Tecnicos
-        if (normalizarTexto(rolNombreReal) === 'tecnico') {
-            const usuarios = await Api.getUsuarios();
-            const nuevoUsuario = usuarios.find(u => u.correo === datos.get('correo'));
-            if (nuevoUsuario) {
-                await Api.post('/api/tecnicos/CrearTecnico', {
-                    idUsuario: nuevoUsuario.idUsuario,
-                    fechaRegistro: new Date().toISOString()
-                });
-            }
-        }
+        // Nota: si es técnico, el backend ya garantiza la fila en Tecnicos (CrearUsuario la crea
+        // automáticamente cuando el rol asignado es Técnico) — no hace falta duplicarlo aquí.
 
         // Si es domiciliario, crear registro en tabla Domiciliarios
         if (normalizarTexto(rolNombreReal) === 'domiciliario') {
