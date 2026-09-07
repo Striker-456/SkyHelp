@@ -51,7 +51,7 @@ AplicacionSkyHelp.prototype.mostrarDetalleCaracteristica = function(id) {
             descripcion: 'SkyHelp adapta su interfaz y funcionalidades según el rol de cada usuario. Desde el cliente que solo quiere saber el estado de su equipo, hasta el administrador que necesita visión completa del negocio.',
             items: [
                 { icono: '🏢', titulo: 'Administrador', desc: 'Acceso completo al sistema: gestión de usuarios, reportes globales, configuración del sistema y supervisión de todo el equipo.' },
-                { icono: '🔧', titulo: 'Técnico', desc: 'Vista enfocada en sus tickets asignados, base de conocimientos técnica, herramientas de diagnóstico y registro de intervenciones.' },
+                { icono: '🔧', titulo: 'Técnico', desc: 'Vista enfocada en sus tickets asignados, con herramientas de diagnóstico y registro de intervenciones.' },
                 { icono: '👤', titulo: 'Cliente', desc: 'Panel simplificado para crear solicitudes, seguir el estado de sus equipos en tiempo real y ver el historial de reparaciones.' },
                 { icono: '🚚', titulo: 'Domiciliario', desc: 'App optimizada para gestión de rutas, confirmar recogidas/entregas, y comunicarse con clientes y técnicos.' },
                 { icono: '🔐', titulo: 'Permisos granulares', desc: 'Cada rol tiene acceso estrictamente a las funciones que necesita, garantizando seguridad y privacidad de la información.' },
@@ -121,26 +121,6 @@ AplicacionSkyHelp.prototype.mostrarDetalleCaracteristica = function(id) {
                 { valor: '<1s', label: 'Tiempo de entrega de alertas' },
                 { valor: '99.9%', label: 'Uptime del sistema' },
                 { valor: '3', label: 'Canales de notificación' },
-            ]
-        },
-        conocimiento: {
-            titulo: 'Centro de Conocimiento',
-            emoji: '📚',
-            degradado: 'linear-gradient(135deg, #10b981, #059669)',
-            subtitulo: 'El saber colectivo al alcance de todos',
-            descripcion: 'Una base de conocimiento centralizada donde técnicos y administradores documentan soluciones, procedimientos y mejores prácticas. Reduce el tiempo de diagnóstico y mejora la calidad del servicio.',
-            items: [
-                { icono: '🔍', titulo: 'Búsqueda inteligente', desc: 'Motor de búsqueda potente que encuentra artículos por palabras clave, categoría, equipo o síntoma en milisegundos.' },
-                { icono: '📖', titulo: 'Artículos técnicos', desc: 'Guías paso a paso para los problemas más frecuentes, con imágenes, videos y listas de verificación incluidas.' },
-                { icono: '❓', titulo: 'FAQ interactivo', desc: 'Preguntas frecuentes organizadas por rol (cliente, técnico) con respuestas claras y enlaces a artículos relacionados.' },
-                { icono: '🏷️', titulo: 'Categorías y etiquetas', desc: 'Organiza el contenido por marca de equipo, tipo de problema, área técnica y nivel de dificultad.' },
-                { icono: '✍️', titulo: 'Creación colaborativa', desc: 'Técnicos y administradores pueden crear y editar artículos. Sistema de revisión y aprobación integrado.' },
-                { icono: '📊', titulo: 'Artículos más útiles', desc: 'Métricas de uso: artículos más visitados, valoraciones de utilidad y sugerencias de mejora del contenido.' },
-            ],
-            stats: [
-                { valor: '200+', label: 'Artículos disponibles' },
-                { valor: '35%', label: 'Reducción en consultas repetidas' },
-                { valor: '4.8★', label: 'Valoración promedio' },
             ]
         }
     };

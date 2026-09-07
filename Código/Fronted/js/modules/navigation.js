@@ -72,11 +72,6 @@ AplicacionSkyHelp.prototype.obtenerItemsNavPorRol = function(rol) {
         return [
             ...itemsComunes,
             {
-                id: 'conocimiento',
-                etiqueta: 'Base de Conocimientos',
-                icono: '<svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>'
-            },
-            {
                 id: 'perfil',
                 etiqueta: 'Mi Perfil',
                 icono: '<svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'
@@ -152,7 +147,6 @@ AplicacionSkyHelp.prototype.navegarA = function(seccion) {
         reportes: 'Reportes',
         estadisticas: 'Estadísticas',
         configuracion: 'Configuración',
-        conocimiento: 'Base de Conocimientos',
         perfil: 'Mi Perfil',
         historial: 'Historial de Entregas'
     };
@@ -191,9 +185,6 @@ AplicacionSkyHelp.prototype.cargarContenido = async function(seccion) {
             break;
         case 'configuracion':
             contenido = this.obtenerContenidoConfiguracion();
-            break;
-        case 'conocimiento':
-            contenido = this.obtenerContenidoConocimiento();
             break;
         case 'perfil':
             contenido = await this.obtenerContenidoPerfil();
