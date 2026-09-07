@@ -22,6 +22,12 @@ namespace SkyHelp
 
         public required string Observaciones  { get; set; }
 
+        // Ticket de soporte que originó este pedido de entrega (si aplica).
+        public Guid? IdTicket { get; set; }
+
+        // Fecha y hora en que el domiciliario confirmó la entrega.
+        public DateTime? FechaEntrega { get; set; }
+
         [JsonIgnore]
         public virtual Usuarios? Usuario { get; set; }
         [JsonIgnore]

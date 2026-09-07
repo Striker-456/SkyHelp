@@ -146,6 +146,7 @@ const Api = {
 
     // Pedidos
     getPedidosAsignadosDomi()     { return this.get('/api/pedidos/ObtenerPedidosAsignadosDomi'); },
+    confirmarEntrega(idTicket)    { return this.post('/api/pedidos/ConfirmarEntrega', { idTicket }); },
 
     // Cambios de perfil
     cambiarNombre(data)           { return this.put('/api/usuarios/CambiarNombre', data); },

@@ -337,6 +337,9 @@ AplicacionSkyHelp.prototype.obtenerDashboardDomiciliario = async function() {
                                     <button class="btn btn-secundario" onclick="aplicacion.verDetalleTicketDomiciliario('${ticket.idTicket || ticket.id}')">Detalles</button>
                                     <button class="btn btn-primario" onclick="aplicacion.marcarPreparando('${ticket.idTicket || ticket.id}')">Preparar</button>
                                     <button class="btn btn-exito" onclick="aplicacion.iniciarRecorrido('${ticket.idTicket || ticket.id}')">Empezar Recorrido</button>
+                                    ${getEstado(ticket.idEstado).toLowerCase().includes('ruta') ? `
+                                    <button class="btn btn-exito" style="background-color:#059669;" onclick="aplicacion.terminarRecorrido('${ticket.idTicket || ticket.id}')">Terminar Recorrido</button>
+                                    ` : ''}
                                 </div>
                             </div>
                         </div>
@@ -417,7 +420,7 @@ AplicacionSkyHelp.prototype.mostrarTicketsClientePorFiltro = function(filtro) {
 
 AplicacionSkyHelp.prototype.verDetalleTicketDomiciliario = async function(idTicket) {
     try {
-        const ticket = await Api.get(`/tickets/ObtenerPorId?Id=${idTicket}`);
+        const ticket = await Api.get(`/api/tickets/ObtenerPorId?Id=${idTicket}`);
         if (!ticket) {
             this.mostrarToast('No se pudo cargar el ticket', 'error');
             return;
@@ -550,5 +553,28 @@ AplicacionSkyHelp.prototype.confirmarRecorrido = async function(idTicket, tiempo
     } catch (e) {
         console.error('Error al iniciar recorrido:', e);
         this.mostrarToast('❌ Error al iniciar el recorrido', 'error');
+    }
+};
+
+AplicacionSkyHelp.prototype.terminarRecorrido = function(idTicket) {
+    this.mostrarConfirmacion(
+        '¿Confirmas que el equipo fue entregado correctamente al cliente?',
+        'Terminar Recorrido',
+        `aplicacion.confirmarTerminarRecorrido('${idTicket}')`,
+        ''
+    );
+};
+
+AplicacionSkyHelp.prototype.confirmarTerminarRecorrido = async function(idTicket) {
+    try {
+        // Registra la fecha/hora de entrega, marca el pedido como Entregado y cierra el ticket
+        // asociado — todo lo resuelve el backend en una sola operación (PedidosService.ConfirmarEntregaAsync).
+        await Api.confirmarEntrega(idTicket);
+        this.mostrarToast('✅ Entrega confirmada, ticket cerrado', 'exito');
+        this.cerrarModal();
+        await this.cargarContenido('dashboard');
+    } catch (e) {
+        console.error('Error al confirmar la entrega:', e);
+        this.mostrarToast('❌ Error al confirmar la entrega: ' + e.message, 'error');
     }
 };

@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SkyHelp;
 using SkyHelp.Authorization;
+using SkyHelp.DTOs.Pedidos;
 using SkyHelp.Repositories.Interfaces;
+using SkyHelp.Services.Interfaces;
 
 using System.Security.Claims;
 
@@ -15,11 +17,44 @@ namespace SkyHelp.Controllers
     {
         private readonly IPedidosRepository _PedidosRepository;
         private readonly IDomiciliariosRepository _domiciliariosRepository;
+        private readonly IPedidosService _pedidosService;
 
-        public PedidosController(IPedidosRepository pedidosRepository, IDomiciliariosRepository domiciliariosRepository)
+        public PedidosController(IPedidosRepository pedidosRepository, IDomiciliariosRepository domiciliariosRepository, IPedidosService pedidosService)
         {
             _PedidosRepository = pedidosRepository;
             _domiciliariosRepository = domiciliariosRepository;
+            _pedidosService = pedidosService;
+        }
+
+        // Regla de negocio: el domiciliario confirma la entrega -> se registra la fecha/hora de
+        // entrega, el pedido pasa a "Entregado" y el ticket asociado se cierra automáticamente.
+        [Authorize(Roles = $"{RoleNames.Administrador},{RoleNames.Domiciliario}")]
+        [HttpPost("ConfirmarEntrega")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ConfirmarEntrega([FromBody] ConfirmarEntregaRequest request)
+        {
+            try
+            {
+                var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(idStr) || !Guid.TryParse(idStr, out var idUsuario))
+                    return Unauthorized();
+
+                var esAdmin = User.IsInRole(RoleNames.Administrador);
+                var resultado = await _pedidosService.ConfirmarEntregaAsync(request.IdTicket, idUsuario, esAdmin, HttpContext.Connection.RemoteIpAddress?.ToString());
+
+                if (resultado.NoEncontrado) return NotFound(resultado.Mensaje);
+                if (resultado.NoAutorizado) return Forbid();
+                if (!resultado.Exitoso) return BadRequest(resultado.Mensaje);
+
+                return Ok("Entrega confirmada exitosamente.");
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al confirmar la entrega.");
+            }
         }
 
         [Authorize(Roles = RoleNames.Administrador)]

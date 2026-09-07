@@ -37,6 +37,7 @@ namespace SkyHelp.Context
             services.AddScoped<IReportesService, ReportesService>();
             services.AddScoped<IReporteExportService, ReporteExportService>();
             services.AddScoped<IEstadisticasService, EstadisticasService>();
+            services.AddScoped<IPedidosService, PedidosService>();
             return services;
             
         }

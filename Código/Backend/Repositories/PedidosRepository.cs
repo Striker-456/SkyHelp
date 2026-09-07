@@ -25,6 +25,11 @@ namespace SkyHelp.Repositories
             return await _context.Pedidos.Where(p => p.IdDomiciliario == idDomiciliario).ToListAsync();
         }
 
+        public async Task<Pedidos?> ObtenerPedidoPorIdTicket(Guid idTicket)
+        {
+            return await _context.Pedidos.FirstOrDefaultAsync(x => x.IdTicket == idTicket);
+        }
+
         public async Task<Pedidos> ObtenerPedidoPorId(Guid id)
         {
             return await _context.Pedidos.FirstOrDefaultAsync(x => x.IdPedido == id);
@@ -58,6 +63,8 @@ namespace SkyHelp.Repositories
                 pedidoExistente.EstadoPedido = pedido.EstadoPedido;
                 pedidoExistente.Observaciones = pedido.Observaciones;
                 pedidoExistente.FechaPedido = pedido.FechaPedido;
+                pedidoExistente.IdTicket = pedido.IdTicket;
+                pedidoExistente.FechaEntrega = pedido.FechaEntrega;
                 _context.Pedidos.Update(pedidoExistente);
                 await _context.SaveChangesAsync();
                 return true;
