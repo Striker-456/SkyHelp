@@ -76,7 +76,7 @@ AplicacionSkyHelp.prototype.mostrarModalNuevoUsuario = function() {
                     </div>
                     <div class="grupo-formulario">
                         <label>Rol *</label>
-                        <select name="rol" required>
+                        <select name="rol" id="nuevo-usuario-rol" onchange="aplicacion._alternarCampoPlacaNuevoUsuario()" required>
                             <option value="">Seleccionar rol</option>
                             <option value="administrador">Administrador</option>
                             <option value="tecnico">Técnico</option>
@@ -99,6 +99,10 @@ AplicacionSkyHelp.prototype.mostrarModalNuevoUsuario = function() {
                         <input type="tel" name="telefono" placeholder="+57 123 456 7890">
                     </div>
                 </div>
+                <div class="grupo-formulario" id="nuevo-usuario-campo-placa" style="display:none;">
+                    <label>Placa del Vehículo *</label>
+                    <input type="text" name="placa" placeholder="ABC-1234" maxlength="8">
+                </div>
             </div>
             <div class="modal-pie">
                 <button type="button" class="btn btn-secundario" onclick="aplicacion.cerrarModal()">Cancelar</button>
@@ -107,6 +111,16 @@ AplicacionSkyHelp.prototype.mostrarModalNuevoUsuario = function() {
         </form>
     `;
     this.abrirModal(contenido);
+};
+
+AplicacionSkyHelp.prototype._alternarCampoPlacaNuevoUsuario = function() {
+    const rol = document.getElementById('nuevo-usuario-rol');
+    const campoPlaca = document.getElementById('nuevo-usuario-campo-placa');
+    if (!campoPlaca) return;
+    const inputPlaca = campoPlaca.querySelector('input[name="placa"]');
+    const esDomiciliario = rol.value === 'domiciliario';
+    campoPlaca.style.display = esDomiciliario ? 'block' : 'none';
+    if (inputPlaca) inputPlaca.required = esDomiciliario;
 };
 
 AplicacionSkyHelp.prototype.guardarNuevoUsuario = async function(evento) {
@@ -140,6 +154,22 @@ AplicacionSkyHelp.prototype.guardarNuevoUsuario = async function(evento) {
                 await Api.post('/api/tecnicos/CrearTecnico', {
                     idUsuario: nuevoUsuario.idUsuario,
                     fechaRegistro: new Date().toISOString()
+                });
+            }
+        }
+
+        // Si es domiciliario, crear registro en tabla Domiciliarios
+        if (normalizarTexto(rolNombreReal) === 'domiciliario') {
+            const usuarios = await Api.getUsuarios();
+            const nuevoUsuario = usuarios.find(u => u.correo === datos.get('correo'));
+            if (nuevoUsuario) {
+                await Api.crearDomiciliario({
+                    nombreCompleto: nombre,
+                    telefono: datos.get('telefono') || '',
+                    email: datos.get('correo'),
+                    placaVehiculo: (datos.get('placa') || '').toUpperCase(),
+                    estadoActividad: 'Activo',
+                    IDUsuario: nuevoUsuario.idUsuario
                 });
             }
         }

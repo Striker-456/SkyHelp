@@ -133,17 +133,20 @@ namespace SkyHelp.Controllers
         {
             try
             {
-                // El rol solicitado viene del cliente: si pide el rol Administrador, solo se
-                // permite cuando quien llama YA está autenticado como Administrador (p. ej. el
-                // modal de "Nuevo Usuario" del panel admin). El auto-registro público nunca
-                // puede otorgarse a sí mismo el rol de administrador.
-                var rolSolicitado = await _rolRepository.ObtenerRolesPorID(usuario.IdRol);
-                var esRolAdministrador = rolSolicitado != null &&
-                    RoleClaimMapper.ToJwtRole(rolSolicitado.NombreRol) == RoleNames.Administrador;
+                // El rol solicitado viene del cliente. Solo un Administrador ya autenticado puede
+                // asignar el rol que quiera (p. ej. el modal de "Nuevo Usuario" del panel admin);
+                // cualquier otra llamada (auto-registro público, o un usuario ya autenticado que
+                // no sea admin) siempre crea una cuenta con el rol Cliente, sin importar qué
+                // IdRol haya mandado — el tipo de usuario solo lo asigna el administrador.
                 var llamanteEsAdmin = User.Identity?.IsAuthenticated == true && User.IsInRole(RoleNames.Administrador);
-
-                if (esRolAdministrador && !llamanteEsAdmin)
-                    return Forbid();
+                if (!llamanteEsAdmin)
+                {
+                    var roles = await _rolRepository.ObtenerRoles();
+                    var rolCliente = roles.FirstOrDefault(r => RoleClaimMapper.ToJwtRole(r.NombreRol) == RoleNames.Usuario);
+                    if (rolCliente == null)
+                        return StatusCode(StatusCodes.Status500InternalServerError, "No se encontró el rol Cliente.");
+                    usuario.IdRol = rolCliente.IDRol;
+                }
 
                 var Resultado = await _UsuariosRepository.CrearUsuario(usuario);
 

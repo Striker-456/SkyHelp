@@ -47,34 +47,28 @@ AplicacionSkyHelp.prototype.manejarRegistro = async function(evento) {
     const datos = new FormData(evento.target);
     const nombre = datos.get('nombre');
     const correo = datos.get('correo');
-    const rolNombre = datos.get('rol');
     const contrasena = datos.get('contrasena');
     const confirmarContrasena = datos.get('confirmarContrasena');
-    const placa = datos.get('placa');
-    const telefono = datos.get('telefono');
 
     if (contrasena !== confirmarContrasena) {
         alert('Las contraseñas no coinciden');
         return;
     }
 
-    if (!nombre || !correo || !rolNombre || !contrasena) {
+    if (!nombre || !correo || !contrasena) {
         alert('Por favor completa todos los campos obligatorios');
-        return;
-    }
-
-    if (rolNombre === 'domiciliario' && !placa) {
-        alert('Por favor ingresa la placa del vehículo');
         return;
     }
 
     this.mostrarCarga();
 
     try {
-        // Obtener roles para mapear nombre -> IdRol
+        // El auto-registro siempre crea una cuenta Cliente; solo un administrador
+        // puede asignar otro tipo de usuario (Técnico, Domiciliario, Administrador)
+        // desde el panel de Gestión de Usuarios.
         const roles = await Api.getRoles();
-        const rol = roles.find(r => normalizarTexto(r.nombreRol) === normalizarTexto(rolNombre));
-        if (!rol) throw new Error('Rol no encontrado: ' + rolNombre);
+        const rol = roles.find(r => normalizarTexto(r.nombreRol) === normalizarTexto('cliente'));
+        if (!rol) throw new Error('No se encontró el rol Cliente');
 
         const nuevoUsuario = {
             nombreUsuarios: nombre.split(' ')[0],
@@ -93,30 +87,12 @@ AplicacionSkyHelp.prototype.manejarRegistro = async function(evento) {
 
         const payloadReg = JSON.parse(atob(respuesta.token.split('.')[1]));
         const nombreSesion = payloadReg['nombreCompleto']
-            || payloadReg['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] 
+            || payloadReg['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']
             || correo;
         const idUsuario = payloadReg['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || '';
 
         Api.guardarSesion(respuesta.token, respuesta.role, nombreSesion, correo);
         sessionStorage.setItem('skyhelp_id', idUsuario);
-
-        // Si es domiciliario, crear el registro en la tabla de domiciliarios
-        if (rolNombre === 'domiciliario') {
-            try {
-                const domiciliario = {
-                    nombreCompleto: nombre,
-                    telefono: telefono || '',
-                    email: correo,
-                    placaVehiculo: placa.toUpperCase(),
-                    estadoActividad: 'Activo',
-                    IDUsuario: idUsuario
-                };
-                await Api.crearDomiciliario(domiciliario);
-            } catch (error) {
-                console.error('Error al crear domiciliario:', error);
-                // No detener el flujo si falla la creación del domiciliario
-            }
-        }
 
         this.usuarioActual = {
             correo,
@@ -157,33 +133,4 @@ AplicacionSkyHelp.prototype.restaurarSesion = function() {
         return true;
     }
     return false;
-};
-
-// Mostrar/ocultar campo de placa según el rol seleccionado
-AplicacionSkyHelp.prototype.mostrarCampoPlaca = function() {
-    console.log('mostrarCampoPlaca ejecutada');
-    const selectorRol = document.getElementById('selector-rol');
-    const campoPlaca = document.getElementById('campo-placa');
-    
-    console.log('selectorRol:', selectorRol);
-    console.log('campoPlaca:', campoPlaca);
-    console.log('valor del rol:', selectorRol?.value);
-    
-    if (!campoPlaca) {
-        console.error('No se encontró el elemento campo-placa');
-        return;
-    }
-    
-    const inputPlaca = campoPlaca.querySelector('input[name="placa"]');
-    
-    if (selectorRol.value === 'domiciliario') {
-        console.log('Mostrando campo de placa');
-        campoPlaca.style.display = 'block';
-        inputPlaca.required = true;
-    } else {
-        console.log('Ocultando campo de placa');
-        campoPlaca.style.display = 'none';
-        inputPlaca.required = false;
-        inputPlaca.value = '';
-    }
 };
