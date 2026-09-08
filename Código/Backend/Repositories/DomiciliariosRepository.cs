@@ -62,7 +62,6 @@ namespace SkyHelp.Repositories
                 domiciliarioExistente.Telefono = domiciliario.Telefono;
                 domiciliarioExistente.Email = domiciliario.Email;
                 domiciliarioExistente.EstadoActividad = domiciliario.EstadoActividad;
-                domiciliarioExistente.PlacaVehiculo = domiciliario.PlacaVehiculo;
                 domiciliarioExistente.IDUsuario = domiciliario.IDUsuario;
 
                 _context.Domiciliarios.Update(domiciliarioExistente);

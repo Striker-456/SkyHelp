@@ -20,9 +20,6 @@ namespace SkyHelp
         [StringLength(100)]
         public required string Email { get; set; }
         [Required]
-        [StringLength(50)]
-        public required string PlacaVehiculo { get; set; }
-        [Required]
         public required string EstadoActividad { get; set; }
         public Guid IDUsuario { get; set; }
         [JsonIgnore]

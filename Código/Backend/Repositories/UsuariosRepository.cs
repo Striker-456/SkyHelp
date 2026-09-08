@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SkyHelp;
 using SkyHelp.Context;
-using SkyHelp.EncriptarSHA256;
+using SkyHelp.Services.Security;
 using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
 using System.Linq.Expressions;

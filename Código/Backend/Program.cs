@@ -184,7 +184,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 // Servir el frontend DESPUÉS de los controladores API
-var frontendPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "Fronted"));
+var frontendPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "Frontend"));
 if (Directory.Exists(frontendPath))
 {
     app.UseStaticFiles(new StaticFileOptions

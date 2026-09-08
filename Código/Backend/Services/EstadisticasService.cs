@@ -21,17 +21,21 @@ namespace SkyHelp.Services
 
         public async Task<EstadisticasResumenDto> ObtenerResumenAsync(DateTime? desde, DateTime? hasta)
         {
-            var fin = hasta ?? DateTime.Now;
-            var inicio = desde ?? fin.AddMonths(-5).AddDays(1 - fin.Day);
+            var ahora = DateTime.Now;
+            var fin = hasta ?? ahora;
+            var inicio = desde ?? ahora.AddMonths(-5).AddDays(1 - ahora.Day);
 
+            // Sin "hasta" explícito no se recorta por límite superior: usar DateTime.Now como tope
+            // excluía tickets recién creados en cuanto había el mínimo desfase entre el reloj del
+            // servidor y la hora de creación, mostrando menos tickets de los que realmente existen.
             var tickets = await _context.Tickets
                 .Include(t => t.EstadoTicket)
                 .Include(t => t.Tecnico).ThenInclude(tc => tc!.Usuario)
-                .Where(t => t.FechaCreacion >= inicio && t.FechaCreacion <= fin)
+                .Where(t => t.FechaCreacion >= inicio && (hasta == null || t.FechaCreacion <= hasta))
                 .ToListAsync();
 
             var evaluaciones = await _context.Evaluaciones
-                .Where(e => e.FechaEvaluacion >= inicio && e.FechaEvaluacion <= fin)
+                .Where(e => e.FechaEvaluacion >= inicio && (hasta == null || e.FechaEvaluacion <= hasta))
                 .ToListAsync();
 
             int ContarPorEstado(Func<string, bool> coincide) =>

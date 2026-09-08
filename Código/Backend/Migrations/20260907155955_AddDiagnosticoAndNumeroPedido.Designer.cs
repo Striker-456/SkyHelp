@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SkyHelp.Context;
 
@@ -11,9 +12,11 @@ using SkyHelp.Context;
 namespace SkyHelp.Migrations
 {
     [DbContext(typeof(SkyHelpContext))]
-    partial class SkyHelpContextModelSnapshot : ModelSnapshot
+    [Migration("20260907155955_AddDiagnosticoAndNumeroPedido")]
+    partial class AddDiagnosticoAndNumeroPedido
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,6 +45,11 @@ namespace SkyHelp.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("NombreCompleto")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PlacaVehiculo")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");

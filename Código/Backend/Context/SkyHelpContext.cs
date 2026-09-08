@@ -97,7 +97,6 @@ namespace SkyHelp.Context
                 entity.Property(e => e.Telefono).IsRequired().HasMaxLength(20);
                 entity.Property(e => e.Email).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.EstadoActividad).IsRequired().HasMaxLength(20);
-                entity.Property(e => e.PlacaVehiculo).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.IDUsuario).IsRequired();
              entity.HasOne(e => e.Usuario)
         .WithMany(t => t.Domiciliarios)
@@ -144,6 +143,8 @@ namespace SkyHelp.Context
             modelBuilder.Entity<Pedidos>(entity =>
             {
                 entity.HasKey(e => e.IdPedido);
+                entity.Property(e => e.NumeroPedido).ValueGeneratedOnAdd();
+                entity.HasIndex(e => e.NumeroPedido).IsUnique();
                 entity.Property(e => e.FechaPedido).IsRequired();
                 entity.Property(e => e.EstadoPedido).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.DireccionEntrega).IsRequired().HasMaxLength(200);
@@ -213,9 +214,11 @@ namespace SkyHelp.Context
                 entity.ToTable("Tickets");
                 entity.HasKey(e => e.IdTicket);
                 entity.Property(e => e.NumeroTicket).ValueGeneratedOnAdd();
+                entity.HasIndex(e => e.NumeroTicket).IsUnique();
                 entity.Property(e => e.Descripcion).IsRequired().HasMaxLength(200);
                 entity.Property(e => e.Categoria).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.Prioridad).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Diagnostico).HasMaxLength(500);
                 entity.Property(e => e.FechaCreacion).IsRequired();
                 entity.Property(e => e.IdEstado).IsRequired();
                 entity.Property(e => e.IdUsuario).IsRequired();

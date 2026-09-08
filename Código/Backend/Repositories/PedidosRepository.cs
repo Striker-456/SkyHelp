@@ -65,7 +65,10 @@ namespace SkyHelp.Repositories
                 pedidoExistente.FechaPedido = pedido.FechaPedido;
                 pedidoExistente.IdTicket = pedido.IdTicket;
                 pedidoExistente.FechaEntrega = pedido.FechaEntrega;
-                _context.Pedidos.Update(pedidoExistente);
+                // Sin llamar a Update(): la entidad ya está siendo rastreada por el contexto (se obtuvo
+                // sin AsNoTracking), así que SaveChangesAsync ya detecta los cambios reales. Llamar a
+                // Update() aquí marcaba TODAS las propiedades como modificadas, incluyendo NumeroPedido
+                // (columna IDENTITY), y SQL Server rechazaba el UPDATE resultante.
                 await _context.SaveChangesAsync();
                 return true;
             }

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SkyHelp.Authorization;
-using SkyHelp.EncriptarSHA256;
+using SkyHelp.Services.Security;
 using SkyHelp.Context;
 using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
@@ -13,7 +13,7 @@ using SkyHelp.Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-
+// Si esta mierda funciona no la vuelvo a tocar.
 namespace SkyHelp.Controllers
 {
 

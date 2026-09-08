@@ -10,6 +10,8 @@ namespace SkyHelp
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid IdPedido { get; set; } = Guid.NewGuid();
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int NumeroPedido { get; set; }
         [Required]
         public Guid IdUsuario { get; set; }
         [Required]

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using SkyHelp.Authorization;
-using SkyHelp.EncriptarSHA256;
+using SkyHelp.Services.Security;
 using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
 using SkyHelp.Services.Interfaces;

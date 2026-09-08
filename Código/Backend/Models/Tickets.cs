@@ -23,6 +23,9 @@ namespace SkyHelp.Models
         [Required]
         public DateTime? FechaCreacion { get; set; } = DateTime.Now;
         public DateTime? FechaCierre { get; set; }
+        [StringLength(500)]
+        public string? Diagnostico { get; set; }
+        public DateTime? FechaDiagnostico { get; set; }
         [Required]
         public Guid IdEstado { get; set; }
         [Required]

@@ -13,6 +13,10 @@ namespace SkyHelp.Repositories.Interfaces
         Task<bool> ActualizarTicket(Tickets ticket);
         Task<bool> ActualizarDomiciliarioTicket(Guid idTicket, Guid? idDomiciliario);
         Task<bool> ActualizarEstadoTicket(Guid idTicket, Guid idEstado);
+        Task<bool> AsignarTecnico(Guid idTicket, Guid idTecnico);
+        Task<bool> IniciarDiagnostico(Guid idTicket);
+        Task<bool> RegistrarDiagnostico(Guid idTicket, string diagnostico);
+        Task<bool> ActualizarDetallesTicket(Guid idTicket, string categoria, string prioridad, string descripcion);
         Task<bool> EliminarTicket(Guid id);
 
     }

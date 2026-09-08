@@ -147,6 +147,91 @@ namespace SkyHelp.Repositories
             }
         }
 
+        public async Task<bool> AsignarTecnico(Guid idTicket, Guid idTecnico)
+        {
+            try
+            {
+                if (idTicket == Guid.Empty || idTecnico == Guid.Empty)
+                    throw new ArgumentException("ID de ticket o técnico inválido");
+
+                var resultado = await _context.Tickets
+                    .Where(t => t.IdTicket == idTicket)
+                    .ExecuteUpdateAsync(s => s.SetProperty(t => t.IdTecnico, idTecnico));
+
+                return resultado > 0;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al asignar el técnico del ticket {IdTicket}", idTicket);
+                throw;
+            }
+        }
+
+        public async Task<bool> IniciarDiagnostico(Guid idTicket)
+        {
+            try
+            {
+                if (idTicket == Guid.Empty)
+                    throw new ArgumentException("ID del ticket inválido");
+
+                var resultado = await _context.Tickets
+                    .Where(t => t.IdTicket == idTicket)
+                    .ExecuteUpdateAsync(s => s.SetProperty(t => t.FechaDiagnostico, DateTime.Now));
+
+                return resultado > 0;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al iniciar el diagnóstico del ticket {IdTicket}", idTicket);
+                throw;
+            }
+        }
+
+        public async Task<bool> RegistrarDiagnostico(Guid idTicket, string diagnostico)
+        {
+            try
+            {
+                if (idTicket == Guid.Empty)
+                    throw new ArgumentException("ID del ticket inválido");
+
+                var resultado = await _context.Tickets
+                    .Where(t => t.IdTicket == idTicket)
+                    .ExecuteUpdateAsync(s => s
+                        .SetProperty(t => t.Diagnostico, diagnostico)
+                        .SetProperty(t => t.FechaDiagnostico, DateTime.Now));
+
+                return resultado > 0;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al registrar el diagnóstico del ticket {IdTicket}", idTicket);
+                throw;
+            }
+        }
+
+        public async Task<bool> ActualizarDetallesTicket(Guid idTicket, string categoria, string prioridad, string descripcion)
+        {
+            try
+            {
+                if (idTicket == Guid.Empty)
+                    throw new ArgumentException("ID del ticket inválido");
+
+                var resultado = await _context.Tickets
+                    .Where(t => t.IdTicket == idTicket)
+                    .ExecuteUpdateAsync(s => s
+                        .SetProperty(t => t.Categoria, categoria)
+                        .SetProperty(t => t.Prioridad, prioridad)
+                        .SetProperty(t => t.Descripcion, descripcion));
+
+                return resultado > 0;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar los detalles del ticket {IdTicket}", idTicket);
+                throw;
+            }
+        }
+
         public async Task<bool> EliminarTicket(Guid id)
         {
             try
