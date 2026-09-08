@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
@@ -7,24 +8,7 @@ using Microsoft.OpenApi.Models;
 using System.Security.Cryptography.Xml;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(args);
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-
-csproject original : using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.IdentityModel.Tokens;
-using SkyHelp.Context;
-using Microsoft.OpenApi.Models;
-
-using System.Security.Cryptography.Xml;
-using System.Text;
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,9 +18,6 @@ builder.Configuration
     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
     .AddEnvironmentVariables();
-
-// Add services to the container.
-
 
 builder.Services.AddExternal(builder.Configuration);
 builder.Services.AddControllers()
@@ -78,12 +59,35 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.AddCors(options =>
 {
+    // Restringido a localhost (cualquier puerto, para desarrollo) y *.devtunnels.ms
+    // (túneles de desarrollo). Antes era AllowAnyOrigin(), lo cual no tiene sentido
+    // ya que el mismo backend sirve el frontend desde su propio origen.
     options.AddPolicy("AllowSpecificOrigin",
-        builder => builder
-            .AllowAnyOrigin()  // Permitir cualquier origen
-            .AllowAnyMethod()  // Permitir cualquier m todo HTTP
-            .AllowAnyHeader()); // Permitir cualquier cabecera
+        corsBuilder => corsBuilder
+            .SetIsOriginAllowed(origin =>
+            {
+                if (!Uri.TryCreate(origin, UriKind.Absolute, out var uri)) return false;
+                return uri.IsLoopback || uri.Host.EndsWith(".devtunnels.ms", StringComparison.OrdinalIgnoreCase);
+            })
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 });
+
+builder.Services.AddRateLimiter(options =>
+{
+    // Frena fuerza bruta de login y spam de registro de cuentas.
+    // Partición por IP: un cliente abusivo no debe agotar la cuota de los demás.
+    options.AddPolicy("auth", httpContext => System.Threading.RateLimiting.RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "sin-ip",
+        factory: _ => new System.Threading.RateLimiting.FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 10,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0
+        }));
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
+
 var jwtKey = builder.Configuration["Jwt:Key"];
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];
 var jwtAudience = builder.Configuration["Jwt:Audience"];
@@ -116,9 +120,31 @@ builder.Services.AddAuthentication(x =>
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
 });
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Red de seguridad: cualquier excepción no controlada por un try/catch local
+// (o que se les escape) termina aquí en vez de tumbar la respuesta sin registro.
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        var feature = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
+        if (feature?.Error is Exception ex)
+        {
+            var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "Excepción no controlada en {Path}", context.Request.Path);
+        }
+
+        context.Response.ContentType = "application/json";
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(new
+        {
+            mensaje = "Ocurrió un error interno. Intenta de nuevo más tarde."
+        }));
+    });
+});
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -127,8 +153,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Needed for browser-based frontend calls from a different origin.
 app.UseCors("AllowSpecificOrigin");
+
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.Use(async (context, next) =>
@@ -157,7 +184,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 // Servir el frontend DESPUÉS de los controladores API
-var frontendPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "Fronted"));
+var frontendPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "Frontend"));
 if (Directory.Exists(frontendPath))
 {
     app.UseStaticFiles(new StaticFileOptions
@@ -165,7 +192,6 @@ if (Directory.Exists(frontendPath))
         FileProvider = new PhysicalFileProvider(frontendPath),
         RequestPath = ""
     });
-    // Solo hacer fallback a index.html para rutas que NO sean /api
     app.MapFallback(async context =>
     {
         if (context.Request.Path.StartsWithSegments("/api"))

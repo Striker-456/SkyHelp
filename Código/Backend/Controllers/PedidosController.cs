@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SkyHelp;
 using SkyHelp.Authorization;
+using SkyHelp.DTOs.Pedidos;
 using SkyHelp.Repositories.Interfaces;
+using SkyHelp.Services.Interfaces;
 
 using System.Security.Claims;
 
@@ -15,11 +17,107 @@ namespace SkyHelp.Controllers
     {
         private readonly IPedidosRepository _PedidosRepository;
         private readonly IDomiciliariosRepository _domiciliariosRepository;
+        private readonly IPedidosService _pedidosService;
 
-        public PedidosController(IPedidosRepository pedidosRepository, IDomiciliariosRepository domiciliariosRepository)
+        public PedidosController(IPedidosRepository pedidosRepository, IDomiciliariosRepository domiciliariosRepository, IPedidosService pedidosService)
         {
             _PedidosRepository = pedidosRepository;
             _domiciliariosRepository = domiciliariosRepository;
+            _pedidosService = pedidosService;
+        }
+
+        // Regla de negocio: el domiciliario confirma la entrega -> se registra la fecha/hora de
+        // entrega, el pedido pasa a "Entregado" y el ticket asociado se cierra automáticamente.
+        [Authorize(Roles = $"{RoleNames.Administrador},{RoleNames.Domiciliario}")]
+        [HttpPost("ConfirmarEntrega")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ConfirmarEntrega([FromBody] ConfirmarEntregaRequest request)
+        {
+            try
+            {
+                var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(idStr) || !Guid.TryParse(idStr, out var idUsuario))
+                    return Unauthorized();
+
+                var esAdmin = User.IsInRole(RoleNames.Administrador);
+                var resultado = await _pedidosService.ConfirmarEntregaAsync(request.IdTicket, idUsuario, esAdmin, HttpContext.Connection.RemoteIpAddress?.ToString());
+
+                if (resultado.NoEncontrado) return NotFound(resultado.Mensaje);
+                if (resultado.NoAutorizado) return Forbid();
+                if (!resultado.Exitoso) return BadRequest(resultado.Mensaje);
+
+                return Ok("Entrega confirmada exitosamente.");
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al confirmar la entrega.");
+            }
+        }
+
+        // Regla de negocio: el Administrador solo puede asignar un domiciliario a un ticket una vez el
+        // técnico registró el diagnóstico. Al asignar, nace (o se actualiza) el Pedido correspondiente.
+        [Authorize(Roles = RoleNames.Administrador)]
+        [HttpPost("AsignarDomiciliario")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AsignarDomiciliario([FromBody] AsignarDomiciliarioRequest request)
+        {
+            try
+            {
+                if (request == null || request.IdTicket == Guid.Empty || request.IdDomiciliario == Guid.Empty)
+                    return BadRequest("El ticket y el domiciliario son obligatorios.");
+
+                var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(idStr) || !Guid.TryParse(idStr, out var idUsuario))
+                    return Unauthorized();
+
+                var resultado = await _pedidosService.AsignarDomiciliarioAsync(
+                    request.IdTicket, request.IdDomiciliario, idUsuario, HttpContext.Connection.RemoteIpAddress?.ToString());
+
+                if (resultado.NoEncontrado) return NotFound(resultado.Mensaje);
+                if (resultado.DiagnosticoPendiente) return BadRequest(resultado.Mensaje);
+                if (resultado.DomiciliarioInvalido) return BadRequest(resultado.Mensaje);
+                if (!resultado.Exitoso) return BadRequest(resultado.Mensaje);
+
+                return Ok("Domiciliario asignado exitosamente.");
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al asignar el domiciliario.");
+            }
+        }
+
+        // Entregas (activas + historial) del domiciliario autenticado, con número de pedido y datos de
+        // ticket/cliente ya resueltos — el domiciliario nunca ve el Guid interno ni la lista de Usuarios.
+        [Authorize(Roles = RoleNames.Domiciliario)]
+        [HttpGet("MisEntregas")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> MisEntregas()
+        {
+            try
+            {
+                var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(idStr) || !Guid.TryParse(idStr, out var idUsuario))
+                    return Unauthorized();
+
+                var domi = await _domiciliariosRepository.ObtenerDomiciliarioPorIdUsuario(idUsuario);
+                if (domi == null)
+                    return NotFound("No hay registro de domiciliario vinculado a este usuario.");
+
+                var entregas = await _pedidosService.ObtenerEntregasDomiciliarioAsync(domi.IdDomiciliario);
+                return Ok(entregas);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener las entregas.");
+            }
         }
 
         [Authorize(Roles = RoleNames.Administrador)]

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SkyHelp.Context;
 using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
@@ -8,10 +8,12 @@ namespace SkyHelp.Repositories
     public class ExportacionesEstadisticasRepository : IExportacionesEstadisticasRepository
     {
         private readonly SkyHelpContext _context;
+        private readonly ILogger<ExportacionesEstadisticasRepository> _logger;
 
-        public ExportacionesEstadisticasRepository(SkyHelpContext context)
+        public ExportacionesEstadisticasRepository(SkyHelpContext context, ILogger<ExportacionesEstadisticasRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
         public async Task<List<ExportacionesEstadisticas>> ObtenerExportacionesEstadisticas()
         {
@@ -31,9 +33,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
-                // Log si lo manejas
+                _logger.LogError(ex, "Error al crear la exportación de estadística {IdEstadistica}", exportacionEstadistica.IdEstadistica);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
         public async Task<bool> ActualizarExportacionEstadistica(ExportacionesEstadisticas exportacionEstadistica)
@@ -44,7 +45,6 @@ namespace SkyHelp.Repositories
                 if (exportacionExistente == null)
                 {
                     return false;
-                    throw new Exception("La exportación para actualizar no existe.");
                 }
                 // Actualización campo por campo
                 exportacionExistente.IdEstadistica = exportacionEstadistica.IdEstadistica;
@@ -57,9 +57,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
-                // Log si aplica
+                _logger.LogError(ex, "Error al actualizar la exportación de estadística {IdExportado}", exportacionEstadistica.IdExportado);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
         public async Task<bool> EliminarExportacionEstadistica(Guid id)
@@ -70,7 +69,6 @@ namespace SkyHelp.Repositories
                 if (exportacionExistente == null)
                 {
                     return false;
-                    throw new Exception("La exportación para eliminar no existe.");
                 }
                 _context.ExportacionesEstadisticas.Remove(exportacionExistente);
                 await _context.SaveChangesAsync();
@@ -78,8 +76,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al eliminar la exportación de estadística {IdExportado}", id);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
     }

@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SkyHelp.Authorization;
 using SkyHelp.Repositories.Interfaces;
+using System.Security.Claims;
 
 namespace SkyHelp.Controllers
 {
@@ -17,7 +19,17 @@ namespace SkyHelp.Controllers
             _evaluacionesRepository = evaluacionesRepository;
         }
 
-        // OBTENER TODOS
+        private Guid ObtenerIdActor()
+        {
+            var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Guid.TryParse(idStr, out var id) ? id : Guid.Empty;
+        }
+
+        private bool EsPropioOAdmin(Guid idUsuarioDelRecurso) =>
+            User.IsInRole(RoleNames.Administrador) || idUsuarioDelRecurso == ObtenerIdActor();
+
+        // OBTENER TODOS (todas las de todos los usuarios: solo admin)
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpGet("ObtenerEvaluaciones")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -55,6 +67,8 @@ namespace SkyHelp.Controllers
                 {
                     return NotFound("Evaluacion no encontrada.");
                 }
+                if (!EsPropioOAdmin(evaluacion.IdUsuario))
+                    return Forbid();
                 return Ok(evaluacion);
             }
             catch (Exception ex)
@@ -73,6 +87,10 @@ namespace SkyHelp.Controllers
         {
             try
             {
+                // Un usuario no-admin solo puede evaluar a nombre propio, nunca suplantando a otro.
+                if (!User.IsInRole(RoleNames.Administrador))
+                    evaluacion.IdUsuario = ObtenerIdActor();
+
                 var resultado = await _evaluacionesRepository.CrearEvaluacion(evaluacion);
                 if (!resultado)
                 {
@@ -96,6 +114,18 @@ namespace SkyHelp.Controllers
         {
             try
             {
+                var existente = await _evaluacionesRepository.ObtenerEvaluacionPorId(evaluacion.IdEvaluacion);
+                if (existente == null)
+                    return NotFound("Evaluacion no encontrada.");
+                if (!EsPropioOAdmin(existente.IdUsuario))
+                    return Forbid();
+                // No permitir reasignar la evaluación a otro usuario ni a otro ticket.
+                if (!User.IsInRole(RoleNames.Administrador))
+                {
+                    evaluacion.IdUsuario = existente.IdUsuario;
+                    evaluacion.IdTicket = existente.IdTicket;
+                }
+
                 var resultado = await _evaluacionesRepository.ActualizarEvaluacion(evaluacion);
                 if (!resultado)
                 {
@@ -119,6 +149,12 @@ namespace SkyHelp.Controllers
         {
             try
             {
+                var existente = await _evaluacionesRepository.ObtenerEvaluacionPorId(ID);
+                if (existente == null)
+                    return NotFound("Evaluacion no encontrada.");
+                if (!EsPropioOAdmin(existente.IdUsuario))
+                    return Forbid();
+
                 var resultado = await _evaluacionesRepository.EliminarEvaluacion(ID);
                 if (!resultado)
                 {

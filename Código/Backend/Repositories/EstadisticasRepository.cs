@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SkyHelp.Context;
 using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
@@ -8,9 +8,11 @@ namespace SkyHelp.Repositories
     public class EstadisticasRepository : IEstadisticasRepository
     {
         private readonly SkyHelpContext _context;
-        public EstadisticasRepository(SkyHelpContext context)
+        private readonly ILogger<EstadisticasRepository> _logger;
+        public EstadisticasRepository(SkyHelpContext context, ILogger<EstadisticasRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
         public async Task<List<Estadisticas>> ObtenerEstadisticas()
         {
@@ -30,8 +32,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al crear la estadística");
                 return false;
-                throw new Exception(ex.Message);
             }
         }
         public async Task<bool> ActualizarEstadistica(Estadisticas estadistica)
@@ -42,7 +44,6 @@ namespace SkyHelp.Repositories
                 if (estadisticaExistente == null)
                 {
                     return false;
-                    throw new Exception("La estadística para actualizar no existe.");
                 }
                 //Actualización campo por campo
                 estadisticaExistente.Periodo = estadistica.Periodo;
@@ -60,8 +61,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al actualizar la estadística {IdEstadistica}", estadistica.IdEstadistica);
                 return false;
-                throw new Exception(ex.Message);
             }
         }
         public async Task<bool> EliminarEstadistica(Guid id)
@@ -72,7 +73,6 @@ namespace SkyHelp.Repositories
                 if (estadisticaExistente == null)
                 {
                     return false;
-                    throw new Exception("La estadística para eliminar no existe.");
                 }
                 _context.Estadisticas.Remove(estadisticaExistente);
                 await _context.SaveChangesAsync();
@@ -80,8 +80,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al eliminar la estadística {IdEstadistica}", id);
                 return false;
-                throw new Exception(ex.Message);
             }
         }
     }

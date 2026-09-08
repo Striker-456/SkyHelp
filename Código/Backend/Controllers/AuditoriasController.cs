@@ -1,40 +1,39 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SkyHelp.Models;
-using SkyHelp.Repositories.Interfaces;
+using SkyHelp.Authorization;
+using SkyHelp.DTOs.Auditoria;
+using SkyHelp.Services.Interfaces;
 
 namespace SkyHelp.Controllers
 {
-    [Authorize]
+    // La auditoría es un registro de trazabilidad: solo se lee por API.
+    // La escritura ocurre exclusivamente a través de IAuditoriaService, invocado internamente
+    // por las acciones que se quieren auditar (login, CRUD de usuarios/tickets/técnicos, etc.).
+    [Authorize(Roles = RoleNames.Administrador)]
     [Route("api/[controller]")]
     [ApiController]
     public class AuditoriasController : ControllerBase
     {
-        private readonly IAuditoriaRepository _AuditoriaRepository;
-        public AuditoriasController(IAuditoriaRepository auditoriaRepository)
+        private readonly IAuditoriaService _auditoriaService;
+        public AuditoriasController(IAuditoriaService auditoriaService)
         {
-            _AuditoriaRepository = auditoriaRepository;
+            _auditoriaService = auditoriaService;
         }
 
         [HttpGet("ObtenerAuditorias")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ObtenerAuditorias()
+        public async Task<IActionResult> ObtenerAuditorias([FromQuery] AuditoriaFiltroDto filtro)
         {
             try
             {
-                var auditorias = await _AuditoriaRepository.ObtenerAuditorias();
-                if (auditorias == null || !auditorias.Any())
-                {
-                    return NotFound("No se encontraron auditorias.");
-                }
+                var auditorias = await _auditoriaService.ObtenerAsync(filtro);
                 return Ok(auditorias);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener Auditorias.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener auditorías.");
             }
         }
 
@@ -42,88 +41,18 @@ namespace SkyHelp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-
-        public async Task<IActionResult> ObtenerAuditoriaPorId(Guid ID)
+        public async Task<IActionResult> ObtenerAuditoriaPorId(Guid id)
         {
             try
             {
-                var auditoria = await _AuditoriaRepository.ObtenerAuditoriaPorID(ID);
+                var auditoria = await _auditoriaService.ObtenerPorIdAsync(id);
                 if (auditoria == null)
-                {
-                    return NotFound("Auditoria no encontrada.");
-                }
+                    return NotFound("Auditoría no encontrada.");
                 return Ok(auditoria);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener la auditoria.");
-            }
-        }
-
-        [HttpPost("CrearAuditoria")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-
-
-        public async Task<IActionResult> CrearAuditoria([FromBody] Auditoria auditoria)
-        {
-            try
-            {
-                var resultado = await _AuditoriaRepository.CrearAuditoria(auditoria);
-                if (!resultado)
-                {
-                    return BadRequest("No se puede crear la auditoria.");
-                }
-                return Ok("auditoria Creada");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al crear la auditoria.");
-            }
-        }
-
-        [HttpPut("ActualizarAuditoria")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-
-        public async Task<IActionResult> ActualizarAuditoria([FromBody] Auditoria auditoria)
-        {
-            try
-            {
-                var resultado = await _AuditoriaRepository.ActualizarAuditoria(auditoria);
-                if (!resultado)
-                {
-                    return NotFound("No se pudo actualizar la auditoria.");
-                }
-                return Ok("Auditoria actualizada exitosamente.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar la auditoria.");
-            }
-        }
-
-        [HttpDelete("EliminarAuditoria")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-
-        public async Task<IActionResult> EliminarAuditoria(Guid ID)
-        {
-            try
-            {
-                var resultado = await _AuditoriaRepository.EliminarAuditoria(ID);
-                if (!resultado)
-                {
-                    return NotFound("No se pudo eliminar la auditoria.");
-                }
-                return Ok("Auditoria eliminada exitosamente.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al eliminar la auditoria.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener la auditoría.");
             }
         }
     }

@@ -7,13 +7,15 @@ namespace SkyHelp.Repositories
     public class PedidosRepository : IPedidosRepository
     {
         private readonly SkyHelpContext _context;// Inyección de dependencia del contexto de la base de datos
+        private readonly ILogger<PedidosRepository> _logger;
 
-        public PedidosRepository(SkyHelpContext context)
+        public PedidosRepository(SkyHelpContext context, ILogger<PedidosRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
-      public async Task<List<Pedidos>> ObtenerPedidos()
+        public async Task<List<Pedidos>> ObtenerPedidos()
         {
             return await _context.Pedidos.ToListAsync();
         }
@@ -21,6 +23,11 @@ namespace SkyHelp.Repositories
         public async Task<List<Pedidos>> ObtenerPedidosPorDomiciliario(Guid idDomiciliario)
         {
             return await _context.Pedidos.Where(p => p.IdDomiciliario == idDomiciliario).ToListAsync();
+        }
+
+        public async Task<Pedidos?> ObtenerPedidoPorIdTicket(Guid idTicket)
+        {
+            return await _context.Pedidos.FirstOrDefaultAsync(x => x.IdTicket == idTicket);
         }
 
         public async Task<Pedidos> ObtenerPedidoPorId(Guid id)
@@ -37,8 +44,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al crear el pedido para el usuario {IdUsuario}", pedido.IdUsuario);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
         public async Task<bool> ActualizarPedido(Pedidos pedido)
@@ -49,7 +56,6 @@ namespace SkyHelp.Repositories
                 if (pedidoExistente == null)
                 {
                     return false;
-                    throw new Exception("Pedido Para Actualizar No Existe");
                 }
                 pedidoExistente.IdUsuario = pedido.IdUsuario;
                 pedidoExistente.IdDomiciliario = pedido.IdDomiciliario;
@@ -57,14 +63,19 @@ namespace SkyHelp.Repositories
                 pedidoExistente.EstadoPedido = pedido.EstadoPedido;
                 pedidoExistente.Observaciones = pedido.Observaciones;
                 pedidoExistente.FechaPedido = pedido.FechaPedido;
-                _context.Pedidos.Update(pedidoExistente);
+                pedidoExistente.IdTicket = pedido.IdTicket;
+                pedidoExistente.FechaEntrega = pedido.FechaEntrega;
+                // Sin llamar a Update(): la entidad ya está siendo rastreada por el contexto (se obtuvo
+                // sin AsNoTracking), así que SaveChangesAsync ya detecta los cambios reales. Llamar a
+                // Update() aquí marcaba TODAS las propiedades como modificadas, incluyendo NumeroPedido
+                // (columna IDENTITY), y SQL Server rechazaba el UPDATE resultante.
                 await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al actualizar el pedido {IdPedido}", pedido.IdPedido);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
 
@@ -76,7 +87,6 @@ namespace SkyHelp.Repositories
                 if (pedidoExistente == null)
                 {
                     return false;
-                    throw new Exception("Pedido Para Eliminar No Existe");
                 }
                 _context.Pedidos.Remove(pedidoExistente);
                 await _context.SaveChangesAsync();
@@ -84,11 +94,9 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al eliminar el pedido {IdPedido}", id);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
     }
-
-   
 }

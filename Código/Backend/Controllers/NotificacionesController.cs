@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SkyHelp.Authorization;
 using SkyHelp.Repositories.Interfaces;
+using System.Security.Claims;
 
 namespace SkyHelp.Controllers
 {
@@ -15,7 +17,17 @@ namespace SkyHelp.Controllers
         {
             _notificacionesRepository = notificacionesRepository;
         }
-        // Obtener todas las notificaciones
+
+        private Guid ObtenerIdActor()
+        {
+            var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Guid.TryParse(idStr, out var id) ? id : Guid.Empty;
+        }
+
+        private bool EsPropioOAdmin(Guid idUsuarioDelRecurso) =>
+            User.IsInRole(RoleNames.Administrador) || idUsuarioDelRecurso == ObtenerIdActor();
+        // Obtener todas las notificaciones (todas las de todos los usuarios: solo admin)
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpGet("ObtenerNotificaciones")]
         [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
         [ProducesResponseType(StatusCodes.Status404NotFound)]// Indicando que este método puede retornar un estado 404 Not Found
@@ -50,6 +62,9 @@ namespace SkyHelp.Controllers
         {
             try
             {
+                if (!EsPropioOAdmin(idUsuario))
+                    return Forbid();
+
                 var notificaciones = await _notificacionesRepository.ObtenerPorUsuario(idUsuario);
                 if (notificaciones == null || !notificaciones.Any())
                 {
@@ -78,6 +93,8 @@ namespace SkyHelp.Controllers
                 {
                     return NotFound("Notificación no encontrada.");
                 }
+                if (!EsPropioOAdmin(notificacion.IdUsuario))
+                    return Forbid();
                 return Ok(notificacion);
             }
             catch (Exception ex)
@@ -96,6 +113,10 @@ namespace SkyHelp.Controllers
         {
             try
             {
+                // Un usuario no-admin solo puede crear notificaciones para sí mismo, nunca a nombre de otro.
+                if (!User.IsInRole(RoleNames.Administrador))
+                    notificacion.IdUsuario = ObtenerIdActor();
+
                 var resultado = await _notificacionesRepository.CrearNotificacion(notificacion);
                 if (!resultado)
                 {
@@ -119,6 +140,12 @@ namespace SkyHelp.Controllers
         {
             try
             {
+                var existente = await _notificacionesRepository.ObtenerNotificacionesPorId(id);
+                if (existente == null)
+                    return NotFound("Notificación no encontrada.");
+                if (!EsPropioOAdmin(existente.IdUsuario))
+                    return Forbid();
+
                 var resultado = await _notificacionesRepository.EliminarNotificacion(id);
                 if (!resultado)
                 {

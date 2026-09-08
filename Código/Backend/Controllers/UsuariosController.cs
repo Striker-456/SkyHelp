@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using SkyHelp.Authorization;
-using SkyHelp.EncriptarSHA256;
+using SkyHelp.Services.Security;
 using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
+using SkyHelp.Services.Interfaces;
 using System.Security.Claims;
 
 
@@ -15,9 +17,37 @@ namespace SkyHelp.Controllers
     public class UsuariosController : ControllerBase
     {
         private readonly IUsuariosRepository _UsuariosRepository;
-        public UsuariosController(IUsuariosRepository usuariosRepository)// Constructor de la clase con inyección de dependencia
+        private readonly IRolRepository _rolRepository;
+        private readonly ITecnicosRepository _tecnicosRepository;
+        private readonly IAuditoriaService _auditoriaService;
+        public UsuariosController(IUsuariosRepository usuariosRepository, IRolRepository rolRepository, ITecnicosRepository tecnicosRepository, IAuditoriaService auditoriaService)// Constructor de la clase con inyección de dependencia
         {
             _UsuariosRepository = usuariosRepository;// inyección de dependencia del repositorio de usuarios
+            _rolRepository = rolRepository;
+            _tecnicosRepository = tecnicosRepository;
+            _auditoriaService = auditoriaService;
+        }
+
+        private string? ObtenerIp() => HttpContext.Connection.RemoteIpAddress?.ToString();
+
+        private Guid ObtenerIdActor(Guid fallback)
+        {
+            var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Guid.TryParse(idStr, out var id) ? id : fallback;
+        }
+
+        // Garantiza que todo usuario con rol Técnico tenga su fila en Tecnicos, sin importar si
+        // se le asignó el rol al crearlo o al editarlo después — evita que un técnico "exista"
+        // en Usuarios pero sea invisible en la lista de técnicos y en las asignaciones de tickets.
+        private async Task AsegurarRegistroTecnico(Guid idRol, Guid idUsuario)
+        {
+            var rol = await _rolRepository.ObtenerRolesPorID(idRol);
+            if (rol == null || RoleClaimMapper.ToJwtRole(rol.NombreRol) != RoleNames.Tecnico)
+                return;
+
+            var existente = await _tecnicosRepository.ObtenerTecnicoPorIdUsuario(idUsuario);
+            if (existente == null)
+                await _tecnicosRepository.CrearTecnico(new Tecnicos { IdUsuario = idUsuario, FechaRegistro = DateTime.Now });
         }
 
         [Authorize]
@@ -62,7 +92,7 @@ namespace SkyHelp.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpGet("ObtenerUsuarios")]// Definiendo que este método responde a solicitudes GET
         [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]// Indicando que este método puede retornar un estado 500 Internal Server Error
@@ -94,7 +124,7 @@ namespace SkyHelp.Controllers
                 {
                     return NotFound("Usuario no encontrado."); // Retornando una respuesta HTTP 404 si no se encuentra el usuario
                 }
-                if (User.IsInRole(RoleNames.Usuario) && !User.IsInRole(RoleNames.Administrador))
+                if (!User.IsInRole(RoleNames.Administrador))
                 {
                     var self = await _UsuariosRepository.ObtenerUsuarioPorCorreo(User.Identity?.Name ?? "");
                     if (self == null || self.IdUsuario != ID)
@@ -109,6 +139,7 @@ namespace SkyHelp.Controllers
         }
         
         [AllowAnonymous]
+        [EnableRateLimiting("auth")]
         [HttpPost("CrearUsuario")]// Definiendo que este método responde a solicitudes GET
         [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
         [ProducesResponseType(StatusCodes.Status404NotFound)]// Indicando que este método puede retornar un estado 404 Not Found
@@ -118,12 +149,30 @@ namespace SkyHelp.Controllers
         {
             try
             {
+                // El rol solicitado viene del cliente. Solo un Administrador ya autenticado puede
+                // asignar el rol que quiera (p. ej. el modal de "Nuevo Usuario" del panel admin);
+                // cualquier otra llamada (auto-registro público, o un usuario ya autenticado que
+                // no sea admin) siempre crea una cuenta con el rol Cliente, sin importar qué
+                // IdRol haya mandado — el tipo de usuario solo lo asigna el administrador.
+                var llamanteEsAdmin = User.Identity?.IsAuthenticated == true && User.IsInRole(RoleNames.Administrador);
+                if (!llamanteEsAdmin)
+                {
+                    var roles = await _rolRepository.ObtenerRoles();
+                    var rolCliente = roles.FirstOrDefault(r => RoleClaimMapper.ToJwtRole(r.NombreRol) == RoleNames.Usuario);
+                    if (rolCliente == null)
+                        return StatusCode(StatusCodes.Status500InternalServerError, "No se encontró el rol Cliente.");
+                    usuario.IdRol = rolCliente.IDRol;
+                }
+
                 var Resultado = await _UsuariosRepository.CrearUsuario(usuario);
 
                 if (!Resultado)
                 {
                     return BadRequest("No se puede Crear Usuario");
                 }
+                await AsegurarRegistroTecnico(usuario.IdRol, usuario.IdUsuario);
+                await _auditoriaService.RegistrarAsync(usuario.IdUsuario, "Crear", "Usuarios", usuario.IdUsuario,
+                    $"Usuario {usuario.Correo} creado.", ObtenerIp());
                 return Ok("Usuario Creado Correctamente");
             }
             catch (Exception ex)
@@ -150,7 +199,7 @@ namespace SkyHelp.Controllers
                     return NotFound("Usuario no encontrado.");
 
                 // Verificar contraseña actual
-                if (Seguridad.EncriptarSHA256(request.ContrasenaActual) != usuario.Contrasena)
+                if (!Seguridad.Verificar(request.ContrasenaActual, usuario.Contrasena))
                     return BadRequest("Contraseña actual inválida.");
 
                 usuario.Contrasena = request.NuevaContrasena;
@@ -184,7 +233,7 @@ namespace SkyHelp.Controllers
                     return NotFound("Usuario no encontrado.");
 
                 // Verificar contraseña
-                if (Seguridad.EncriptarSHA256(request.Contrasena) != usuario.Contrasena)
+                if (!Seguridad.Verificar(request.Contrasena, usuario.Contrasena))
                     return BadRequest("Contraseña inválida.");
 
                 // Crear objeto para actualizar sin cambiar contraseña
@@ -230,7 +279,7 @@ namespace SkyHelp.Controllers
                     return NotFound("Usuario no encontrado.");
 
                 // Verificar contraseña
-                if (Seguridad.EncriptarSHA256(request.Contrasena) != usuario.Contrasena)
+                if (!Seguridad.Verificar(request.Contrasena, usuario.Contrasena))
                     return BadRequest("Contraseña inválida.");
 
                 // Verificar que el nuevo correo no exista
@@ -263,7 +312,7 @@ namespace SkyHelp.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpPut("ActualizarUsuario")]// Definiendo que este método responde a solicitudes PUT
         [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
         [ProducesResponseType(StatusCodes.Status404NotFound)]// Indicando que este método puede retornar un estado 404 Not Found
@@ -296,6 +345,9 @@ namespace SkyHelp.Controllers
                 {
                     return BadRequest("No se puede Actualizar Usuario");
                 }
+                await AsegurarRegistroTecnico(usuarioActualizado.IdRol, usuarioActualizado.IdUsuario);
+                await _auditoriaService.RegistrarAsync(ObtenerIdActor(usuario.IdUsuario), "Actualizar", "Usuarios", usuario.IdUsuario,
+                    $"Usuario {usuarioActualizado.Correo} actualizado.", ObtenerIp());
                 return Ok("Usuario Actualizado Correctamente");
             }
             catch (Exception ex)
@@ -303,7 +355,7 @@ namespace SkyHelp.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error al Actualizar Usuario");
             }
         }
-        [Authorize]
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpDelete("EliminarUsuario")]// Definiendo que este método responde a solicitudes DELETE
         [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
         [ProducesResponseType(StatusCodes.Status404NotFound)]// Indicando que este método puede retornar un estado 404 Not Found
@@ -318,6 +370,8 @@ namespace SkyHelp.Controllers
                 {
                     return BadRequest("No se Pudo Eliminar Al Usuario");
                 }
+                await _auditoriaService.RegistrarAsync(ObtenerIdActor(ID), "Eliminar", "Usuarios", ID,
+                    $"Usuario {ID} eliminado.", ObtenerIp());
                 return Ok("Usuario Eliminado Correctamente");
             }
             catch (Exception ex)

@@ -1,6 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SkyHelp.Context;
-using SkyHelp.EncriptarSHA256;
 using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
 
@@ -9,9 +8,11 @@ namespace SkyHelp.Repositories
     public class ReportesRepository : IReportesRepository
     {
         private readonly SkyHelpContext _context;
-        public ReportesRepository(SkyHelpContext context)
+        private readonly ILogger<ReportesRepository> _logger;
+        public ReportesRepository(SkyHelpContext context, ILogger<ReportesRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<List<Reportes>> ObtenerReportes()
@@ -23,7 +24,6 @@ namespace SkyHelp.Repositories
             return await _context.Reportes.FirstOrDefaultAsync(x => x.IdReporte == id);
         }
 
-
         public async Task<bool> EliminarReporte(Guid id)
         {
             try
@@ -32,7 +32,6 @@ namespace SkyHelp.Repositories
                 if (ReporteExistente == null)
                 {
                     return false;
-                    throw new Exception("Reporte para actualizar no existe");
                 }
 
                 _context.Reportes.Remove(ReporteExistente);
@@ -41,8 +40,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al eliminar el reporte {IdReporte}", id);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
 
@@ -54,7 +53,6 @@ namespace SkyHelp.Repositories
                 if (ReporteExistente == null)
                 {
                     return false;
-                    throw new Exception("Reporte Para Actualizar No Existe");
                 }
 
                 ReporteExistente.Titulo = reportes.Titulo;
@@ -65,15 +63,14 @@ namespace SkyHelp.Repositories
                 ReporteExistente.IdOrigen = reportes.IdOrigen;
                 ReporteExistente.OrigenTabla = reportes.OrigenTabla;
 
-
                 _context.Reportes.Update(ReporteExistente);
                 await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al actualizar el reporte {IdReporte}", reportes.IdReporte);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
 
@@ -87,8 +84,8 @@ namespace SkyHelp.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al crear el reporte {TipoReporte}", reportes.TipoReporte);
                 return false;
-                throw new Exception(ex.Message.ToString());
             }
         }
     }

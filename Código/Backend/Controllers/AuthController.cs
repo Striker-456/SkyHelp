@@ -1,20 +1,23 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SkyHelp.Authorization;
-using SkyHelp.EncriptarSHA256;
+using SkyHelp.Services.Security;
 using SkyHelp.Context;
 using SkyHelp.Models;
 using SkyHelp.Repositories.Interfaces;
+using SkyHelp.Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-
+// Si esta mierda funciona no la vuelvo a tocar.
 namespace SkyHelp.Controllers
 {
 
+    [EnableRateLimiting("auth")]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -22,12 +25,29 @@ namespace SkyHelp.Controllers
         private readonly IUsuariosRepository _usuariosRepository;
         private readonly IConfiguration _configuration;
         private readonly SkyHelpContext _context;
+        private readonly IAuditoriaService _auditoriaService;
 
-        public AuthController(IUsuariosRepository usuariosRepository, IConfiguration configuration, SkyHelpContext context)
+        public AuthController(IUsuariosRepository usuariosRepository, IConfiguration configuration, SkyHelpContext context, IAuditoriaService auditoriaService)
         {
             _usuariosRepository = usuariosRepository;
             _configuration = configuration;
             _context = context;
+            _auditoriaService = auditoriaService;
+        }
+
+        private string? ObtenerIp() => HttpContext.Connection.RemoteIpAddress?.ToString();
+
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (Guid.TryParse(idStr, out var idUsuario))
+            {
+                await _auditoriaService.RegistrarAsync(idUsuario, "Cierre de sesión", "Auth", idUsuario,
+                    $"Cierre de sesión de {User.Identity?.Name}.", ObtenerIp());
+            }
+            return Ok();
         }
         [HttpPost("login")]
         public async Task<IActionResult> Login(Login login)
@@ -74,8 +94,16 @@ namespace SkyHelp.Controllers
             if (usuario == null)
                 return Unauthorized();
 
-            if (Seguridad.EncriptarSHA256(login.Contrasena) != usuario.Contrasena)
+            if (!Seguridad.Verificar(login.Contrasena, usuario.Contrasena))
                 return Unauthorized("Credenciales inválidas.");
+
+            // Migración silenciosa: si la contraseña todavía está en el formato SHA-256 legado,
+            // se re-hashea con BCrypt ahora que sabemos que la contraseña en texto plano es correcta.
+            if (Seguridad.EsHashLegado(usuario.Contrasena))
+            {
+                usuario.Contrasena = login.Contrasena;
+                await _usuariosRepository.ActualizarUsuario(usuario);
+            }
 
             var rol = await _context.Roles.FirstOrDefaultAsync(r => r.IDRol == usuario.IdRol);
             if (rol == null || string.IsNullOrWhiteSpace(rol.NombreRol))
@@ -108,6 +136,10 @@ namespace SkyHelp.Controllers
             );
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+
+            await _auditoriaService.RegistrarAsync(usuario.IdUsuario, "Inicio de sesión", "Auth", usuario.IdUsuario,
+                $"Inicio de sesión exitoso como {jwtRole}.", ObtenerIp());
+
             return Ok(new { Token = tokenString, Role = jwtRole });
         }
     }

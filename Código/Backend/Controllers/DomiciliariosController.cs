@@ -20,6 +20,12 @@ namespace SkyHelp.Controllers
             _domiciliariosRepository = domiciliariosRepository;
         }
 
+        private Guid ObtenerIdActor()
+        {
+            var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Guid.TryParse(idStr, out var id) ? id : Guid.Empty;
+        }
+
         // OBTENER TODOS
         [Authorize]
         [HttpGet("ObtenerDomiciliarios")]
@@ -107,6 +113,11 @@ namespace SkyHelp.Controllers
         {
             try
             {
+                // El auto-registro como domiciliario solo puede crear SU PROPIO registro; un admin
+                // puede crear el registro de cualquier usuario.
+                if (!User.IsInRole(RoleNames.Administrador))
+                    domiciliario.IDUsuario = ObtenerIdActor();
+
                 var resultado = await _domiciliariosRepository.CrearDomiciliario(domiciliario);
 
                 if (!resultado)
@@ -131,6 +142,16 @@ namespace SkyHelp.Controllers
         {
             try
             {
+                var existente = await _domiciliariosRepository.ObtenerDomiciliarioPorID(domiciliario.IdDomiciliario);
+                if (existente == null)
+                    return NotFound("No se pudo actualizar el domiciliario.");
+                var esAdmin = User.IsInRole(RoleNames.Administrador);
+                if (!esAdmin && existente.IDUsuario != ObtenerIdActor())
+                    return Forbid();
+                // Un domiciliario no puede reasignar su registro a otro usuario.
+                if (!esAdmin)
+                    domiciliario.IDUsuario = existente.IDUsuario;
+
                 var resultado = await _domiciliariosRepository.ActualizarDomiciliario(domiciliario);
 
                 if (!resultado)
@@ -148,6 +169,7 @@ namespace SkyHelp.Controllers
 
         // ELIMINAR
 
+        [Authorize(Roles = RoleNames.Administrador)]
         [HttpDelete("EliminarDomiciliario")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

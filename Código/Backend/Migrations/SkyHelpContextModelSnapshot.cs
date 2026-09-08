@@ -46,11 +46,6 @@ namespace SkyHelp.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("PlacaVehiculo")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<string>("Telefono")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -185,8 +180,12 @@ namespace SkyHelp.Migrations
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("DireccionIp")
+                        .HasMaxLength(45)
+                        .HasColumnType("nvarchar(45)");
 
                     b.Property<DateTime>("FechaEvento")
                         .HasColumnType("datetime2");
@@ -273,6 +272,9 @@ namespace SkyHelp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Datos")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -346,7 +348,17 @@ namespace SkyHelp.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<string>("Diagnostico")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("FechaCierre")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaDiagnostico")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("IdDomiciliario")
@@ -382,6 +394,9 @@ namespace SkyHelp.Migrations
 
                     b.HasIndex("IdUsuario");
 
+                    b.HasIndex("NumeroTicket")
+                        .IsUnique();
+
                     b.ToTable("Tickets", (string)null);
                 });
 
@@ -393,8 +408,8 @@ namespace SkyHelp.Migrations
 
                     b.Property<string>("Contrasena")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Correo")
                         .IsRequired()
@@ -483,14 +498,26 @@ namespace SkyHelp.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<DateTime?>("FechaEntrega")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("FechaPedido")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("IdDomiciliario")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("IdTicket")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("IdUsuario")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("NumeroPedido")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NumeroPedido"));
 
                     b.Property<string>("Observaciones")
                         .IsRequired()
@@ -502,6 +529,9 @@ namespace SkyHelp.Migrations
                     b.HasIndex("IdDomiciliario");
 
                     b.HasIndex("IdUsuario");
+
+                    b.HasIndex("NumeroPedido")
+                        .IsUnique();
 
                     b.ToTable("Pedidos", (string)null);
                 });

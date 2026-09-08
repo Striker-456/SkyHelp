@@ -1,0 +1,10 @@
+{
+  "description": "Facilitates secure and organized file sharing by allowing users to wait for and manage multiple file uploads before proceeding with actions.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
