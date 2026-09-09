@@ -138,7 +138,7 @@ AplicacionSkyHelp.prototype.renderizarFilasTickets = function(tickets) {
                 <div class="acciones-ticket">
                     <button class="btn btn-primario" style="padding:0.5rem 1rem;font-size:0.8125rem;" onclick="aplicacion.verDetalleTicket('${id}')">Ver</button>
                     ${this.usuarioActual.rol !== 'usuario' && !esTecnico ? `<button class="btn btn-secundario" style="padding:0.5rem 1rem;font-size:0.8125rem;" onclick="aplicacion.mostrarModalEditarTicket('${id}')">Editar</button>` : ''}
-                    ${esAdmin ? `<button class="btn btn-secundario" style="padding:0.5rem 1rem;font-size:0.8125rem;" onclick="aplicacion.mostrarModalAsignarTecnico('${id}')">Asignar Técnico</button>` : ''}
+                    ${esAdmin && !ticket.idTecnico ? `<button class="btn btn-secundario" style="padding:0.5rem 1rem;font-size:0.8125rem;" onclick="aplicacion.mostrarModalAsignarTecnico('${id}')">Asignar Técnico </button>` : ''}
                     ${puedeIniciarDiagnostico ? `<button class="btn btn-secundario" style="padding:0.5rem 1rem;font-size:0.8125rem;" onclick="aplicacion.iniciarDiagnosticoTicket('${id}')">Iniciar Diagnóstico</button>` : ''}
                     ${puedeFinalizarDiagnostico ? `<button class="btn btn-exito" style="padding:0.5rem 1rem;font-size:0.8125rem;background-color:#10b981;color:white;border:none;" onclick="aplicacion.mostrarModalDiagnostico('${id}')">Finalizar Diagnóstico</button>` : ''}
                     ${puedeResolver ? `<button class="btn btn-exito" style="padding:0.5rem 1rem;font-size:0.8125rem;background-color:#10b981;color:white;border:none;" onclick="aplicacion.resolverTicket('${id}')">Resolver</button>` : ''}
@@ -273,10 +273,9 @@ AplicacionSkyHelp.prototype.verDetalleTicket = async function(id) {
     const idCorto = ticket.numeroTicket ? `#${ticket.numeroTicket}` : (id || '').substring(0, 8) + '...';
 
     const esTecnico = this.usuarioActual.rol === 'tecnico';
-    const esAdminDetalle = this.usuarioActual.rol === 'administrador';
-    const miId = this.usuarioActual.id || sessionStorage.getItem('skyhelp_id');
-    const miTecnico = tecnicos.find(t => t.idUsuario === miId);
-    const esMiTicketTecnico = (esAdminDetalle) || (esTecnico && miTecnico && ticket.idTecnico === miTecnico.idTecnico);
+const miId = this.usuarioActual.id || sessionStorage.getItem('skyhelp_id');
+const miTecnico = tecnicos.find(t => t.idUsuario === miId);
+const esMiTicketTecnico = esTecnico && miTecnico && ticket.idTecnico === miTecnico.idTecnico;
     const yaResuelto = estadoNombre.toLowerCase().includes('resuel');
     const puedeIniciarDiagnostico = esMiTicketTecnico && !ticket.fechaDiagnostico && !yaResuelto;
     const puedeFinalizarDiagnostico = esMiTicketTecnico && ticket.fechaDiagnostico && !ticket.diagnostico && !yaResuelto;
