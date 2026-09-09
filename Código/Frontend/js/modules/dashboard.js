@@ -82,7 +82,7 @@ AplicacionSkyHelp.prototype.obtenerContenidoDashboard = async function() {
                                     <td>
                                         <div class="acciones-ticket">
                                             <button class="btn btn-primario" style="padding:0.5rem 1rem;font-size:0.8125rem;" onclick="aplicacion.verDetalleTicket('${id}')">Ver</button>
-                                            ${esAdmin ? `<button class="btn btn-secundario" style="padding:0.5rem 1rem;font-size:0.8125rem;" onclick="aplicacion.mostrarModalAsignarTecnico('${id}')">Asignar Técnico</button>` : ''}
+                                           ${esAdmin && !ticket.idTecnico ? `<button class="btn btn-secundario" style="padding:0.5rem 1rem;font-size:0.8125rem;" onclick="aplicacion.mostrarModalAsignarTecnico('${id}')">Asignar Técnico</button>` : ''}
                                             ${puedeIniciarDiagnostico ? `<button class="btn btn-secundario" style="padding:0.5rem 1rem;font-size:0.8125rem;" onclick="aplicacion.iniciarDiagnosticoTicket('${id}')">Iniciar Diagnóstico</button>` : ''}
                                             ${puedeFinalizarDiagnostico ? `<button class="btn btn-exito" style="padding:0.5rem 1rem;font-size:0.8125rem;background-color:#10b981;color:white;border:none;" onclick="aplicacion.mostrarModalDiagnostico('${id}')">Finalizar Diagnóstico</button>` : ''}
                                             ${puedeResolver ? `<button class="btn btn-exito" style="padding:0.5rem 1rem;font-size:0.8125rem;background-color:#10b981;color:white;border:none;" onclick="aplicacion.resolverTicket('${id}')">Resolver</button>` : ''}
