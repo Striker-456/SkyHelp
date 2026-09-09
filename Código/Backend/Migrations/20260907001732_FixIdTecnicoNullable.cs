@@ -10,10 +10,7 @@ namespace SkyHelp.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // La base de datos tenía IdTecnico como NOT NULL aunque el modelo (y el snapshot de
-            // EF) siempre lo trataron como opcional (IsRequired(false)) — esto impedía crear
-            // tickets sin técnico asignado todavía. Se corrige la columna real para que coincida
-            // con lo que el modelo siempre esperó.
+           
             migrationBuilder.AlterColumn<Guid>(
                 name: "IdTecnico",
                 table: "Tickets",
