@@ -187,7 +187,7 @@ namespace SkyHelp.Repositories
             }
         }
 
-        public async Task<bool> RegistrarDiagnostico(Guid idTicket, string diagnostico)
+        public async Task<bool> RegistrarDiagnostico(Guid idTicket, string diagnostico, string? fallaEncontrada = null, string? pruebasRealizadas = null, string? observaciones = null, string? recomendaciones = null)
         {
             try
             {
@@ -198,7 +198,11 @@ namespace SkyHelp.Repositories
                     .Where(t => t.IdTicket == idTicket)
                     .ExecuteUpdateAsync(s => s
                         .SetProperty(t => t.Diagnostico, diagnostico)
-                        .SetProperty(t => t.FechaDiagnostico, DateTime.Now));
+                        .SetProperty(t => t.FechaDiagnostico, DateTime.Now)
+                        .SetProperty(t => t.FallaEncontrada, fallaEncontrada)
+                        .SetProperty(t => t.PruebasRealizadas, pruebasRealizadas)
+                        .SetProperty(t => t.Observaciones, observaciones)
+                        .SetProperty(t => t.Recomendaciones, recomendaciones));
 
                 return resultado > 0;
             }
