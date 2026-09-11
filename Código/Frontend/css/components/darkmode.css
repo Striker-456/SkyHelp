@@ -145,6 +145,28 @@ body.modo-oscuro .dom-entrega-cliente { color: #94a3b8; }
 body.modo-oscuro .dom-entrega-dir { color: #94a3b8; }
 body.modo-oscuro .dom-entrega-id { color: #64748b; }
 
+/* Progreso del servicio */
+body.modo-oscuro .progreso-seccion-titulo { color: #f1f5f9; }
+body.modo-oscuro .progreso-servicio-card { background: #334155; border-color: #475569; }
+body.modo-oscuro .progreso-servicio-titulo { color: #f1f5f9; }
+body.modo-oscuro .progreso-barra-contenedor { background: #1e293b; }
+body.modo-oscuro .progreso-servicio-etiqueta { color: #94a3b8; }
+body.modo-oscuro .progreso-servicio-valor { color: #f1f5f9; }
+body.modo-oscuro .progreso-servicio-descripcion { color: #cbd5e1; border-top-color: #475569; }
+body.modo-oscuro .progreso-timeline { background: #1e293b; border-color: #475569; }
+body.modo-oscuro .progreso-timeline-item { color: #64748b; }
+body.modo-oscuro .progreso-timeline-item.completada { color: #cbd5e1; }
+body.modo-oscuro .progreso-control { background: #334155; border-color: #475569; }
+body.modo-oscuro .progreso-control > label { color: #f1f5f9; }
+body.modo-oscuro .progreso-control-numero { color: #f1f5f9; }
+body.modo-oscuro .progreso-control-numero input[type="number"] { background: #1e293b; border-color: #475569; color: #f1f5f9; }
+body.modo-oscuro .progreso-historial-detalles summary { color: #f1f5f9; }
+body.modo-oscuro .progreso-historial-item { background: #334155; border-color: #475569; }
+body.modo-oscuro .progreso-historial-fecha { color: #64748b; }
+body.modo-oscuro .progreso-historial-linea { color: #e2e8f0; }
+body.modo-oscuro .progreso-historial-desc { color: #94a3b8; }
+body.modo-oscuro .progreso-historial-vacio { color: #64748b; }
+
 /* Perfil */
 body.modo-oscuro .perfil-nombre { color: #f8fafc; }
 body.modo-oscuro .perfil-correo { color: #64748b; }

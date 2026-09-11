@@ -17,6 +17,7 @@ dist-ssr/
 appsettings.*.local.json
 .env
 .env.*
+!.env.example
 
 # Sistema operativo / editores
 .DS_Store

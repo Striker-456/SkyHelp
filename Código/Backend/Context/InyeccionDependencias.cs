@@ -32,6 +32,7 @@ namespace SkyHelp.Context
             services.AddScoped<ITicketsRepository, TicketsRepository>();//Inyección de dependencia del repositorio de tickets
             services.AddScoped<IEstadosTicketsRepository, EstadosTicketsRepository>();//Inyección de dependencia del repositorio de estados de tickets
             services.AddScoped<IEvaluacionesRepository, EvaluacionesRepository>();//Inyección de dependencia del repositorio de evaluaciones
+            services.AddScoped<IProgresoTicketsRepository, ProgresoTicketsRepository>();//Inyección de dependencia del repositorio de progreso de tickets
 
             services.AddScoped<IAuditoriaService, AuditoriaService>();
             services.AddScoped<IReportesService, ReportesService>();

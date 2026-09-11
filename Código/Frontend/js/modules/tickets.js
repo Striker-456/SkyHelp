@@ -1,6 +1,89 @@
 // js/modules/tickets.js
 // Métodos para gestión de tickets
 
+// Etapas fijas del progreso del servicio. Debe coincidir EXACTAMENTE (mismo texto y orden)
+// con EtapasServicio.Orden en el backend (Backend/Models/EtapasServicio.cs), que valida contra
+// esta misma lista al recibir una actualización de progreso.
+const ETAPAS_SERVICIO = [
+    'Ticket recibido',
+    'Equipo recibido',
+    'Diagnóstico iniciado',
+    'Inspección del equipo',
+    'Identificación de la falla',
+    'Pruebas de funcionamiento',
+    'Diagnóstico finalizado',
+    'En reparación',
+    'Reparación finalizada',
+    'Servicio finalizado'
+];
+
+// Construye la barra + datos de la tarjeta "Progreso del servicio", reutilizada en la vista de
+// técnico (editable) y en "Ver detalles" del cliente/admin (solo lectura). `progresoActual` es la
+// fila más reciente de ProgresoTickets (o null si el técnico aún no ha registrado ninguna).
+AplicacionSkyHelp.prototype.renderizarTarjetaProgreso = function(ticket, progresoActual) {
+    const porcentaje = progresoActual ? progresoActual.porcentaje : 0;
+    const etapa = progresoActual ? progresoActual.etapa : (ticket.fechaDiagnostico ? 'Diagnóstico iniciado' : 'Ticket recibido');
+    const descripcion = progresoActual ? (progresoActual.descripcion || '—') :
+        (ticket.fechaDiagnostico ? 'El técnico está trabajando en el diagnóstico.' : 'Aún no se ha registrado avance del servicio.');
+    const fecha = progresoActual ? progresoActual.fechaRegistro : (ticket.fechaDiagnostico || ticket.fechaCreacion);
+    const fechaTexto = fecha ? new Date(fecha).toLocaleString('es-CO', { dateStyle: 'short', timeStyle: 'short' }) : '—';
+
+    return `
+        <div class="progreso-servicio-card">
+            <div class="progreso-servicio-titulo">Diagnóstico del equipo</div>
+            <div class="progreso-barra-contenedor">
+                <div class="progreso-barra-relleno" style="width:${porcentaje}%;"></div>
+            </div>
+            <div class="progreso-servicio-porcentaje">${porcentaje}% completado</div>
+            <div class="progreso-servicio-fila">
+                <div>
+                    <div class="progreso-servicio-etiqueta">Etapa actual</div>
+                    <div class="progreso-servicio-valor">${etapa}</div>
+                </div>
+                <div>
+                    <div class="progreso-servicio-etiqueta">Última actualización</div>
+                    <div class="progreso-servicio-valor">${fechaTexto}</div>
+                </div>
+            </div>
+            <div class="progreso-servicio-descripcion">${descripcion}</div>
+        </div>
+    `;
+};
+
+// Línea de tiempo de las 10 etapas fijas (✓ completada, ● actual, ○ pendiente).
+AplicacionSkyHelp.prototype.renderizarTimelineEtapas = function(etapaActual) {
+    const indiceActual = ETAPAS_SERVICIO.indexOf(etapaActual);
+    return `
+        <div class="progreso-timeline">
+            ${ETAPAS_SERVICIO.map((etapa, i) => {
+                let marca = '○', clase = 'pendiente';
+                if (indiceActual >= 0 && i < indiceActual) { marca = '✓'; clase = 'completada'; }
+                else if (i === indiceActual) { marca = '●'; clase = 'actual'; }
+                return `<div class="progreso-timeline-item ${clase}"><span class="progreso-timeline-marca">${marca}</span><span>${etapa}</span></div>`;
+            }).join('')}
+        </div>
+    `;
+};
+
+// Historial cronológico (más reciente primero) de actualizaciones de progreso reales, tal cual
+// las registró el técnico — sin datos simulados.
+AplicacionSkyHelp.prototype.renderizarHistorialProgreso = function(historial) {
+    if (!historial || !historial.length) {
+        return `<div class="progreso-historial-vacio">Aún no hay actualizaciones de progreso registradas.</div>`;
+    }
+    return `
+        <div class="progreso-historial-lista">
+            ${historial.map(h => `
+                <div class="progreso-historial-item">
+                    <div class="progreso-historial-fecha">${new Date(h.fechaRegistro).toLocaleString('es-CO', { dateStyle: 'short', timeStyle: 'short' })}</div>
+                    <div class="progreso-historial-linea"><strong>${h.porcentaje}%</strong> — ${h.etapa}</div>
+                    ${h.descripcion ? `<div class="progreso-historial-desc">${h.descripcion}</div>` : ''}
+                </div>
+            `).join('')}
+        </div>
+    `;
+};
+
 AplicacionSkyHelp.prototype.obtenerContenidoTickets = async function() {
     try {
         const rol = this.usuarioActual.rol;
@@ -231,7 +314,7 @@ AplicacionSkyHelp.prototype.verDetalleTicket = async function(id) {
             ]);
             tecnicos = resultados[0].status === 'fulfilled' ? (resultados[0].value || []) : [];
             domiciliarios = resultados[1].status === 'fulfilled' ? (resultados[1].value || []) : [];
-            
+
             // Guardar en cache global
             datosSkyHelp.tecnicos = tecnicos;
             datosSkyHelp.domiciliarios = domiciliarios;
@@ -239,7 +322,13 @@ AplicacionSkyHelp.prototype.verDetalleTicket = async function(id) {
             console.error('Error cargando técnicos y domiciliarios:', e);
         }
     }
-    
+
+    // Progreso real del servicio (viene de ProgresoTickets en el backend) — el más reciente es
+    // el "estado actual"; el resto conforma el historial que se muestra abajo.
+    let historialProgreso = [];
+    try { historialProgreso = await Api.obtenerProgresoTicket(id) || []; } catch (e) { historialProgreso = []; }
+    const progresoActual = historialProgreso[0] || null;
+
     const tecnicoObj = tecnicos.find(t => t.idTecnico === ticket.idTecnico);
     const domiciliarioObj = domiciliarios.find(d => d.idDomiciliario === ticket.idDomiciliario);
     
@@ -254,14 +343,6 @@ AplicacionSkyHelp.prototype.verDetalleTicket = async function(id) {
     const clienteNombre = getNombre(ticket.idUsuario) || '—';
 
     const fecha = ticket.fechaCreacion ? new Date(ticket.fechaCreacion).toLocaleDateString() : '—';
-
-    const pasos = [
-        { label: 'Recibido',    icono: '📥' },
-        { label: 'Diagnóstico', icono: '🔍' },
-        { label: 'Reparación',  icono: '🔧' },
-        { label: 'Pruebas',     icono: '✅' },
-        { label: 'Entregado',   icono: '📦' }
-    ];
 
     const historial = [
         { emoji: '🎫', bg: '#dbeafe', accion: `Ticket creado`, tiempo: fecha + ' · 09:00' },
@@ -292,16 +373,11 @@ const esMiTicketTecnico = esTecnico && miTecnico && ticket.idTecnico === miTecni
             <button class="btn-cerrar-modal" onclick="aplicacion.cerrarModal()">✕</button>
         </div>
         <div class="modal-cuerpo">
-            <!-- Barra de progreso -->
-            <div class="progreso-dispositivo-card" style="margin-bottom:1.5rem;">
-                <div class="progreso-pasos">
-                    ${pasos.map((p, i) => `
-                        <div class="progreso-paso ${i === 0 ? 'completado' : ''}">
-                            <div class="progreso-paso-icono">${p.icono}</div>
-                            <div class="progreso-paso-label">${p.label}</div>
-                        </div>
-                    `).join('')}
-                </div>
+            <!-- Progreso del servicio (solo lectura aquí; el técnico lo edita desde el modal de Diagnóstico) -->
+            <div class="progreso-seccion" style="margin-bottom:1.5rem;">
+                <h4 class="progreso-seccion-titulo">Progreso de mi servicio</h4>
+                ${this.renderizarTarjetaProgreso(ticket, progresoActual)}
+                ${this.renderizarTimelineEtapas(progresoActual ? progresoActual.etapa : (ticket.fechaDiagnostico ? 'Diagnóstico iniciado' : 'Ticket recibido'))}
             </div>
 
             <div class="info-ticket-grid">
@@ -337,6 +413,15 @@ const esMiTicketTecnico = esTecnico && miTecnico && ticket.idTecnico === miTecni
                     <div class="etiqueta">DIAGNÓSTICO</div>
                     <div class="valor">${ticket.diagnostico || 'Pendiente por parte del técnico'}</div>
                 </div>
+                ${ticket.fallaEncontrada ? `<div class="info-ticket-item"><div class="etiqueta">FALLA ENCONTRADA</div><div class="valor">${ticket.fallaEncontrada}</div></div>` : ''}
+                ${ticket.pruebasRealizadas ? `<div class="info-ticket-item"><div class="etiqueta">PRUEBAS REALIZADAS</div><div class="valor">${ticket.pruebasRealizadas}</div></div>` : ''}
+                ${ticket.observaciones ? `<div class="info-ticket-item" style="grid-column:1/-1;"><div class="etiqueta">OBSERVACIONES</div><div class="valor">${ticket.observaciones}</div></div>` : ''}
+                ${ticket.recomendaciones ? `<div class="info-ticket-item" style="grid-column:1/-1;"><div class="etiqueta">RECOMENDACIONES</div><div class="valor">${ticket.recomendaciones}</div></div>` : ''}
+            </div>
+
+            <div class="linea-tiempo">
+                <h4>📊 Historial del Servicio</h4>
+                ${this.renderizarHistorialProgreso(historialProgreso)}
             </div>
 
             <div class="linea-tiempo">
@@ -425,43 +510,278 @@ AplicacionSkyHelp.prototype.iniciarDiagnosticoTicket = async function(id) {
     }
 };
 
+// Espacio de trabajo completo del técnico para el diagnóstico: datos del diagnóstico + la
+// sección "Progreso del servicio" (tarjeta actual, línea de tiempo, control de actualización e
+// historial). El botón que lo abre sigue llamándose "Finalizar Diagnóstico" en las listas de
+// tickets, pero ahora revisa/edita todo antes de finalizar (ver intentarFinalizarDiagnostico).
 AplicacionSkyHelp.prototype.mostrarModalDiagnostico = async function(id) {
     const ticket = datosSkyHelp.tickets.find(t => (t.idTicket || t.id) === id);
     if (!ticket) return;
 
+    let historial = [];
+    try { historial = await Api.obtenerProgresoTicket(id) || []; } catch (e) { historial = []; }
+    const actual = historial[0] || null;
+    const porcentajeActual = actual ? actual.porcentaje : 0;
+    const etapaSeleccionada = actual ? actual.etapa : (ticket.fechaDiagnostico ? 'Diagnóstico iniciado' : 'Ticket recibido');
+
     const numeroDisplay = ticket.numeroTicket ? `#${ticket.numeroTicket}` : id.substring(0, 8) + '...';
+
+    const opcionesEtapas = ETAPAS_SERVICIO.map(e =>
+        `<option value="${e}" ${e === etapaSeleccionada ? 'selected' : ''}>${e}</option>`
+    ).join('');
 
     const contenido = `
         <div class="modal-encabezado">
-            <div><h3>Registrar Diagnóstico — ${numeroDisplay}</h3></div>
+            <div><h3>Diagnóstico — ${numeroDisplay}</h3></div>
             <button class="btn-cerrar-modal" onclick="aplicacion.cerrarModal()">✕</button>
         </div>
-        <form onsubmit="aplicacion.guardarDiagnostico(event, '${id}')">
-            <div class="modal-cuerpo">
+        <div class="modal-cuerpo">
+            <div class="info-ticket-item" style="margin-bottom:1.25rem;">
+                <div class="etiqueta">PROBLEMA REPORTADO</div>
+                <div class="valor">${ticket.descripcion || '—'}</div>
+            </div>
+
+            <form id="form-diagnostico-${id}">
                 <div class="grupo-formulario">
                     <label>Diagnóstico *</label>
-                    <textarea name="diagnostico" rows="4" required placeholder="Describe el diagnóstico del equipo...">${ticket.diagnostico || ''}</textarea>
+                    <textarea name="diagnostico" rows="3" required placeholder="Describe el diagnóstico del equipo...">${ticket.diagnostico || ''}</textarea>
+                </div>
+                <div class="fila-formulario">
+                    <div class="grupo-formulario">
+                        <label>Falla encontrada</label>
+                        <input type="text" name="fallaEncontrada" value="${ticket.fallaEncontrada || ''}" placeholder="Ej. Falla en la fuente de alimentación">
+                    </div>
+                    <div class="grupo-formulario">
+                        <label>Pruebas realizadas</label>
+                        <input type="text" name="pruebasRealizadas" value="${ticket.pruebasRealizadas || ''}" placeholder="Ej. Prueba de voltaje y encendido">
+                    </div>
+                </div>
+                <div class="grupo-formulario">
+                    <label>Observaciones</label>
+                    <textarea name="observaciones" rows="2" placeholder="Observaciones adicionales...">${ticket.observaciones || ''}</textarea>
+                </div>
+                <div class="grupo-formulario">
+                    <label>Recomendaciones</label>
+                    <textarea name="recomendaciones" rows="2" placeholder="Recomendaciones para el cliente...">${ticket.recomendaciones || ''}</textarea>
+                </div>
+            </form>
+
+            <h4 class="progreso-seccion-titulo">Progreso del servicio</h4>
+            <div id="panel-progreso-${id}">
+                ${this.renderizarTarjetaProgreso(ticket, actual)}
+                ${this.renderizarTimelineEtapas(etapaSeleccionada)}
+            </div>
+
+            <div class="progreso-control">
+                <label>Actualizar progreso</label>
+                <div class="progreso-control-fila">
+                    <input type="range" id="rango-progreso-${id}" min="0" max="100" value="${porcentajeActual}" oninput="aplicacion._sincronizarProgreso('${id}','rango')">
+                    <div class="progreso-control-numero">
+                        <input type="number" id="numero-progreso-${id}" min="0" max="100" value="${porcentajeActual}" oninput="aplicacion._sincronizarProgreso('${id}','numero')"> %
+                    </div>
+                </div>
+                <div class="grupo-formulario">
+                    <label>Etapa</label>
+                    <select id="etapa-progreso-${id}">${opcionesEtapas}</select>
+                </div>
+                <div class="grupo-formulario">
+                    <label>Descripción</label>
+                    <textarea id="descripcion-progreso-${id}" rows="2" placeholder="Describe lo que se está realizando..."></textarea>
+                </div>
+                <div style="text-align:right;">
+                    <button type="button" class="btn btn-primario" onclick="aplicacion.actualizarProgresoDesdeModal('${id}')">Actualizar progreso</button>
                 </div>
             </div>
-            <div class="modal-pie">
-                <button type="button" class="btn btn-secundario" onclick="aplicacion.cerrarModal()">Cancelar</button>
-                <button type="submit" class="btn btn-primario">Guardar Diagnóstico</button>
-            </div>
-        </form>
+
+            <details class="progreso-historial-detalles">
+                <summary>Historial del servicio</summary>
+                <div id="historial-progreso-${id}">${this.renderizarHistorialProgreso(historial)}</div>
+            </details>
+        </div>
+        <div class="modal-pie">
+            <button type="button" class="btn btn-secundario" onclick="aplicacion.cerrarModal()">Cancelar</button>
+            <button type="button" class="btn btn-exito" style="background-color:#10b981;color:white;border:none;" onclick="aplicacion.intentarFinalizarDiagnostico('${id}')">Finalizar Diagnóstico</button>
+        </div>
     `;
     this.abrirModal(contenido, true);
 };
 
-AplicacionSkyHelp.prototype.guardarDiagnostico = async function(evento, id) {
-    evento.preventDefault();
-    const diagnostico = new FormData(evento.target).get('diagnostico');
+// Mantiene sincronizados el slider y el campo numérico del control de progreso.
+AplicacionSkyHelp.prototype._sincronizarProgreso = function(id, origen) {
+    const rango = document.getElementById(`rango-progreso-${id}`);
+    const numero = document.getElementById(`numero-progreso-${id}`);
+    if (!rango || !numero) return;
+    if (origen === 'rango') {
+        numero.value = rango.value;
+    } else {
+        let valor = parseInt(numero.value, 10);
+        if (isNaN(valor)) valor = 0;
+        valor = Math.max(0, Math.min(100, valor));
+        numero.value = valor;
+        rango.value = valor;
+    }
+};
+
+// Vuelve a pedir el historial de progreso y repinta solo la tarjeta/timeline/historial dentro del
+// modal de diagnóstico, sin perder lo que el técnico esté escribiendo en el formulario.
+AplicacionSkyHelp.prototype._refrescarPanelProgreso = async function(id) {
+    const ticket = datosSkyHelp.tickets.find(t => (t.idTicket || t.id) === id) || {};
+    let historial = [];
+    try { historial = await Api.obtenerProgresoTicket(id) || []; } catch (e) { historial = []; }
+    const actual = historial[0] || null;
+
+    const panel = document.getElementById(`panel-progreso-${id}`);
+    if (panel) {
+        panel.innerHTML = this.renderizarTarjetaProgreso(ticket, actual) + this.renderizarTimelineEtapas(actual ? actual.etapa : 'Ticket recibido');
+    }
+    const historialEl = document.getElementById(`historial-progreso-${id}`);
+    if (historialEl) historialEl.innerHTML = this.renderizarHistorialProgreso(historial);
+
+    return { ticket, historial, actual };
+};
+
+AplicacionSkyHelp.prototype.actualizarProgresoDesdeModal = async function(id) {
+    const numero = document.getElementById(`numero-progreso-${id}`);
+    const etapa = document.getElementById(`etapa-progreso-${id}`);
+    const descripcion = document.getElementById(`descripcion-progreso-${id}`);
+
+    let porcentaje = parseInt(numero?.value, 10);
+    if (isNaN(porcentaje) || porcentaje < 0 || porcentaje > 100) {
+        this.mostrarToast('⚠ El porcentaje debe estar entre 0 y 100.', 'advertencia');
+        return;
+    }
+    if (!etapa?.value) {
+        this.mostrarToast('⚠ Selecciona la etapa actual del servicio.', 'advertencia');
+        return;
+    }
+    if (!descripcion?.value.trim()) {
+        this.mostrarToast('⚠ Describe lo que se está realizando en esta etapa.', 'advertencia');
+        return;
+    }
+
     try {
-        await Api.registrarDiagnostico(id, diagnostico);
+        await Api.actualizarProgresoTicket(id, porcentaje, etapa.value, descripcion.value.trim());
+        descripcion.value = '';
+        this.mostrarToast('✅ Progreso actualizado');
+        await this._refrescarPanelProgreso(id);
+    } catch (e) {
+        this.mostrarToast('Error al actualizar el progreso: ' + e.message, 'error');
+    }
+};
+
+// Valida los requisitos de la sección 5 (diagnóstico diligenciado, progreso actualizado y etapa
+// seleccionada) antes de abrir la pantalla de revisión/confirmación para finalizar.
+AplicacionSkyHelp.prototype.intentarFinalizarDiagnostico = async function(id) {
+    const ticket = datosSkyHelp.tickets.find(t => (t.idTicket || t.id) === id);
+    if (!ticket) return;
+
+    const form = document.getElementById(`form-diagnostico-${id}`);
+    const datos = new FormData(form);
+    const diagnostico = (datos.get('diagnostico') || '').trim();
+    if (!diagnostico) {
+        this.mostrarToast('⚠ Para finalizar el diagnóstico debes completar la descripción del diagnóstico.', 'advertencia');
+        return;
+    }
+
+    let historial = [];
+    try { historial = await Api.obtenerProgresoTicket(id) || []; } catch (e) { historial = []; }
+    const actual = historial[0] || null;
+    if (!actual) {
+        this.mostrarToast('⚠ Debes actualizar el progreso del servicio antes de finalizar el diagnóstico.', 'advertencia');
+        return;
+    }
+    if (!actual.etapa) {
+        this.mostrarToast('⚠ Debes seleccionar la etapa actual del servicio.', 'advertencia');
+        return;
+    }
+
+    this._finalizarDiagnosticoCache = {
+        idTicket: id,
+        diagnostico,
+        fallaEncontrada: (datos.get('fallaEncontrada') || '').trim() || null,
+        pruebasRealizadas: (datos.get('pruebasRealizadas') || '').trim() || null,
+        observaciones: (datos.get('observaciones') || '').trim() || null,
+        recomendaciones: (datos.get('recomendaciones') || '').trim() || null
+    };
+
+    this.mostrarModalConfirmarFinalizarDiagnostico(id, this._finalizarDiagnosticoCache, actual);
+};
+
+// Pantalla de revisión final (sección 4 del pedido): resume todo lo diligenciado y deja el
+// progreso fijado en 100% / "Diagnóstico finalizado" al confirmar.
+AplicacionSkyHelp.prototype.mostrarModalConfirmarFinalizarDiagnostico = function(id, datos, progresoActual) {
+    const ticket = datosSkyHelp.tickets.find(t => (t.idTicket || t.id) === id);
+    if (!ticket) return;
+    const numeroDisplay = ticket.numeroTicket ? `#${ticket.numeroTicket}` : id.substring(0, 8) + '...';
+
+    const contenido = `
+        <div class="modal-encabezado">
+            <div><h3>Finalizar Diagnóstico — ${numeroDisplay}</h3></div>
+            <button class="btn-cerrar-modal" onclick="aplicacion.cerrarModal()">✕</button>
+        </div>
+        <div class="modal-cuerpo">
+            <div class="info-ticket-grid">
+                <div class="info-ticket-item" style="grid-column:1/-1;">
+                    <div class="etiqueta">PROBLEMA REPORTADO</div>
+                    <div class="valor">${ticket.descripcion || '—'}</div>
+                </div>
+                <div class="info-ticket-item" style="grid-column:1/-1;">
+                    <div class="etiqueta">DIAGNÓSTICO</div>
+                    <div class="valor">${datos.diagnostico}</div>
+                </div>
+                ${datos.fallaEncontrada ? `<div class="info-ticket-item"><div class="etiqueta">FALLA ENCONTRADA</div><div class="valor">${datos.fallaEncontrada}</div></div>` : ''}
+                ${datos.pruebasRealizadas ? `<div class="info-ticket-item"><div class="etiqueta">PRUEBAS REALIZADAS</div><div class="valor">${datos.pruebasRealizadas}</div></div>` : ''}
+                ${datos.observaciones ? `<div class="info-ticket-item" style="grid-column:1/-1;"><div class="etiqueta">OBSERVACIONES</div><div class="valor">${datos.observaciones}</div></div>` : ''}
+                ${datos.recomendaciones ? `<div class="info-ticket-item" style="grid-column:1/-1;"><div class="etiqueta">RECOMENDACIONES</div><div class="valor">${datos.recomendaciones}</div></div>` : ''}
+                <div class="info-ticket-item">
+                    <div class="etiqueta">PROGRESO</div>
+                    <div class="valor">100%</div>
+                </div>
+                <div class="info-ticket-item">
+                    <div class="etiqueta">ETAPA</div>
+                    <div class="valor">Diagnóstico finalizado</div>
+                </div>
+            </div>
+            <div class="grupo-formulario">
+                <label>Descripción final del progreso *</label>
+                <textarea id="descripcion-final-${id}" rows="3">${(progresoActual && progresoActual.descripcion) || 'Diagnóstico completado.'}</textarea>
+            </div>
+        </div>
+        <div class="modal-pie">
+            <button type="button" class="btn btn-secundario" onclick="aplicacion.mostrarModalDiagnostico('${id}')">Cancelar</button>
+            <button type="button" class="btn btn-exito" style="background-color:#10b981;color:white;border:none;" onclick="aplicacion.confirmarFinalizarDiagnostico('${id}')">Finalizar Diagnóstico</button>
+        </div>
+    `;
+    this.abrirModal(contenido, true);
+};
+
+AplicacionSkyHelp.prototype.confirmarFinalizarDiagnostico = async function(id) {
+    const cache = this._finalizarDiagnosticoCache;
+    if (!cache || cache.idTicket !== id) {
+        this.mostrarToast('Error: los datos del diagnóstico expiraron, vuelve a intentarlo.', 'error');
+        return;
+    }
+    const descripcionProgreso = (document.getElementById(`descripcion-final-${id}`)?.value || '').trim();
+    if (!descripcionProgreso) {
+        this.mostrarToast('⚠ Debes indicar una descripción para el progreso final del servicio.', 'advertencia');
+        return;
+    }
+
+    try {
+        await Api.finalizarDiagnostico(id, {
+            diagnostico: cache.diagnostico,
+            fallaEncontrada: cache.fallaEncontrada,
+            pruebasRealizadas: cache.pruebasRealizadas,
+            observaciones: cache.observaciones,
+            recomendaciones: cache.recomendaciones,
+            descripcionProgreso
+        });
+        this._finalizarDiagnosticoCache = null;
         this.cerrarModal();
-        this.mostrarToast('✅ Diagnóstico registrado exitosamente');
+        this.mostrarToast('✅ Diagnóstico finalizado — progreso al 100%');
         if (this.seccionActual === 'tickets' || this.seccionActual === 'dashboard') this.cargarContenido(this.seccionActual);
     } catch (e) {
-        this.mostrarToast('Error al registrar el diagnóstico: ' + e.message, 'error');
+        this.mostrarToast('Error al finalizar el diagnóstico: ' + e.message, 'error');
     }
 };
 

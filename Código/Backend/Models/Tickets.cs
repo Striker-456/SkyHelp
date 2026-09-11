@@ -26,6 +26,14 @@ namespace SkyHelp.Models
         [StringLength(500)]
         public string? Diagnostico { get; set; }
         public DateTime? FechaDiagnostico { get; set; }
+        [StringLength(300)]
+        public string? FallaEncontrada { get; set; }
+        [StringLength(300)]
+        public string? PruebasRealizadas { get; set; }
+        [StringLength(500)]
+        public string? Observaciones { get; set; }
+        [StringLength(500)]
+        public string? Recomendaciones { get; set; }
         [Required]
         public Guid IdEstado { get; set; }
         [Required]
@@ -45,5 +53,7 @@ namespace SkyHelp.Models
         public virtual EstadosTicket? EstadoTicket { get; set; }
         [JsonIgnore]
         public virtual ICollection<Evaluaciones>? Evaluaciones { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<ProgresoTickets>? ProgresoTickets { get; set; }
     }
 }
