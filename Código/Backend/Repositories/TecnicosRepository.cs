@@ -90,6 +90,19 @@ namespace SkyHelp.Repositories
                     await _context.SaveChangesAsync();
                 }
 
+                // Mismo caso para ProgresoTickets.IdTecnico (también ClientSetNull): conserva el
+                // historial de progreso, solo desvincula quién lo registró.
+                var progresosAsociados = await _context.ProgresoTickets.Where(p => p.IdTecnico == id).ToListAsync();
+                foreach (var progreso in progresosAsociados)
+                {
+                    progreso.IdTecnico = null;
+                }
+                if (progresosAsociados.Count > 0)
+                {
+                    _context.ProgresoTickets.UpdateRange(progresosAsociados);
+                    await _context.SaveChangesAsync();
+                }
+
                 _context.Tecnicos.Remove(tecnicoExistente);
                 await _context.SaveChangesAsync();
                 return true;

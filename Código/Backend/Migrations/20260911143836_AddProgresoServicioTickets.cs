@@ -58,8 +58,7 @@ namespace SkyHelp.Migrations
                         name: "FK_ProgresoTickets_Tecnicos_IdTecnico",
                         column: x => x.IdTecnico,
                         principalTable: "Tecnicos",
-                        principalColumn: "IdTecnico",
-                        onDelete: ReferentialAction.SetNull);
+                        principalColumn: "IdTecnico");
                     table.ForeignKey(
                         name: "FK_ProgresoTickets_Tickets_IdTicket",
                         column: x => x.IdTicket,

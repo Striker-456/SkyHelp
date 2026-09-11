@@ -458,12 +458,17 @@ namespace SkyHelp.Context
                       .WithMany(t => t.ProgresoTickets)
                       .HasForeignKey(e => e.IdTicket)
                       .OnDelete(DeleteBehavior.Cascade);
-                // RELACIÓN: ProgresoTickets -> Tecnicos (opcional; nulo si lo registró un Administrador)
+                // RELACIÓN: ProgresoTickets -> Tecnicos (opcional; nulo si lo registró un Administrador).
+                // ClientSetNull, no SetNull real: Usuarios->Tecnicos ya es Cascade, así que un SetNull
+                // real aquí sumado a Usuarios->Tickets->ProgresoTickets (también Cascade) volvería a
+                // producir dos rutas de cascada hacia ProgresoTickets (el mismo error de SQL Server
+                // "may cause cycles or multiple cascade paths" que se corrigió para Domiciliarios/
+                // Tecnicos -> Tickets).
                 entity.HasOne(e => e.Tecnico)
                       .WithMany()
                       .HasForeignKey(e => e.IdTecnico)
                       .IsRequired(false)
-                      .OnDelete(DeleteBehavior.SetNull);
+                      .OnDelete(DeleteBehavior.ClientSetNull);
             });
             base.OnModelCreating(modelBuilder);
         }

@@ -766,8 +766,7 @@ namespace SkyHelp.Migrations
                 {
                     b.HasOne("SkyHelp.Tecnicos", "Tecnico")
                         .WithMany()
-                        .HasForeignKey("IdTecnico")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("IdTecnico");
 
                     b.HasOne("SkyHelp.Models.Tickets", "Ticket")
                         .WithMany("ProgresoTickets")

@@ -70,6 +70,14 @@ namespace SkyHelp.Repositories
                         .ToListAsync();
                     foreach (var ticket in ticketsConTecnico)
                         ticket.IdTecnico = null;
+
+                    // ProgresoTickets.IdTecnico también es ClientSetNull: conserva el historial de
+                    // progreso registrado por este técnico, solo desvincula quién lo registró.
+                    var progresosConTecnico = await _context.ProgresoTickets
+                        .Where(p => p.IdTecnico != null && idsTecnicos.Contains(p.IdTecnico.Value))
+                        .ToListAsync();
+                    foreach (var progreso in progresosConTecnico)
+                        progreso.IdTecnico = null;
                 }
                 _context.Tecnicos.RemoveRange(tecnicos);
 
