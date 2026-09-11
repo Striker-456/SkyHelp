@@ -127,10 +127,17 @@ const Api = {
     actualizarEstadoTicket(idTicket, idEstado) { return this.put('/api/tickets/ActualizarEstadoTicket', { idTicket, idEstado }); },
     asignarTecnico(idTicket, idTecnico) { return this.put('/api/tickets/AsignarTecnico', { idTicket, idTecnico }); },
     iniciarDiagnostico(idTicket) { return this.put('/api/tickets/IniciarDiagnostico', { idTicket }); },
-    registrarDiagnostico(idTicket, diagnostico) { return this.put('/api/tickets/RegistrarDiagnostico', { idTicket, diagnostico }); },
+    registrarDiagnostico(idTicket, datos) { return this.put('/api/tickets/RegistrarDiagnostico', { idTicket, ...datos }); },
     actualizarDetallesTicket(idTicket, categoria, prioridad, descripcion) {
         return this.put('/api/tickets/ActualizarDetallesTicket', { idTicket, categoria, prioridad, descripcion });
     },
+
+    // Progreso del servicio (diagnóstico/reparación)
+    obtenerProgresoTicket(idTicket) { return this.get(`/api/tickets/ObtenerProgreso?idTicket=${idTicket}`); },
+    actualizarProgresoTicket(idTicket, porcentaje, etapa, descripcion) {
+        return this.put('/api/tickets/ActualizarProgreso', { idTicket, porcentaje, etapa, descripcion });
+    },
+    finalizarDiagnostico(idTicket, datos) { return this.put('/api/tickets/FinalizarDiagnostico', { idTicket, ...datos }); },
 
     // Usuarios
     getUsuarios()                 { return this.get('/api/usuarios/ObtenerUsuarios'); },

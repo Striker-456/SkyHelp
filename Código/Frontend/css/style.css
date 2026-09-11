@@ -52,6 +52,9 @@
 /* Modales */
 @import url('components/modal.css');
 
+/* Progreso del servicio */
+@import url('components/progreso-servicio.css');
+
 /* Responsive */
 @import url('components/responsive.css');
 

@@ -15,7 +15,7 @@ namespace SkyHelp.Repositories.Interfaces
         Task<bool> ActualizarEstadoTicket(Guid idTicket, Guid idEstado);
         Task<bool> AsignarTecnico(Guid idTicket, Guid idTecnico);
         Task<bool> IniciarDiagnostico(Guid idTicket);
-        Task<bool> RegistrarDiagnostico(Guid idTicket, string diagnostico);
+        Task<bool> RegistrarDiagnostico(Guid idTicket, string diagnostico, string? fallaEncontrada = null, string? pruebasRealizadas = null, string? observaciones = null, string? recomendaciones = null);
         Task<bool> ActualizarDetallesTicket(Guid idTicket, string categoria, string prioridad, string descripcion);
         Task<bool> EliminarTicket(Guid id);
 

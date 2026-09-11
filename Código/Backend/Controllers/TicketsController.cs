@@ -16,17 +16,23 @@ namespace SkyHelp.Controllers
         private readonly ITicketsRepository _ticketsRepository;
         private readonly ITecnicosRepository _tecnicosRepository;
         private readonly IDomiciliariosRepository _domiciliariosRepository;
+        private readonly IProgresoTicketsRepository _progresoTicketsRepository;
+        private readonly INotificacionesRepository _notificacionesRepository;
         private readonly IAuditoriaService _auditoriaService;
 
         public TicketsController(
             ITicketsRepository ticketsRepository,
             ITecnicosRepository tecnicosRepository,
             IDomiciliariosRepository domiciliariosRepository,
+            IProgresoTicketsRepository progresoTicketsRepository,
+            INotificacionesRepository notificacionesRepository,
             IAuditoriaService auditoriaService)
         {
             _ticketsRepository = ticketsRepository;
             _tecnicosRepository = tecnicosRepository;
             _domiciliariosRepository = domiciliariosRepository;
+            _progresoTicketsRepository = progresoTicketsRepository;
+            _notificacionesRepository = notificacionesRepository;
             _auditoriaService = auditoriaService;
         }
 
@@ -59,6 +65,31 @@ namespace SkyHelp.Controllers
             }
 
             return false;
+        }
+
+        // Notificaciones.Contenido está limitado a 50 caracteres en BD; se trunca en vez de fallar.
+        private static string TruncarTexto(string texto, int max) =>
+            texto.Length <= max ? texto : texto.Substring(0, max - 1) + "…";
+
+        private async Task NotificarClienteAsync(Tickets ticket, string contenido)
+        {
+            var notificacion = new Notificaciones
+            {
+                IdUsuario = ticket.IdUsuario,
+                Contenido = TruncarTexto(contenido, 50),
+                MedioEnvio = "Sistema",
+                IDTicket = ticket.IdTicket
+            };
+            await _notificacionesRepository.CrearNotificacion(notificacion);
+        }
+
+        // Resuelve el IdTecnico del actor autenticado cuando es un técnico (para dejar constancia de
+        // quién hizo el registro de progreso); null si quien actúa es un Administrador.
+        private async Task<Guid?> ObtenerIdTecnicoActorAsync()
+        {
+            if (!User.IsInRole(RoleNames.Tecnico)) return null;
+            var tecnico = await _tecnicosRepository.ObtenerTecnicoPorIdUsuario(ObtenerIdActor());
+            return tecnico?.IdTecnico;
         }
 
         [Authorize(Roles = RoleNames.Administrador)]
@@ -305,8 +336,20 @@ namespace SkyHelp.Controllers
                 if (!resultado)
                     return StatusCode(StatusCodes.Status500InternalServerError, "No se pudo iniciar el diagnóstico.");
 
+                // Deja el primer registro de progreso del servicio (visible de inmediato para el
+                // cliente en "Ver detalles") marcando el arranque del diagnóstico.
+                await _progresoTicketsRepository.RegistrarProgreso(new ProgresoTickets
+                {
+                    IdTicket = request.IdTicket,
+                    Porcentaje = 10,
+                    Etapa = EtapasServicio.DiagnosticoIniciado,
+                    Descripcion = "El técnico inició el diagnóstico del equipo.",
+                    IdTecnico = await ObtenerIdTecnicoActorAsync()
+                });
+
                 await _auditoriaService.RegistrarAsync(ObtenerIdActor(), "Actualizar", "Tickets", request.IdTicket,
                     $"Diagnóstico iniciado para el ticket #{ticket.NumeroTicket}.", ObtenerIp());
+                await NotificarClienteAsync(ticket, $"Ticket #{ticket.NumeroTicket}: diagnóstico iniciado (10%).");
                 return Ok("Diagnóstico iniciado exitosamente.");
             }
             catch (Exception)
@@ -333,7 +376,10 @@ namespace SkyHelp.Controllers
                 if (!await PuedeGestionarTicket(ticket))
                     return Forbid();
 
-                var resultado = await _ticketsRepository.RegistrarDiagnostico(request.IdTicket, request.Diagnostico.Trim());
+                var resultado = await _ticketsRepository.RegistrarDiagnostico(
+                    request.IdTicket, request.Diagnostico.Trim(),
+                    request.FallaEncontrada?.Trim(), request.PruebasRealizadas?.Trim(),
+                    request.Observaciones?.Trim(), request.Recomendaciones?.Trim());
                 if (!resultado)
                     return StatusCode(StatusCodes.Status500InternalServerError, "No se pudo registrar el diagnóstico.");
 
@@ -344,6 +390,130 @@ namespace SkyHelp.Controllers
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error al registrar el diagnóstico.");
+            }
+        }
+
+        // Historial completo del progreso del servicio de un ticket (más reciente primero). El
+        // propio cliente puede consultarlo desde "Ver detalles" (de ahí [Authorize] genérico en vez
+        // de restringir a Administrador/Tecnico); PuedeGestionarTicket ya cubre esa regla de acceso.
+        [Authorize]
+        [HttpGet("ObtenerProgreso")]
+        public async Task<IActionResult> ObtenerProgreso(Guid idTicket)
+        {
+            try
+            {
+                var ticket = await _ticketsRepository.ObtenerTicketPorId(idTicket);
+                if (ticket == null)
+                    return NotFound("Ticket no encontrado.");
+                if (!await PuedeGestionarTicket(ticket))
+                    return Forbid();
+
+                var historial = await _progresoTicketsRepository.ObtenerHistorialPorTicket(idTicket);
+                return Ok(historial);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener el progreso del ticket.");
+            }
+        }
+
+        // El técnico asignado (o un Administrador) actualiza el avance del servicio: porcentaje,
+        // etapa actual y una breve descripción de lo que se está haciendo. Cada llamada agrega una
+        // fila nueva al historial (ver ObtenerProgreso) — es la acción detrás del control
+        // "Actualizar progreso" de la pestaña Diagnóstico.
+        [Authorize(Roles = $"{RoleNames.Administrador},{RoleNames.Tecnico}")]
+        [HttpPut("ActualizarProgreso")]
+        public async Task<IActionResult> ActualizarProgreso([FromBody] ActualizarProgresoRequest request)
+        {
+            try
+            {
+                if (request == null || request.IdTicket == Guid.Empty)
+                    return BadRequest("El ticket es obligatorio.");
+                if (request.Porcentaje < 0 || request.Porcentaje > 100)
+                    return BadRequest("El porcentaje debe estar entre 0 y 100.");
+                if (!EtapasServicio.EsValida(request.Etapa))
+                    return BadRequest("La etapa seleccionada no es válida.");
+                if (string.IsNullOrWhiteSpace(request.Descripcion))
+                    return BadRequest("La descripción del progreso es obligatoria.");
+
+                var ticket = await _ticketsRepository.ObtenerTicketPorId(request.IdTicket);
+                if (ticket == null)
+                    return NotFound("Ticket no encontrado.");
+                if (!await PuedeGestionarTicket(ticket))
+                    return Forbid();
+
+                var registrado = await _progresoTicketsRepository.RegistrarProgreso(new ProgresoTickets
+                {
+                    IdTicket = request.IdTicket,
+                    Porcentaje = request.Porcentaje,
+                    Etapa = request.Etapa!.Trim(),
+                    Descripcion = request.Descripcion.Trim(),
+                    IdTecnico = await ObtenerIdTecnicoActorAsync()
+                });
+                if (!registrado)
+                    return StatusCode(StatusCodes.Status500InternalServerError, "No se pudo actualizar el progreso.");
+
+                await _auditoriaService.RegistrarAsync(ObtenerIdActor(), "Actualizar", "Tickets", request.IdTicket,
+                    $"Progreso del ticket #{ticket.NumeroTicket} actualizado a {request.Porcentaje}% ({request.Etapa}).", ObtenerIp());
+                await NotificarClienteAsync(ticket, $"Ticket #{ticket.NumeroTicket}: {request.Porcentaje}% - {request.Etapa}");
+                return Ok("Progreso actualizado exitosamente.");
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar el progreso.");
+            }
+        }
+
+        // Punto único de "Finalizar diagnóstico": persiste el texto del diagnóstico (y los campos
+        // complementarios que el técnico haya diligenciado), y cierra la etapa de diagnóstico dejando
+        // el progreso en 100% / "Diagnóstico finalizado". A partir de aquí el ticket queda listo para
+        // que el Administrador decida si continúa hacia reparación (asignación de domiciliario) o se
+        // resuelve directamente.
+        [Authorize(Roles = $"{RoleNames.Administrador},{RoleNames.Tecnico}")]
+        [HttpPut("FinalizarDiagnostico")]
+        public async Task<IActionResult> FinalizarDiagnostico([FromBody] FinalizarDiagnosticoRequest request)
+        {
+            try
+            {
+                if (request == null || request.IdTicket == Guid.Empty)
+                    return BadRequest("El ticket es obligatorio.");
+                if (string.IsNullOrWhiteSpace(request.Diagnostico))
+                    return BadRequest("Para finalizar el diagnóstico debes completar la descripción del diagnóstico.");
+                if (string.IsNullOrWhiteSpace(request.DescripcionProgreso))
+                    return BadRequest("Debes indicar una descripción para el progreso final del servicio.");
+
+                var ticket = await _ticketsRepository.ObtenerTicketPorId(request.IdTicket);
+                if (ticket == null)
+                    return NotFound("Ticket no encontrado.");
+                if (!await PuedeGestionarTicket(ticket))
+                    return Forbid();
+
+                var diagnosticoGuardado = await _ticketsRepository.RegistrarDiagnostico(
+                    request.IdTicket, request.Diagnostico.Trim(),
+                    request.FallaEncontrada?.Trim(), request.PruebasRealizadas?.Trim(),
+                    request.Observaciones?.Trim(), request.Recomendaciones?.Trim());
+                if (!diagnosticoGuardado)
+                    return StatusCode(StatusCodes.Status500InternalServerError, "No se pudo guardar el diagnóstico.");
+
+                var progresoRegistrado = await _progresoTicketsRepository.RegistrarProgreso(new ProgresoTickets
+                {
+                    IdTicket = request.IdTicket,
+                    Porcentaje = 100,
+                    Etapa = EtapasServicio.DiagnosticoFinalizado,
+                    Descripcion = request.DescripcionProgreso.Trim(),
+                    IdTecnico = await ObtenerIdTecnicoActorAsync()
+                });
+                if (!progresoRegistrado)
+                    return StatusCode(StatusCodes.Status500InternalServerError, "No se pudo registrar el progreso final.");
+
+                await _auditoriaService.RegistrarAsync(ObtenerIdActor(), "Actualizar", "Tickets", request.IdTicket,
+                    $"Diagnóstico finalizado para el ticket #{ticket.NumeroTicket} (100%).", ObtenerIp());
+                await NotificarClienteAsync(ticket, $"Ticket #{ticket.NumeroTicket}: diagnóstico finalizado (100%).");
+                return Ok("Diagnóstico finalizado exitosamente.");
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al finalizar el diagnóstico.");
             }
         }
 
@@ -451,6 +621,29 @@ namespace SkyHelp.Controllers
     {
         public Guid IdTicket { get; set; }
         public string Diagnostico { get; set; } = "";
+        public string? FallaEncontrada { get; set; }
+        public string? PruebasRealizadas { get; set; }
+        public string? Observaciones { get; set; }
+        public string? Recomendaciones { get; set; }
+    }
+
+    public class ActualizarProgresoRequest
+    {
+        public Guid IdTicket { get; set; }
+        public int Porcentaje { get; set; }
+        public string? Etapa { get; set; }
+        public string? Descripcion { get; set; }
+    }
+
+    public class FinalizarDiagnosticoRequest
+    {
+        public Guid IdTicket { get; set; }
+        public string Diagnostico { get; set; } = "";
+        public string? FallaEncontrada { get; set; }
+        public string? PruebasRealizadas { get; set; }
+        public string? Observaciones { get; set; }
+        public string? Recomendaciones { get; set; }
+        public string DescripcionProgreso { get; set; } = "";
     }
 
     public class ActualizarDetallesTicketRequest

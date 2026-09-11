@@ -24,6 +24,7 @@ namespace SkyHelp.Context
         public DbSet<Tickets> Tickets { get; set; }
         public DbSet<EstadosTicket> EstadosTickets { get; set; }
         public DbSet<Evaluaciones> Evaluaciones { get; set; }
+        public DbSet<ProgresoTickets> ProgresoTickets { get; set; }
 
 
 
@@ -219,6 +220,10 @@ namespace SkyHelp.Context
                 entity.Property(e => e.Categoria).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.Prioridad).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.Diagnostico).HasMaxLength(500);
+                entity.Property(e => e.FallaEncontrada).HasMaxLength(300);
+                entity.Property(e => e.PruebasRealizadas).HasMaxLength(300);
+                entity.Property(e => e.Observaciones).HasMaxLength(500);
+                entity.Property(e => e.Recomendaciones).HasMaxLength(500);
                 entity.Property(e => e.FechaCreacion).IsRequired();
                 entity.Property(e => e.IdEstado).IsRequired();
                 entity.Property(e => e.IdUsuario).IsRequired();
@@ -269,6 +274,29 @@ namespace SkyHelp.Context
                 entity.HasOne(e => e.Ticket)
                       .WithMany(t => t.Evaluaciones)
                       .HasForeignKey(e => e.IdTicket);
+            });
+
+            // Configuración de la entidad ProgresoTickets
+            modelBuilder.Entity<ProgresoTickets>(entity =>
+            {
+                entity.ToTable("ProgresoTickets");
+                entity.HasKey(e => e.IdProgreso);
+                entity.Property(e => e.IdTicket).IsRequired();
+                entity.Property(e => e.Porcentaje).IsRequired();
+                entity.Property(e => e.Etapa).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Descripcion).HasMaxLength(500);
+                entity.Property(e => e.FechaRegistro).IsRequired();
+                // RELACIÓN: ProgresoTickets -> Tickets
+                entity.HasOne(e => e.Ticket)
+                      .WithMany(t => t.ProgresoTickets)
+                      .HasForeignKey(e => e.IdTicket)
+                      .OnDelete(DeleteBehavior.Cascade);
+                // RELACIÓN: ProgresoTickets -> Tecnicos (opcional; nulo si lo registró un Administrador)
+                entity.HasOne(e => e.Tecnico)
+                      .WithMany()
+                      .HasForeignKey(e => e.IdTecnico)
+                      .IsRequired(false)
+                      .OnDelete(DeleteBehavior.SetNull);
             });
             base.OnModelCreating(modelBuilder);
         }

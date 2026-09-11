@@ -9,9 +9,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Backend/bin/Debug/net8.0/SkyHelp.dll",
+            "program": "${workspaceFolder}/Código/Backend/bin/Debug/net8.0/SkyHelp.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Backend",
+            "cwd": "${workspaceFolder}/Código/Backend",
             "stopAtEntry": false,
             "serverReadyAction": {
                 "action": "openExternally",
