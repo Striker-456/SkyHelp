@@ -19,12 +19,14 @@ namespace SkyHelp.Controllers
         private readonly IUsuariosRepository _UsuariosRepository;
         private readonly IRolRepository _rolRepository;
         private readonly ITecnicosRepository _tecnicosRepository;
+        private readonly IDomiciliariosRepository _domiciliariosRepository;
         private readonly IAuditoriaService _auditoriaService;
-        public UsuariosController(IUsuariosRepository usuariosRepository, IRolRepository rolRepository, ITecnicosRepository tecnicosRepository, IAuditoriaService auditoriaService)// Constructor de la clase con inyección de dependencia
+        public UsuariosController(IUsuariosRepository usuariosRepository, IRolRepository rolRepository, ITecnicosRepository tecnicosRepository, IDomiciliariosRepository domiciliariosRepository, IAuditoriaService auditoriaService)// Constructor de la clase con inyección de dependencia
         {
             _UsuariosRepository = usuariosRepository;// inyección de dependencia del repositorio de usuarios
             _rolRepository = rolRepository;
             _tecnicosRepository = tecnicosRepository;
+            _domiciliariosRepository = domiciliariosRepository;
             _auditoriaService = auditoriaService;
         }
 
@@ -48,6 +50,29 @@ namespace SkyHelp.Controllers
             var existente = await _tecnicosRepository.ObtenerTecnicoPorIdUsuario(idUsuario);
             if (existente == null)
                 await _tecnicosRepository.CrearTecnico(new Tecnicos { IdUsuario = idUsuario, FechaRegistro = DateTime.Now });
+        }
+
+        // Mismo propósito que AsegurarRegistroTecnico, para el rol Domiciliario: sin esto, un
+        // usuario al que se le cambia el rol a Domiciliario (al crearlo o al editarlo) nunca
+        // aparece en la tabla Domiciliarios ni en el panel de administración de domiciliarios.
+        private async Task AsegurarRegistroDomiciliario(Guid idRol, Usuarios usuario)
+        {
+            var rol = await _rolRepository.ObtenerRolesPorID(idRol);
+            if (rol == null || RoleClaimMapper.ToJwtRole(rol.NombreRol) != RoleNames.Domiciliario)
+                return;
+
+            var existente = await _domiciliariosRepository.ObtenerDomiciliarioPorIdUsuario(usuario.IdUsuario);
+            if (existente == null)
+            {
+                await _domiciliariosRepository.CrearDomiciliario(new Domiciliarios
+                {
+                    IDUsuario = usuario.IdUsuario,
+                    NombreCompleto = usuario.NombreCompleto,
+                    Telefono = string.IsNullOrWhiteSpace(usuario.Telefono) ? "Sin registrar" : usuario.Telefono,
+                    Email = usuario.Correo,
+                    EstadoActividad = "Activo"
+                });
+            }
         }
 
         [Authorize]
@@ -171,6 +196,7 @@ namespace SkyHelp.Controllers
                     return BadRequest("No se puede Crear Usuario");
                 }
                 await AsegurarRegistroTecnico(usuario.IdRol, usuario.IdUsuario);
+                await AsegurarRegistroDomiciliario(usuario.IdRol, usuario);
                 await _auditoriaService.RegistrarAsync(usuario.IdUsuario, "Crear", "Usuarios", usuario.IdUsuario,
                     $"Usuario {usuario.Correo} creado.", ObtenerIp());
                 return Ok("Usuario Creado Correctamente");
@@ -346,6 +372,7 @@ namespace SkyHelp.Controllers
                     return BadRequest("No se puede Actualizar Usuario");
                 }
                 await AsegurarRegistroTecnico(usuarioActualizado.IdRol, usuarioActualizado.IdUsuario);
+                await AsegurarRegistroDomiciliario(usuarioActualizado.IdRol, usuarioActualizado);
                 await _auditoriaService.RegistrarAsync(ObtenerIdActor(usuario.IdUsuario), "Actualizar", "Usuarios", usuario.IdUsuario,
                     $"Usuario {usuarioActualizado.Correo} actualizado.", ObtenerIp());
                 return Ok("Usuario Actualizado Correctamente");

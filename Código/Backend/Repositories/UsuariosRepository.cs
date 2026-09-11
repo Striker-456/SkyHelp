@@ -45,10 +45,32 @@ namespace SkyHelp.Repositories
                 // Eliminar registros relacionados primero
                 // Eliminar domiciliarios asociados
                 var domiciliarios = await _context.Domiciliarios.Where(d => d.IDUsuario == id).ToListAsync();
+                if (domiciliarios.Count > 0)
+                {
+                    var idsDomiciliarios = domiciliarios.Select(d => d.IdDomiciliario).ToList();
+                    // Desasignar (no borrar) los tickets de OTROS clientes que tengan a este
+                    // domiciliario asignado: la FK Tickets.IdDomiciliario es ClientSetNull, así que
+                    // EF sólo la pone en null si el ticket está cargado en el contexto.
+                    var ticketsConDomiciliario = await _context.Tickets
+                        .Where(t => t.IdDomiciliario != null && idsDomiciliarios.Contains(t.IdDomiciliario.Value))
+                        .ToListAsync();
+                    foreach (var ticket in ticketsConDomiciliario)
+                        ticket.IdDomiciliario = null;
+                }
                 _context.Domiciliarios.RemoveRange(domiciliarios);
 
                 // Eliminar técnicos asociados
                 var tecnicos = await _context.Tecnicos.Where(t => t.IdUsuario == id).ToListAsync();
+                if (tecnicos.Count > 0)
+                {
+                    var idsTecnicos = tecnicos.Select(t => t.IdTecnico).ToList();
+                    // Mismo caso que arriba, pero para la asignación de técnico.
+                    var ticketsConTecnico = await _context.Tickets
+                        .Where(t => t.IdTecnico != null && idsTecnicos.Contains(t.IdTecnico.Value))
+                        .ToListAsync();
+                    foreach (var ticket in ticketsConTecnico)
+                        ticket.IdTecnico = null;
+                }
                 _context.Tecnicos.RemoveRange(tecnicos);
 
                 // Eliminar tickets asociados (como cliente)

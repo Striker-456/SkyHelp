@@ -46,7 +46,7 @@ namespace SkyHelp.Migrations
                     NombreUsuarios = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     NombreCompleto = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Correo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Contrasena = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Contrasena = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     EstadoCuenta = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Telefono = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true)
                 },
@@ -58,7 +58,7 @@ namespace SkyHelp.Migrations
                         column: x => x.IdRol,
                         principalTable: "Roles",
                         principalColumn: "IDRol",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -71,7 +71,7 @@ namespace SkyHelp.Migrations
                     Contenido = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     FechaPublicacion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TotalVistas = table.Column<int>(type: "int", nullable: false),
-                    CalificacionPromedio = table.Column<decimal>(type: "decimal(18,0)", nullable: false),
+                    CalificacionPromedio = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
                     IdUsuario = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -82,7 +82,7 @@ namespace SkyHelp.Migrations
                         column: x => x.IdUsuario,
                         principalTable: "Usuarios",
                         principalColumn: "IdUsuario",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -94,8 +94,9 @@ namespace SkyHelp.Migrations
                     TipoEvento = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     TablaAfectada = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     IDRegistro = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    FechaEvento = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Descripcion = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    FechaEvento = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DireccionIp = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -105,7 +106,7 @@ namespace SkyHelp.Migrations
                         column: x => x.IDUsuario,
                         principalTable: "Usuarios",
                         principalColumn: "IdUsuario",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -116,7 +117,6 @@ namespace SkyHelp.Migrations
                     NombreCompleto = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Telefono = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PlacaVehiculo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     EstadoActividad = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     IDUsuario = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
@@ -154,7 +154,7 @@ namespace SkyHelp.Migrations
                         column: x => x.IdUsuario,
                         principalTable: "Usuarios",
                         principalColumn: "IdUsuario",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -168,7 +168,8 @@ namespace SkyHelp.Migrations
                     FechaGeneracion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IdUsuario = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IdOrigen = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrigenTabla = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    OrigenTabla = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Datos = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -178,7 +179,7 @@ namespace SkyHelp.Migrations
                         column: x => x.IdUsuario,
                         principalTable: "Usuarios",
                         principalColumn: "IdUsuario",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -205,12 +206,16 @@ namespace SkyHelp.Migrations
                 columns: table => new
                 {
                     IdPedido = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    NumeroPedido = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     IdUsuario = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IdDomiciliario = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FechaPedido = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DireccionEntrega = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     EstadoPedido = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Observaciones = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
+                    Observaciones = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    IdTicket = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    FechaEntrega = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -226,7 +231,7 @@ namespace SkyHelp.Migrations
                         column: x => x.IdUsuario,
                         principalTable: "Usuarios",
                         principalColumn: "IdUsuario",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -261,6 +266,9 @@ namespace SkyHelp.Migrations
                     Categoria = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Prioridad = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaCierre = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Diagnostico = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    FechaDiagnostico = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IdEstado = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IdUsuario = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IdDomiciliario = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -279,7 +287,7 @@ namespace SkyHelp.Migrations
                         column: x => x.IdEstado,
                         principalTable: "EstadosTickets",
                         principalColumn: "IdEstado",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Tickets_Tecnicos_IdTecnico",
                         column: x => x.IdTecnico,
@@ -318,7 +326,7 @@ namespace SkyHelp.Migrations
                         column: x => x.IdUsuario,
                         principalTable: "Usuarios",
                         principalColumn: "IdUsuario",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -347,7 +355,7 @@ namespace SkyHelp.Migrations
                         column: x => x.IdUsuario,
                         principalTable: "Usuarios",
                         principalColumn: "IdUsuario",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -369,6 +377,12 @@ namespace SkyHelp.Migrations
                 name: "IX_Estadisticas_IdUsuario",
                 table: "Estadisticas",
                 column: "IdUsuario");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EstadosTickets_NombreEstado",
+                table: "EstadosTickets",
+                column: "NombreEstado",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Evaluaciones_IdTicket",
@@ -406,9 +420,21 @@ namespace SkyHelp.Migrations
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Pedidos_NumeroPedido",
+                table: "Pedidos",
+                column: "NumeroPedido",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Reportes_IdUsuario",
                 table: "Reportes",
                 column: "IdUsuario");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Roles_NombreRol",
+                table: "Roles",
+                column: "NombreRol",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tecnicos_IdUsuario",
@@ -434,6 +460,18 @@ namespace SkyHelp.Migrations
                 name: "IX_Tickets_IdUsuario",
                 table: "Tickets",
                 column: "IdUsuario");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_NumeroTicket",
+                table: "Tickets",
+                column: "NumeroTicket",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Usuarios_Correo",
+                table: "Usuarios",
+                column: "Correo",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Usuarios_IdRol",

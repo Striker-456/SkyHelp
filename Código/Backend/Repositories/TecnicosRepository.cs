@@ -75,6 +75,21 @@ namespace SkyHelp.Repositories
                 {
                     return false;
                 }
+
+                // Desasignar (no borrar) los tickets asociados al técnico: la FK Tickets.IdTecnico
+                // es ClientSetNull, así que EF sólo la pone en null si el ticket está cargado en el
+                // contexto (mismo patrón que DomiciliariosRepository.EliminarDomiciliario).
+                var ticketsAsociados = await _context.Tickets.Where(t => t.IdTecnico == id).ToListAsync();
+                foreach (var ticket in ticketsAsociados)
+                {
+                    ticket.IdTecnico = null;
+                }
+                if (ticketsAsociados.Count > 0)
+                {
+                    _context.Tickets.UpdateRange(ticketsAsociados);
+                    await _context.SaveChangesAsync();
+                }
+
                 _context.Tecnicos.Remove(tecnicoExistente);
                 await _context.SaveChangesAsync();
                 return true;

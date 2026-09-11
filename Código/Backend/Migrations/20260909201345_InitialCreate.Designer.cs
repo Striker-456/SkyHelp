@@ -12,8 +12,8 @@ using SkyHelp.Context;
 namespace SkyHelp.Migrations
 {
     [DbContext(typeof(SkyHelpContext))]
-    [Migration("20260907001400_WidenPasswordColumnForBCrypt")]
-    partial class WidenPasswordColumnForBCrypt
+    [Migration("20260909201345_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,11 +45,6 @@ namespace SkyHelp.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("NombreCompleto")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("PlacaVehiculo")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -147,7 +142,7 @@ namespace SkyHelp.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("CalificacionPromedio")
-                        .HasColumnType("decimal(18, 0)");
+                        .HasColumnType("decimal(5, 2)");
 
                     b.Property<string>("Categoria")
                         .IsRequired()
@@ -238,6 +233,9 @@ namespace SkyHelp.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("IdEstado");
+
+                    b.HasIndex("NombreEstado")
+                        .IsUnique();
 
                     b.ToTable("EstadosTickets", (string)null);
                 });
@@ -337,6 +335,9 @@ namespace SkyHelp.Migrations
 
                     b.HasKey("IDRol");
 
+                    b.HasIndex("NombreRol")
+                        .IsUnique();
+
                     b.ToTable("Roles", (string)null);
                 });
 
@@ -356,10 +357,17 @@ namespace SkyHelp.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<string>("Diagnostico")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<DateTime?>("FechaCierre")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaDiagnostico")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("IdDomiciliario")
@@ -394,6 +402,9 @@ namespace SkyHelp.Migrations
                     b.HasIndex("IdTecnico");
 
                     b.HasIndex("IdUsuario");
+
+                    b.HasIndex("NumeroTicket")
+                        .IsUnique();
 
                     b.ToTable("Tickets", (string)null);
                 });
@@ -437,6 +448,9 @@ namespace SkyHelp.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.HasKey("IdUsuario");
+
+                    b.HasIndex("Correo")
+                        .IsUnique();
 
                     b.HasIndex("IdRol");
 
@@ -496,14 +510,26 @@ namespace SkyHelp.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<DateTime?>("FechaEntrega")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("FechaPedido")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("IdDomiciliario")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("IdTicket")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("IdUsuario")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("NumeroPedido")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NumeroPedido"));
 
                     b.Property<string>("Observaciones")
                         .IsRequired()
@@ -515,6 +541,9 @@ namespace SkyHelp.Migrations
                     b.HasIndex("IdDomiciliario");
 
                     b.HasIndex("IdUsuario");
+
+                    b.HasIndex("NumeroPedido")
+                        .IsUnique();
 
                     b.ToTable("Pedidos", (string)null);
                 });
@@ -554,7 +583,7 @@ namespace SkyHelp.Migrations
                     b.HasOne("SkyHelp.Models.Usuarios", "Usuario")
                         .WithMany("Estadisticas")
                         .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Usuario");
@@ -576,7 +605,7 @@ namespace SkyHelp.Migrations
                     b.HasOne("SkyHelp.Models.Usuarios", "Usuario")
                         .WithMany("Articulos")
                         .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Usuario");
@@ -587,7 +616,7 @@ namespace SkyHelp.Migrations
                     b.HasOne("SkyHelp.Models.Usuarios", "Usuario")
                         .WithMany("Auditorias")
                         .HasForeignKey("IDUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Usuario");
@@ -604,7 +633,7 @@ namespace SkyHelp.Migrations
                     b.HasOne("SkyHelp.Models.Usuarios", "Usuario")
                         .WithMany("Evaluaciones")
                         .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Ticket");
@@ -617,7 +646,7 @@ namespace SkyHelp.Migrations
                     b.HasOne("SkyHelp.Models.Usuarios", "Usuario")
                         .WithMany("Reportes")
                         .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Usuario");
@@ -632,7 +661,7 @@ namespace SkyHelp.Migrations
                     b.HasOne("SkyHelp.Models.EstadosTicket", "EstadoTicket")
                         .WithMany("Tickets")
                         .HasForeignKey("IdEstado")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("SkyHelp.Tecnicos", "Tecnico")
@@ -659,7 +688,7 @@ namespace SkyHelp.Migrations
                     b.HasOne("SkyHelp.Models.Roles", "Rol")
                         .WithMany("Usuario")
                         .HasForeignKey("IdRol")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Rol");
@@ -676,7 +705,7 @@ namespace SkyHelp.Migrations
                     b.HasOne("SkyHelp.Models.Usuarios", "Usuario")
                         .WithMany("Notificaciones")
                         .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Ticket");
@@ -695,7 +724,7 @@ namespace SkyHelp.Migrations
                     b.HasOne("SkyHelp.Models.Usuarios", "Usuario")
                         .WithMany("Pedidos")
                         .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Domiciliario");

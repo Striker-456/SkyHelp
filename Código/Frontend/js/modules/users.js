@@ -121,7 +121,6 @@ AplicacionSkyHelp.prototype.guardarNuevoUsuario = async function(evento) {
         if (!rol) throw new Error('Rol no encontrado: ' + rolNombre);
 
         const nombre = datos.get('nombre');
-        const rolNombreReal = rol.nombreRol;
 
         await Api.crearUsuario({
             nombreUsuarios: nombre.split(' ')[0],
@@ -132,23 +131,9 @@ AplicacionSkyHelp.prototype.guardarNuevoUsuario = async function(evento) {
             estadoCuenta: 'Activo'
         });
 
-        // Nota: si es técnico, el backend ya garantiza la fila en Tecnicos (CrearUsuario la crea
-        // automáticamente cuando el rol asignado es Técnico) — no hace falta duplicarlo aquí.
-
-        // Si es domiciliario, crear registro en tabla Domiciliarios
-        if (normalizarTexto(rolNombreReal) === 'domiciliario') {
-            const usuarios = await Api.getUsuarios();
-            const nuevoUsuario = usuarios.find(u => u.correo === datos.get('correo'));
-            if (nuevoUsuario) {
-                await Api.crearDomiciliario({
-                    nombreCompleto: nombre,
-                    telefono: datos.get('telefono') || '',
-                    email: datos.get('correo'),
-                    estadoActividad: 'Activo',
-                    IDUsuario: nuevoUsuario.idUsuario
-                });
-            }
-        }
+        // Nota: si es técnico o domiciliario, el backend ya garantiza la fila en Tecnicos /
+        // Domiciliarios (CrearUsuario la crea automáticamente según el rol asignado) — no hace
+        // falta duplicarlo aquí. Duplicarlo causaba una segunda fila en Domiciliarios.
 
         this.cerrarModal();
         this.mostrarToast(`✅ Usuario ${nombre} creado exitosamente`);
