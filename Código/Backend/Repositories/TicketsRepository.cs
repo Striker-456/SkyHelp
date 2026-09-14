@@ -29,11 +29,6 @@ namespace SkyHelp.Repositories
             return await _context.Tickets.Where(t => t.IdTecnico == idTecnico).ToListAsync();
         }
 
-        public async Task<List<Tickets>> ObtenerTicketsPorDomiciliario(Guid idDomiciliario)
-        {
-            return await _context.Tickets.Where(t => t.IdDomiciliario == idDomiciliario).ToListAsync();
-        }
-
         public async Task<Tickets> ObtenerTicketPorId(Guid id)
         {
             return await _context.Tickets.FirstOrDefaultAsync(x => x.IdTicket == id);
@@ -236,24 +231,5 @@ namespace SkyHelp.Repositories
             }
         }
 
-        public async Task<bool> EliminarTicket(Guid id)
-        {
-            try
-            {
-                var ticketExistente = await _context.Tickets.FirstOrDefaultAsync(x => x.IdTicket == id);
-                if (ticketExistente == null)
-                {
-                    return false;
-                }
-                _context.Tickets.Remove(ticketExistente);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al eliminar el ticket {IdTicket}", id);
-                return false;
-            }
-        }
     }
 }

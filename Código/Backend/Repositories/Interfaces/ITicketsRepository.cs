@@ -7,7 +7,6 @@ namespace SkyHelp.Repositories.Interfaces
         Task<List<Tickets>> ObtenerTickets();
         Task<List<Tickets>> ObtenerTicketsPorUsuario(Guid idUsuario);
         Task<List<Tickets>> ObtenerTicketsPorTecnico(Guid idTecnico);
-        Task<List<Tickets>> ObtenerTicketsPorDomiciliario(Guid idDomiciliario);
         Task<Tickets> ObtenerTicketPorId(Guid id);
         Task<bool> CrearTicket(Tickets ticket);
         Task<bool> ActualizarTicket(Tickets ticket);
@@ -17,7 +16,5 @@ namespace SkyHelp.Repositories.Interfaces
         Task<bool> IniciarDiagnostico(Guid idTicket);
         Task<bool> RegistrarDiagnostico(Guid idTicket, string diagnostico, string? fallaEncontrada = null, string? pruebasRealizadas = null, string? observaciones = null, string? recomendaciones = null);
         Task<bool> ActualizarDetallesTicket(Guid idTicket, string categoria, string prioridad, string descripcion);
-        Task<bool> EliminarTicket(Guid id);
-
     }
 }

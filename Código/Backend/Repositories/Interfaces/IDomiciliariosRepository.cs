@@ -8,7 +8,5 @@ namespace SkyHelp.Repositories.Interfaces
         Task<Domiciliarios?> ObtenerDomiciliarioPorIdUsuario(Guid idUsuario);
         Task<Domiciliarios> ObtenerDomiciliarioPorID(Guid id);
         Task<bool> CrearDomiciliario(Domiciliarios domiciliario);
-        Task<bool> ActualizarDomiciliario(Domiciliarios domiciliario);
-        Task<bool> EliminarDomiciliario(Guid id);
     }
 }

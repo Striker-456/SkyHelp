@@ -75,49 +75,7 @@ namespace SkyHelp.Controllers
             }
         }
 
-        [Authorize]
-        [HttpGet("ObtnerUsuariosPorCorreo")]// Definiendo que este método responde a solicitudes GET)
-        [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
-        [ProducesResponseType(StatusCodes.Status404NotFound)]// Indicando que este método puede retornar un estado 404 Not Found
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]// Indicando que este método puede retornar un estado 500 Internal Server Error
-
-        public async Task<IActionResult> ObtenerUsuariosPorCorreo(string Correo)// Método para obtener usuarios por correo
-        {
-            try
-            {
-                var usuarios = await _UsuariosRepository.ObtenerUsuarioPorCorreo(Correo);// Llamando al método del repositorio para obtener los usuarios por correo
-                if (usuarios == null) // Verificando si el usuario existe
-                {
-                    return NotFound("Usuario no encontrado."); // Retornando una respuesta HTTP 404 si no se encuentra el usuario
-                }
-                return Ok(usuarios); // Retornando una respuesta HTTP 200 con el usuario encontrado
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener el usuario."); // Retornando una respuesta HTTP 500 en caso de error
-            }
-        }
-
-
-        [Authorize]
-        [HttpGet("ObtenerNombrePorId")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> ObtenerNombrePorId(Guid id)
-        {
-            try
-            {
-                var usuario = await _UsuariosRepository.ObtenerUsuario(id);
-                if (usuario == null) return NotFound();
-                return Ok(new { usuario.IdUsuario, usuario.NombreCompleto, usuario.Correo });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener el usuario.");
-            }
-        }
-
-        // Versión en lote de ObtenerNombrePorId: cualquier usuario autenticado (no solo admin)
+        // Versión en lote de lo que antes era ObtenerNombrePorId: cualquier usuario autenticado (no solo admin)
         // puede resolver nombres de otros usuarios por Id — la necesitan, por ejemplo, un técnico
         // o domiciliario para mostrar el nombre del cliente en sus tickets/entregas, ya que
         // ObtenerUsuarios (el listado completo) es solo para administradores. Solo expone los
@@ -159,35 +117,6 @@ namespace SkyHelp.Controllers
             }
         }
 
-        [Authorize]
-        [HttpGet("ObtenerUsuarioPorID")]// Definiendo que este método responde a solicitudes GET
-        [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK
-        [ProducesResponseType(StatusCodes.Status404NotFound)]// Indicando que este método puede retornar un estado 404 Not Found
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]// Indicando que este método puede retornar un estado 500 Internal Server Error
-
-        public async Task<IActionResult> ObtenerUsuarioPorId (Guid ID) // Metodo para Obtener Usuario pro ID
-        {
-            try
-            {
-                var usuario = await _UsuariosRepository.ObtenerUsuario(ID); // Llamando al metodo del repositorio para obtener el usuario por ID
-                if (usuario == null) // Verificando si el usuario existe
-                {
-                    return NotFound("Usuario no encontrado."); // Retornando una respuesta HTTP 404 si no se encuentra el usuario
-                }
-                if (!User.IsInRole(RoleNames.Administrador))
-                {
-                    var self = await _UsuariosRepository.ObtenerUsuarioPorCorreo(User.Identity?.Name ?? "");
-                    if (self == null || self.IdUsuario != ID)
-                        return Forbid();
-                }
-                return Ok(usuario); // Retornando una respuesta HTTP 200 con el usuario encontrado
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener el usuario."); // Retornando una respuesta HTTP 500 en caso de error
-            }
-        }
-        
         [AllowAnonymous]
         [EnableRateLimiting("auth")]
         [HttpPost("CrearUsuario")]// Definiendo que este método responde a solicitudes GET
@@ -498,11 +427,6 @@ public class ActualizarPerfilRequest
     public string? Telefono { get; set; }
     public string? Contrasena { get; set; } // Opcional - solo si se quiere cambiar
     public Guid? IdRol { get; set; } // Opcional - solo si se quiere cambiar el rol
-}
-
-public class CambiarContrasenaRequest
-{
-    public string NuevaContrasena { get; set; } = string.Empty;
 }
 
 public class CambiarContrasenaConVerificacionRequest

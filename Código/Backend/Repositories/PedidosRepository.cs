@@ -30,10 +30,6 @@ namespace SkyHelp.Repositories
             return await _context.Pedidos.FirstOrDefaultAsync(x => x.IdTicket == idTicket);
         }
 
-        public async Task<Pedidos> ObtenerPedidoPorId(Guid id)
-        {
-            return await _context.Pedidos.FirstOrDefaultAsync(x => x.IdPedido == id);
-        }
         public async Task<bool> CrearPedido(Pedidos pedido)
         {
             try
@@ -75,26 +71,6 @@ namespace SkyHelp.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al actualizar el pedido {IdPedido}", pedido.IdPedido);
-                return false;
-            }
-        }
-
-        public async Task<bool> EliminarPedido(Guid id)
-        {
-            try
-            {
-                var pedidoExistente = await _context.Pedidos.FirstOrDefaultAsync(x => x.IdPedido == id);
-                if (pedidoExistente == null)
-                {
-                    return false;
-                }
-                _context.Pedidos.Remove(pedidoExistente);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al eliminar el pedido {IdPedido}", id);
                 return false;
             }
         }

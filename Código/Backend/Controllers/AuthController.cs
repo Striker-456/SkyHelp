@@ -52,41 +52,6 @@ namespace SkyHelp.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(Login login)
         {
-            return await LoginInternal(login, requiredRoleName: null);
-        }
-
-        [HttpPost("login-admin")]
-        public async Task<IActionResult> LoginAdmin([FromBody] Login login)
-        {
-            return await LoginInternal(login, requiredRoleName: RoleNames.Administrador);
-        }
-
-        [HttpPost("login-usuario")]
-        public async Task<IActionResult> LoginUsuario([FromBody] Login login)
-        {
-            return await LoginInternal(login, requiredRoleName: RoleNames.Usuario);
-        }
-
-        [HttpPost("login-cliente")]
-        public async Task<IActionResult> LoginCliente([FromBody] Login login)
-        {
-            return await LoginInternal(login, requiredRoleName: RoleNames.Usuario);
-        }
-
-        [HttpPost("login-tecnico")]
-        public async Task<IActionResult> LoginTecnico([FromBody] Login login)
-        {
-            return await LoginInternal(login, requiredRoleName: RoleNames.Tecnico);
-        }
-
-        [HttpPost("login-domiciliario")]
-        public async Task<IActionResult> LoginDomiciliario([FromBody] Login login)
-        {
-            return await LoginInternal(login, requiredRoleName: RoleNames.Domiciliario);
-        }
-
-        private async Task<IActionResult> LoginInternal(Login login, string? requiredRoleName)
-        {
             if (login == null || string.IsNullOrEmpty(login.Correo) || string.IsNullOrEmpty(login.Contrasena))
                 return BadRequest("El correo electrónico y la contraseña son obligatorios.");
 
@@ -110,12 +75,6 @@ namespace SkyHelp.Controllers
                 return Unauthorized("No se encontró el rol del usuario.");
 
             var jwtRole = RoleClaimMapper.ToJwtRole(rol.NombreRol);
-
-            if (!string.IsNullOrWhiteSpace(requiredRoleName))
-            {
-                if (!string.Equals(jwtRole, requiredRoleName, StringComparison.Ordinal))
-                    return Unauthorized($"El usuario no tiene el rol requerido: {requiredRoleName}.");
-            }
 
             // Keep encoding consistent with Program.cs (Jwt:Key)
             var secretKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]));

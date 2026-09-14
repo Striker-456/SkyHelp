@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SkyHelp.Authorization;
 using SkyHelp.DTOs.Reportes;
-using SkyHelp.Models;
-using SkyHelp.Repositories.Interfaces;
 using SkyHelp.Services.Interfaces;
 using System.Security.Claims;
 
@@ -15,18 +13,15 @@ namespace SkyHelp.Controllers
     [ApiController]
     public class ReportesController : ControllerBase
     {
-        private readonly IReportesRepository _ReportesRepository;
         private readonly IReportesService _reportesService;
         private readonly IReporteExportService _exportService;
         private readonly IAuditoriaService _auditoriaService;
 
         public ReportesController(
-            IReportesRepository ReportesRepository,
             IReportesService reportesService,
             IReporteExportService exportService,
             IAuditoriaService auditoriaService)
         {
-            _ReportesRepository = ReportesRepository;
             _reportesService = reportesService;
             _exportService = exportService;
             _auditoriaService = auditoriaService;
@@ -113,73 +108,5 @@ namespace SkyHelp.Controllers
             }
         }
 
-        // ---- CRUD original de registros de Reportes (se conserva para administración directa) ----
-
-        [HttpGet("ObtenerReportes")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ObtenerReportes()
-        {
-            try
-            {
-                var Reportes = await _ReportesRepository.ObtenerReportes();
-                if (Reportes == null || !Reportes.Any())
-                {
-                    return NotFound("No se encontraron reportes.");
-                }
-                return Ok(Reportes);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error al obtener los reportes.");
-            }
-
-        }
-
-        [HttpGet("ObtenerReportePorID")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ObtenerReportePorId(Guid ID)
-        {
-            try
-            {
-                var reporte = await _ReportesRepository.ObtenerReportesPorId(ID);
-                if (reporte == null)
-                {
-                    return NotFound("Reporte no encontrado.");
-                }
-                return Ok(reporte);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error al obtener el reporte.");
-            }
-        }
-
-        [HttpDelete("EliminarReporte")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> EliminarReporte(Guid ID)
-        {
-            try
-            {
-                var resultado = await _ReportesRepository.EliminarReporte(ID);
-                if (!resultado)
-                {
-                    return BadRequest("No se pudo eliminar el reporte.");
-                }
-                return Ok("Reporte eliminado exitosamente.");
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error al eliminar el reporte.");
-            }
-        }
     }
 }

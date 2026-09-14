@@ -114,28 +114,6 @@ namespace SkyHelp.Controllers
         }
 
         [Authorize]
-        [HttpGet("ObtenerTicketsAsignadosDomiciliario")]
-        public async Task<IActionResult> ObtenerTicketsAsignadosDomiciliario(Guid idDomiciliario)
-        {
-            try
-            {
-                if (!User.IsInRole(RoleNames.Administrador))
-                {
-                    var domiciliario = await _domiciliariosRepository.ObtenerDomiciliarioPorIdUsuario(ObtenerIdActor());
-                    if (domiciliario == null || domiciliario.IdDomiciliario != idDomiciliario)
-                        return Forbid();
-                }
-
-                var lista = await _ticketsRepository.ObtenerTicketsPorDomiciliario(idDomiciliario);
-                return Ok(lista);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener los tickets asignados.");
-            }
-        }
-
-        [Authorize]
         [HttpGet("ObtenerMisTickets")]
         public async Task<IActionResult> ObtenerMisTickets()
         {
@@ -530,40 +508,6 @@ namespace SkyHelp.Controllers
             }
         }
 
-        [Authorize]
-        [HttpPost("ComentarioTicket")]
-        public async Task<IActionResult> ComentarioTicket([FromBody] ComentarioTicketRequest body)
-        {
-            var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(idStr) || !Guid.TryParse(idStr, out var idUsuario))
-                return Unauthorized();
-
-            var tecnico = await _tecnicosRepository.ObtenerTecnicoPorIdUsuario(idUsuario);
-            var ticket = await _ticketsRepository.ObtenerTicketPorId(body.IdTicket);
-            if (tecnico == null || ticket == null || ticket.IdTecnico != tecnico.IdTecnico)
-                return Forbid();
-
-            return Ok(new { mensaje = "Comentario aceptado; enlazar persistencia cuando exista el modelo.", texto = body.Texto });
-        }
-
-        [Authorize(Roles = RoleNames.Administrador)]
-        [HttpDelete("EliminarTicket")]
-        public async Task<IActionResult> EliminarTicket(Guid Id)
-        {
-            try
-            {
-                var resultado = await _ticketsRepository.EliminarTicket(Id);
-                if (!resultado)
-                    return NotFound("Ticket no encontrado o no se pudo eliminar.");
-                await _auditoriaService.RegistrarAsync(ObtenerIdActor(), "Eliminar", "Tickets", Id,
-                    "Ticket eliminado.", ObtenerIp());
-                return Ok("Ticket eliminado exitosamente.");
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al eliminar el ticket.");
-            }
-        }
     }
 
     public class ActualizarDomiciliarioTicketRequest
@@ -576,12 +520,6 @@ namespace SkyHelp.Controllers
     {
         public Guid IdTicket { get; set; }
         public Guid IdEstado { get; set; }
-    }
-
-    public class ComentarioTicketRequest
-    {
-        public Guid IdTicket { get; set; }
-        public string Texto { get; set; } = "";
     }
 
     public class AsignarTecnicoRequest

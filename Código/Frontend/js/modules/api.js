@@ -121,7 +121,6 @@ const Api = {
         if (rol === 'Tecnico')       return this.get('/api/tickets/ObtenerTicketsAsignadosTecnico');
         return this.get('/api/tickets/ObtenerMisTickets');
     },
-    getTicketsPorDomiciliario(idDomiciliario) { return this.get(`/api/tickets/ObtenerTicketsAsignadosDomiciliario?idDomiciliario=${idDomiciliario}`); },
     crearTicket(ticket)           { return this.post('/api/tickets/CrearTicket', ticket); },
     actualizarTicket(ticket)      { return this.put('/api/tickets/ActualizarTicket', ticket); },
     actualizarEstadoTicket(idTicket, idEstado) { return this.put('/api/tickets/ActualizarEstadoTicket', { idTicket, idEstado }); },
@@ -141,7 +140,6 @@ const Api = {
 
     // Usuarios
     getUsuarios()                 { return this.get('/api/usuarios/ObtenerUsuarios'); },
-    getNombreUsuarioPorId(id)     { return this.get(`/api/usuarios/ObtenerNombrePorId?id=${id}`); },
     // A diferencia de getUsuarios (solo admin), cualquier rol autenticado puede llamar esta —
     // la necesitan técnico/domiciliario para resolver el nombre del cliente en sus tickets.
     getNombresUsuarios()          { return this.get('/api/usuarios/ObtenerNombres'); },
@@ -158,10 +156,8 @@ const Api = {
     // Domiciliarios
     getDomiciliarios()            { return this.get('/api/domiciliarios/ObtenerDomiciliarios'); },
     getDomiciliarioActual()       { return this.get('/api/domiciliarios/ObtenerDomiciliarioActual'); },
-    crearDomiciliario(domiciliario) { return this.post('/api/domiciliarios/CrearDomiciliario', domiciliario); },
 
     // Pedidos
-    getPedidosAsignadosDomi()     { return this.get('/api/pedidos/ObtenerPedidosAsignadosDomi'); },
     confirmarEntrega(idTicket)    { return this.post('/api/pedidos/ConfirmarEntrega', { idTicket }); },
     asignarDomiciliario(idTicket, idDomiciliario) { return this.post('/api/pedidos/AsignarDomiciliario', { idTicket, idDomiciliario }); },
     getMisEntregas()               { return this.get('/api/pedidos/MisEntregas'); },
@@ -183,8 +179,6 @@ const Api = {
         const query = params.toString();
         return this.get(`/api/auditorias/ObtenerAuditorias${query ? `?${query}` : ''}`);
     },
-    getAuditoriaPorId(id) { return this.get(`/api/auditorias/ObtenerAuditoriaPorID?id=${id}`); },
-
     // Reportes
     generarReporte(request)       { return this.post('/api/reportes/GenerarReporte', request); },
     getReportesRecientes()        { return this.get('/api/reportes/ObtenerReportesRecientes'); },
