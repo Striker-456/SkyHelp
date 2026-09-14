@@ -117,6 +117,31 @@ namespace SkyHelp.Controllers
             }
         }
 
+        // Versión en lote de ObtenerNombrePorId: cualquier usuario autenticado (no solo admin)
+        // puede resolver nombres de otros usuarios por Id — la necesitan, por ejemplo, un técnico
+        // o domiciliario para mostrar el nombre del cliente en sus tickets/entregas, ya que
+        // ObtenerUsuarios (el listado completo) es solo para administradores. Solo expone los
+        // campos necesarios para mostrar un nombre, nunca el rol, estado de cuenta ni la
+        // contraseña (hasheada) que sí trae ObtenerUsuarios.
+        [Authorize]
+        [HttpGet("ObtenerNombres")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ObtenerNombres()
+        {
+            try
+            {
+                var usuarios = await _UsuariosRepository.ObtenerUsuarios();
+                var nombres = (usuarios ?? new List<Usuarios>())
+                    .Select(u => new { u.IdUsuario, u.NombreCompleto, u.NombreUsuarios, u.Correo });
+                return Ok(nombres);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener los nombres de usuarios.");
+            }
+        }
+
         [Authorize(Roles = RoleNames.Administrador)]
         [HttpGet("ObtenerUsuarios")]// Definiendo que este método responde a solicitudes GET
         [ProducesResponseType(StatusCodes.Status200OK)]// Indicando que este método puede retornar un estado 200 OK

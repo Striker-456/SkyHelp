@@ -12,13 +12,14 @@ AplicacionSkyHelp.prototype.obtenerContenidoHistorial = async function() {
     const entregadas = entregas.filter(en => en.estadoPedido === 'Entregado');
 
     const filas = entregadas.length === 0
-        ? `<tr><td colspan="5" style="text-align:center;padding:2rem;">No hay entregas registradas</td></tr>`
+        ? `<tr><td colspan="6" style="text-align:center;padding:2rem;">No hay entregas registradas</td></tr>`
         : entregadas.map(en => `
             <tr>
                 <td><strong>#${en.numeroPedido}</strong></td>
                 <td>${en.fechaEntrega ? new Date(en.fechaEntrega).toLocaleDateString() : ''}</td>
                 <td>${en.descripcionTicket || ''}</td>
                 <td>${en.clienteNombre || ''}</td>
+                <td>${en.direccionEntrega || '—'}</td>
                 <td><span class="insignia-estado insignia-verde">${en.estadoPedido || ''}</span></td>
             </tr>
         `).join('');
@@ -35,6 +36,7 @@ AplicacionSkyHelp.prototype.obtenerContenidoHistorial = async function() {
                                 <th>Fecha</th>
                                 <th>Descripción</th>
                                 <th>Cliente</th>
+                                <th>Dirección</th>
                                 <th>Estado</th>
                             </tr>
                         </thead>

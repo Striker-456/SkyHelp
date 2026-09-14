@@ -277,6 +277,9 @@ AplicacionSkyHelp.prototype.obtenerDashboardDomiciliario = async function() {
         entregas = await Api.getMisEntregas() || [];
         estados = await Api.getEstadosTickets() || [];
         datosSkyHelp.estados = estados;
+        // Cache para verDetalleTicketDomiciliario: trae direccionEntrega/clienteNombre ya
+        // resueltos server-side (PedidoDetalleDto), que /api/tickets/ObtenerPorId no incluye.
+        datosSkyHelp.entregasDomiciliarioCache = entregas;
     } catch (e) {
         console.error('Error cargando entregas:', e);
         entregas = [];
@@ -343,7 +346,13 @@ AplicacionSkyHelp.prototype.obtenerDashboardDomiciliario = async function() {
                 </div>
             ` : `
                 <div class="dom-lista-entregas">
-                    ${activas.map(entrega => `
+                    ${activas.map(entrega => {
+                        // Solo se muestra el botón que corresponde al siguiente paso del recorrido,
+                        // no los tres a la vez: Preparar -> Empezar Recorrido -> Terminar Recorrido.
+                        const estadoActual = getEstado(entrega.idEstadoTicket).toLowerCase();
+                        const enPreparacion = estadoActual.includes('preparacion');
+                        const enRutaActual = estadoActual.includes('ruta');
+                        return `
                         <div class="dom-entrega-card">
                             <div class="dom-entrega-tipo-badge">📦 Pedido #${entrega.numeroPedido}</div>
                             <div class="dom-entrega-body">
@@ -353,15 +362,14 @@ AplicacionSkyHelp.prototype.obtenerDashboardDomiciliario = async function() {
                                 </div>
                                 <div class="dom-entrega-acciones">
                                     <button class="btn btn-secundario" onclick="aplicacion.verDetalleTicketDomiciliario('${entrega.idTicket}')">Detalles</button>
-                                    <button class="btn btn-primario" onclick="aplicacion.marcarPreparando('${entrega.idTicket}')">Preparar</button>
-                                    <button class="btn btn-exito" onclick="aplicacion.iniciarRecorrido('${entrega.idTicket}')">Empezar Recorrido</button>
-                                    ${getEstado(entrega.idEstadoTicket).toLowerCase().includes('ruta') ? `
-                                    <button class="btn btn-exito" style="background-color:#059669;" onclick="aplicacion.terminarRecorrido('${entrega.idTicket}')">Terminar Recorrido</button>
-                                    ` : ''}
+                                    ${!enPreparacion && !enRutaActual ? `<button class="btn btn-primario" onclick="aplicacion.marcarPreparando('${entrega.idTicket}')">Preparar</button>` : ''}
+                                    ${enPreparacion && !enRutaActual ? `<button class="btn btn-exito" onclick="aplicacion.iniciarRecorrido('${entrega.idTicket}')">Empezar Recorrido</button>` : ''}
+                                    ${enRutaActual ? `<button class="btn btn-exito" style="background-color:#059669;" onclick="aplicacion.terminarRecorrido('${entrega.idTicket}')">Terminar Recorrido</button>` : ''}
                                 </div>
                             </div>
                         </div>
-                    `).join('')}
+                        `;
+                    }).join('')}
                 </div>
             `}
         </div>
@@ -446,7 +454,17 @@ AplicacionSkyHelp.prototype.verDetalleTicketDomiciliario = async function(idTick
 
         const estados = datosSkyHelp.estados || await Api.getEstadosTickets();
         const self = this; // Guardar referencia a 'this'
-        
+
+        // El ticket (Tickets) no trae ni el nombre del cliente ni la dirección de entrega — eso
+        // vive en el Pedido asociado (PedidoDetalleDto). Se busca primero en caché y, si no está
+        // (p. ej. se entró aquí sin pasar antes por el dashboard), se recarga desde la API.
+        let entregas = datosSkyHelp.entregasDomiciliarioCache;
+        if (!entregas) {
+            entregas = await Api.getMisEntregas().catch(() => []) || [];
+            datosSkyHelp.entregasDomiciliarioCache = entregas;
+        }
+        const entrega = entregas.find(en => en.idTicket === idTicket);
+
         const getEstado = (idEstado) => {
             const e = estados.find(e => e.idEstado === idEstado);
             return e ? e.nombreEstado : '';
@@ -476,6 +494,14 @@ AplicacionSkyHelp.prototype.verDetalleTicketDomiciliario = async function(idTick
                     <div class="info-ticket-item">
                         <div class="etiqueta">DESCRIPCIÓN</div>
                         <div class="valor">${ticket.descripcion || '—'}</div>
+                    </div>
+                    <div class="info-ticket-item">
+                        <div class="etiqueta">CLIENTE</div>
+                        <div class="valor">${entrega?.clienteNombre || '—'}</div>
+                    </div>
+                    <div class="info-ticket-item" style="grid-column:1 / -1;">
+                        <div class="etiqueta">DIRECCIÓN DE ENTREGA</div>
+                        <div class="valor">${entrega?.direccionEntrega || 'Sin dirección registrada'}</div>
                     </div>
                     <div class="info-ticket-item">
                         <div class="etiqueta">ESTADO</div>

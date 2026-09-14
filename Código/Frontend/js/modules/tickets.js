@@ -91,7 +91,7 @@ AplicacionSkyHelp.prototype.obtenerContenidoTickets = async function() {
             Api.getTickets(), 
             Api.getEstadosTickets(), 
             Api.getTecnicos().catch(() => []),
-            Api.getUsuarios().catch(() => []),
+            Api.getNombresUsuarios().catch(() => []),
             Api.getDomiciliarios().catch(() => [])
         ];
 
@@ -401,6 +401,12 @@ const esMiTicketTecnico = esTecnico && miTecnico && ticket.idTecnico === miTecni
                     <div class="etiqueta">DOMICILIARIO ASIGNADO</div>
                     <div class="valor">${domiciliarioNombre}</div>
                 </div>
+                ${ticket.direccionEntrega ? `
+                <div class="info-ticket-item" style="grid-column:1/-1;">
+                    <div class="etiqueta">DIRECCIÓN DE ENTREGA</div>
+                    <div class="valor">${ticket.direccionEntrega}</div>
+                </div>
+                ` : ''}
                 <div class="info-ticket-item">
                     <div class="etiqueta">FECHA DE CREACIÓN</div>
                     <div class="valor">${fecha}</div>
@@ -924,14 +930,15 @@ AplicacionSkyHelp.prototype.guardarNuevoTicket = async function(evento) {
         // El técnico lo asigna el Administrador después (ver mostrarModalAsignarTecnico) — el
         // cliente nunca elige quién lo atiende.
         const nuevoTicket = {
-            descripcion:    datos.get('descripcion'),
-            categoria:      datos.get('categoria'),
-            prioridad:      datos.get('prioridad'),
-            fechaCreacion:  new Date().toISOString(),
-            idEstado:       estadoPendiente.idEstado,
-            idUsuario:      this.usuarioActual.id || '00000000-0000-0000-0000-000000000000',
-            idTecnico:      null,
-            idDomiciliario: null
+            descripcion:      datos.get('descripcion'),
+            categoria:        datos.get('categoria'),
+            prioridad:        datos.get('prioridad'),
+            direccionEntrega: datos.get('direccion') || null,
+            fechaCreacion:    new Date().toISOString(),
+            idEstado:         estadoPendiente.idEstado,
+            idUsuario:        this.usuarioActual.id || '00000000-0000-0000-0000-000000000000',
+            idTecnico:        null,
+            idDomiciliario:   null
         };
 
         await Api.crearTicket(nuevoTicket);

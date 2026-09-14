@@ -30,6 +30,12 @@ namespace SkyHelp.Services
             _auditoriaService = auditoriaService;
         }
 
+        // Usa la dirección que el cliente indicó al crear el ticket; si el ticket no tiene una
+        // (tickets creados antes de que existiera el campo, o que la dejaron vacía por ser
+        // opcional), conserva el placeholder anterior en vez de dejarlo en blanco.
+        private static string ObtenerDireccionEntrega(Tickets ticket) =>
+            string.IsNullOrWhiteSpace(ticket.DireccionEntrega) ? "Sin dirección registrada en el ticket" : ticket.DireccionEntrega;
+
         public async Task<ConfirmarEntregaResultado> ConfirmarEntregaAsync(Guid idTicket, Guid idUsuarioActor, bool actorEsAdmin, string? ip)
         {
             var ticket = await _ticketsRepository.ObtenerTicketPorId(idTicket);
@@ -64,7 +70,7 @@ namespace SkyHelp.Services
                     IdTicket = idTicket,
                     FechaPedido = ticket.FechaCreacion ?? ahora,
                     FechaEntrega = ahora,
-                    DireccionEntrega = "Sin dirección registrada en el ticket",
+                    DireccionEntrega = ObtenerDireccionEntrega(ticket),
                     EstadoPedido = "Entregado",
                     Observaciones = string.Empty
                 };
@@ -117,7 +123,7 @@ namespace SkyHelp.Services
                     IdDomiciliario = idDomiciliario,
                     IdTicket = idTicket,
                     FechaPedido = DateTime.Now,
-                    DireccionEntrega = "Sin dirección registrada en el ticket",
+                    DireccionEntrega = ObtenerDireccionEntrega(ticket),
                     EstadoPedido = "Asignado",
                     Observaciones = string.Empty
                 };

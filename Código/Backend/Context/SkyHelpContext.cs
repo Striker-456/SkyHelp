@@ -255,6 +255,7 @@ namespace SkyHelp.Context
                 entity.Property(e => e.PruebasRealizadas).HasMaxLength(300);
                 entity.Property(e => e.Observaciones).HasMaxLength(500);
                 entity.Property(e => e.Recomendaciones).HasMaxLength(500);
+                entity.Property(e => e.DireccionEntrega).HasMaxLength(200);
                 entity.Property(e => e.FechaCreacion).IsRequired();
                 entity.Property(e => e.IdEstado).IsRequired();
                 entity.Property(e => e.IdUsuario).IsRequired();

@@ -142,6 +142,9 @@ const Api = {
     // Usuarios
     getUsuarios()                 { return this.get('/api/usuarios/ObtenerUsuarios'); },
     getNombreUsuarioPorId(id)     { return this.get(`/api/usuarios/ObtenerNombrePorId?id=${id}`); },
+    // A diferencia de getUsuarios (solo admin), cualquier rol autenticado puede llamar esta —
+    // la necesitan técnico/domiciliario para resolver el nombre del cliente en sus tickets.
+    getNombresUsuarios()          { return this.get('/api/usuarios/ObtenerNombres'); },
     crearUsuario(usuario)         { return this.post('/api/usuarios/CrearUsuario', usuario); },
     actualizarUsuario(usuario)    { return this.put('/api/usuarios/ActualizarUsuario', usuario); },
     eliminarUsuario(id)           { return this.delete(`/api/usuarios/EliminarUsuario?ID=${id}`); },
