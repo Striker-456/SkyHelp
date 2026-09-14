@@ -21,7 +21,6 @@ js/
     ├── dashboard.js         # Dashboard por rol (admin/técnico/cliente/domiciliario)
     ├── admin.js              # Gestión de técnicos
     ├── domiciliarios.js       # Gestión de domiciliarios + asignación de pedidos
-    ├── map.js                  # Mapa / seguimiento de domiciliario
     ├── tickets.js                # CRUD de tickets, asignación de técnico, diagnóstico
     ├── users.js                   # Gestión de usuarios (admin)
     ├── auditoria.js                 # Módulo de Auditorías

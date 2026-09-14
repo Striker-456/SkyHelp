@@ -86,7 +86,6 @@ AplicacionSkyHelp.prototype.obtenerContenidoEstadisticas = async function(desde,
         { label: 'Pendientes', valor: r.pendientes, color: 'var(--color-amarillo)', emoji: '⏳' },
         { label: 'Usuarios Activos', valor: r.usuariosActivos, color: 'var(--color-purpura)', emoji: '👥' },
         { label: 'Críticos / Altos', valor: r.criticosAltos, color: 'var(--color-primario)', emoji: '🔴' },
-        { label: 'Satisfacción', valor: r.satisfaccionPromedio + '%', color: 'var(--color-naranja)', emoji: '⭐' },
     ];
 
     const maxPrio = Math.max(...r.ticketsPorPrioridad.map(d => d.total), 1);

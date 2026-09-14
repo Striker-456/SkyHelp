@@ -29,18 +29,14 @@ namespace SkyHelp.Context
 
         public DbSet<Usuarios> Usuarios { get; set; }
         public DbSet<Roles> Roles { get; set; }
-        public DbSet<Articulos> Articulos { get; set; }
         public DbSet<Auditoria> Auditoria { get; set; }
         public DbSet<Domiciliarios> Domiciliarios { get; set; }
         public DbSet<Reportes> Reportes { get; set; }
-        public DbSet<Notificaciones> Notificaciones { get; set; }
         public DbSet<Pedidos> Pedidos { get; set; }
         public DbSet<Estadisticas> Estadisticas { get; set; }
-        public DbSet<ExportacionesEstadisticas> ExportacionesEstadisticas { get; set; }
         public DbSet<Tecnicos> Tecnicos { get; set; }
         public DbSet<Tickets> Tickets { get; set; }
         public DbSet<EstadosTicket> EstadosTickets { get; set; }
-        public DbSet<Evaluaciones> Evaluaciones { get; set; }
         public DbSet<ProgresoTickets> ProgresoTickets { get; set; }
 
 
@@ -57,12 +53,7 @@ namespace SkyHelp.Context
             //    Usuario (así lo hace UsuariosRepository.EliminarUsuario, que los borra junto con
             //    el usuario) -> Cascade desde Usuarios.
             //  - Tickets se borra en cascada junto con su Usuario (igual que arriba, ya implementado
-            //    en UsuariosRepository.EliminarUsuario) -> Cascade desde Usuarios. Evaluaciones y
-            //    Notificaciones sólo tienen sentido junto a su Ticket -> Cascade desde Tickets.
-            //    Como Usuarios->Tickets ya es Cascade, la relación directa Usuarios->Evaluaciones /
-            //    Usuarios->Notificaciones se deja en Restrict para no crear una segunda ruta de
-            //    cascada hacia la misma tabla (los registros de un ticket propio ya se eliminan por
-            //    la ruta Usuario->Ticket->Evaluación/Notificación).
+            //    en UsuariosRepository.EliminarUsuario) -> Cascade desde Usuarios.
             //  - Domiciliarios->Pedidos es Cascade (así lo hace DomiciliariosRepository.EliminarDomiciliario,
             //    que borra los pedidos del domiciliario). Por lo tanto Usuarios->Pedidos (el cliente)
             //    se deja en Restrict: preserva el historial de pedidos del cliente y evita la doble
@@ -73,13 +64,11 @@ namespace SkyHelp.Context
             //    hace DomiciliariosRepository.EliminarDomiciliario a mano). No se usa SetNull real en
             //    la base de datos porque, junto con Usuarios->Domiciliarios/Tecnicos ya en Cascade,
             //    volvería a producir múltiples rutas de cascada hacia Tickets.
-            //  - Articulos, Reportes y Estadisticas son contenido/histórico generado por un Usuario sin
+            //  - Reportes y Estadisticas son contenido/histórico generado por un Usuario sin
             //    limpieza manual en los repositorios -> Restrict, para no perderlos silenciosamente.
             //  - Auditoria es el log de auditoría: Restrict a nivel de BD (protege el rastro ante
             //    borrados directos), pero UsuariosRepository.EliminarUsuario ya lo limpia a mano al
             //    borrar la cuenta completa, así que ese flujo sigue funcionando igual.
-            //  - Estadisticas->ExportacionesEstadisticas es Cascade porque EstadisticasRepository.
-            //    EliminarEstadistica no limpia las exportaciones a mano; depende de la BD para hacerlo.
             // ================================================================================
 
             // Configuración de la entidad Usuarios
@@ -139,29 +128,6 @@ namespace SkyHelp.Context
                     new { IDRol = RolUsuarioId, NombreRol = RoleNames.Usuario, Descripcion = "Cliente que reporta tickets de soporte." }
                 );
             });
-            // Configuración de la entidad Articulos
-            modelBuilder.Entity<Articulos>(entity =>
-            {
-                entity.HasKey(e => e.IdArticulo);
-                entity.Property(e => e.Titulo).IsRequired().HasMaxLength(50);
-                entity.Property(e => e.Categoria).IsRequired().HasMaxLength(50);
-                entity.Property(e => e.Contenido).IsRequired().HasMaxLength(50);
-                entity.Property(e => e.FechaPublicacion).IsRequired();
-                entity.Property(e => e.TotalVistas).IsRequired();
-                // decimal(5,2): antes era decimal(18,0), que truncaba cualquier calificación
-                // promedio (p. ej. 4.5) a un entero (5), perdiendo el propósito del campo.
-                entity.Property(e => e.CalificacionPromedio).HasColumnType("decimal(5, 2)").IsRequired();
-                entity.Property(e => e.IdUsuario).IsRequired();
-                // RELACIÓN: Usuarios -> Articulos. Restrict: preserva el contenido publicado; no
-                // hay limpieza manual en ArticulosRepository, así que la BD debe bloquear el borrado
-                // del autor mientras existan artículos suyos en vez de eliminarlos silenciosamente.
-                entity.HasOne(e => e.Usuario)
-                    .WithMany(u => u.Articulos)
-                    .HasForeignKey(e => e.IdUsuario)
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity.ToTable("Articulos");
-            });
-
             // Configuración de la entidad Auditoria
             modelBuilder.Entity<Auditoria>(entity =>
             {
@@ -226,35 +192,6 @@ namespace SkyHelp.Context
                       .OnDelete(DeleteBehavior.Restrict);
                 entity.ToTable("Reportes");
             });
-            //Configuracion de la entidad Notificaciones
-            modelBuilder.Entity<Notificaciones>(entity =>
-             {
-                 entity.HasKey(e => e.IdNotificacion);
-                 entity.Property(e => e.IdUsuario).IsRequired();
-                 entity.Property(e => e.Contenido).IsRequired().HasMaxLength(50);
-                 entity.Property(e => e.FechaEnvio).IsRequired();
-                 entity.Property(e => e.MedioEnvio).IsRequired().HasMaxLength(50);
-                 entity.Property(e => e.IDTicket).IsRequired();
-                 // RELACIÓN: Usuarios -> Notificaciones (destinatario). Restrict: Usuarios->Tickets ya
-                 // es Cascade y Tickets->Notificaciones también, así que las notificaciones de los
-                 // tickets propios del usuario ya se eliminan por esa ruta; dejar ésta en Cascade
-                 // también crearía una segunda ruta de cascada hacia la misma tabla (error de SQL
-                 // Server). Además, el destinatario de una notificación no siempre es el dueño del
-                 // ticket (p. ej. un técnico notificado de un ticket ajeno), así que Restrict evita
-                 // borrar en cascada notificaciones que no son del propio ticket del usuario.
-                 entity.HasOne(e => e.Usuario)
-                       .WithMany(t => t.Notificaciones)
-                       .HasForeignKey(e => e.IdUsuario)
-                       .OnDelete(DeleteBehavior.Restrict);
-                 // RELACIÓN: Tickets -> Notificaciones. Cascade: una notificación no tiene sentido sin
-                 // su ticket; TicketsRepository.EliminarTicket no limpia notificaciones a mano.
-                 entity.HasOne(e => e.Ticket)
-                       .WithMany()
-                       .HasForeignKey(e => e.IDTicket)
-                       .OnDelete(DeleteBehavior.Cascade);
-                 entity.ToTable("Notificaciones");
-             });
-
             // Configuración de la entidad Pedidos
             modelBuilder.Entity<Pedidos>(entity =>
             {
@@ -305,24 +242,6 @@ namespace SkyHelp.Context
                       .WithMany(u => u.Estadisticas)
                       .HasForeignKey(e => e.IdUsuario)
                       .OnDelete(DeleteBehavior.Restrict);
-            });
-
-            // Configuración de la entidad ExportacionesEstadisticas
-            modelBuilder.Entity<ExportacionesEstadisticas>(entity =>
-            {
-                entity.ToTable("ExportacionesEstadisticas");
-                entity.HasKey(e => e.IdExportado);
-                entity.Property(e => e.IdEstadistica).IsRequired();
-                entity.Property(e => e.ExportadoPor).HasMaxLength(100).IsRequired();
-                entity.Property(e => e.FechaExportacion).IsRequired();
-                entity.Property(e => e.Formato).HasMaxLength(50).IsRequired();
-                // RELACIÓN: Estadisticas -> ExportacionesEstadisticas. Cascade: una exportación no
-                // tiene sentido sin su estadística; EstadisticasRepository.EliminarEstadistica no
-                // limpia las exportaciones a mano, así que depende de la BD.
-                entity.HasOne(e => e.Estadistica)
-                      .WithMany(e => e.ExportacionesEstadisticas)
-                      .HasForeignKey(e => e.IdEstadistica)
-                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             // Configuración de la entidad Tecnicos
@@ -416,31 +335,6 @@ namespace SkyHelp.Context
                     new { IdEstado = EstadoEnRutaId, NombreEstado = "En ruta", Descripcion = "El domiciliario va en camino a entregar el pedido." },
                     new { IdEstado = EstadoResueltoId, NombreEstado = "Resuelto", Descripcion = "El ticket fue atendido y cerrado." }
                 );
-            });
-
-            // Configuración de la entidad Evaluaciones
-            modelBuilder.Entity<Evaluaciones>(entity =>
-            {
-                entity.ToTable("Evaluaciones");
-                entity.HasKey(e => e.IdEvaluacion);
-                entity.Property(e => e.IdTicket).IsRequired();
-                entity.Property(e => e.IdUsuario).IsRequired();
-                entity.Property(e => e.Calificacion).IsRequired();
-                entity.Property(e => e.Comentario).HasMaxLength(500);
-                entity.Property(e => e.FechaEvaluacion).IsRequired();
-                // RELACIÓN: Usuarios -> Evaluaciones (autor). Restrict: mismo razonamiento que
-                // Notificaciones — Usuarios->Tickets->Evaluaciones ya es una ruta de cascada completa,
-                // así que la ruta directa se deja en Restrict para no duplicarla.
-                entity.HasOne(e => e.Usuario)
-                      .WithMany(u => u.Evaluaciones)
-                      .HasForeignKey(e => e.IdUsuario)
-                      .OnDelete(DeleteBehavior.Restrict);
-                // RELACIÓN: Tickets -> Evaluaciones. Cascade: una evaluación no tiene sentido sin su
-                // ticket; TicketsRepository.EliminarTicket no limpia evaluaciones a mano.
-                entity.HasOne(e => e.Ticket)
-                      .WithMany(t => t.Evaluaciones)
-                      .HasForeignKey(e => e.IdTicket)
-                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             // Configuración de la entidad ProgresoTickets

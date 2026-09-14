@@ -38,7 +38,6 @@ namespace SkyHelp.DTOs.Estadisticas
         public int UsuariosActivos { get; set; }
         public int CriticosAltos { get; set; }
         public double? TiempoPromedioResolucionHoras { get; set; }
-        public double SatisfaccionPromedio { get; set; }
         public List<DistribucionEstadoDto> DistribucionPorEstado { get; set; } = new();
         public List<TicketsPorPrioridadDto> TicketsPorPrioridad { get; set; } = new();
         public List<ComparativaMensualDto> ComparativaMensual { get; set; } = new();

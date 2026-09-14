@@ -23,8 +23,5 @@ namespace SkyHelp
         public DateTime? FechaGeneracion { get; set; } = DateTime.Now;
         [JsonIgnore]
         public virtual Usuarios? Usuario { get; set; }
-
-        [JsonIgnore]
-        public virtual ICollection<ExportacionesEstadisticas>? ExportacionesEstadisticas { get; set; }
     }
 }

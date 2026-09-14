@@ -98,16 +98,6 @@ namespace SkyHelp.Repositories
                     await _context.SaveChangesAsync(); // Guardar primero los cambios en tickets
                 }
 
-                // Eliminar evaluaciones asociadas a los tickets del domiciliario
-                var evaluacionesAsociadas = await _context.Evaluaciones
-                    .Where(e => ticketsAsociados.Select(t => t.IdTicket).Contains(e.IdTicket))
-                    .ToListAsync();
-                if (evaluacionesAsociadas.Any())
-                {
-                    _context.Evaluaciones.RemoveRange(evaluacionesAsociadas);
-                    await _context.SaveChangesAsync(); // Guardar eliminación de evaluaciones
-                }
-
                 // Eliminar pedidos asociados al domiciliario
                 var pedidosAsociados = await _context.Pedidos.Where(p => p.IdDomiciliario == id).ToListAsync();
                 if (pedidosAsociados.Any())

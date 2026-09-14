@@ -17,7 +17,6 @@ namespace SkyHelp.Controllers
         private readonly ITecnicosRepository _tecnicosRepository;
         private readonly IDomiciliariosRepository _domiciliariosRepository;
         private readonly IProgresoTicketsRepository _progresoTicketsRepository;
-        private readonly INotificacionesRepository _notificacionesRepository;
         private readonly IAuditoriaService _auditoriaService;
 
         public TicketsController(
@@ -25,14 +24,12 @@ namespace SkyHelp.Controllers
             ITecnicosRepository tecnicosRepository,
             IDomiciliariosRepository domiciliariosRepository,
             IProgresoTicketsRepository progresoTicketsRepository,
-            INotificacionesRepository notificacionesRepository,
             IAuditoriaService auditoriaService)
         {
             _ticketsRepository = ticketsRepository;
             _tecnicosRepository = tecnicosRepository;
             _domiciliariosRepository = domiciliariosRepository;
             _progresoTicketsRepository = progresoTicketsRepository;
-            _notificacionesRepository = notificacionesRepository;
             _auditoriaService = auditoriaService;
         }
 
@@ -65,22 +62,6 @@ namespace SkyHelp.Controllers
             }
 
             return false;
-        }
-
-        // Notificaciones.Contenido está limitado a 50 caracteres en BD; se trunca en vez de fallar.
-        private static string TruncarTexto(string texto, int max) =>
-            texto.Length <= max ? texto : texto.Substring(0, max - 1) + "…";
-
-        private async Task NotificarClienteAsync(Tickets ticket, string contenido)
-        {
-            var notificacion = new Notificaciones
-            {
-                IdUsuario = ticket.IdUsuario,
-                Contenido = TruncarTexto(contenido, 50),
-                MedioEnvio = "Sistema",
-                IDTicket = ticket.IdTicket
-            };
-            await _notificacionesRepository.CrearNotificacion(notificacion);
         }
 
         // Resuelve el IdTecnico del actor autenticado cuando es un técnico (para dejar constancia de
@@ -349,7 +330,6 @@ namespace SkyHelp.Controllers
 
                 await _auditoriaService.RegistrarAsync(ObtenerIdActor(), "Actualizar", "Tickets", request.IdTicket,
                     $"Diagnóstico iniciado para el ticket #{ticket.NumeroTicket}.", ObtenerIp());
-                await NotificarClienteAsync(ticket, $"Ticket #{ticket.NumeroTicket}: diagnóstico iniciado (10%).");
                 return Ok("Diagnóstico iniciado exitosamente.");
             }
             catch (Exception)
@@ -455,7 +435,6 @@ namespace SkyHelp.Controllers
 
                 await _auditoriaService.RegistrarAsync(ObtenerIdActor(), "Actualizar", "Tickets", request.IdTicket,
                     $"Progreso del ticket #{ticket.NumeroTicket} actualizado a {request.Porcentaje}% ({request.Etapa}).", ObtenerIp());
-                await NotificarClienteAsync(ticket, $"Ticket #{ticket.NumeroTicket}: {request.Porcentaje}% - {request.Etapa}");
                 return Ok("Progreso actualizado exitosamente.");
             }
             catch (Exception)
@@ -508,7 +487,6 @@ namespace SkyHelp.Controllers
 
                 await _auditoriaService.RegistrarAsync(ObtenerIdActor(), "Actualizar", "Tickets", request.IdTicket,
                     $"Diagnóstico finalizado para el ticket #{ticket.NumeroTicket} (100%).", ObtenerIp());
-                await NotificarClienteAsync(ticket, $"Ticket #{ticket.NumeroTicket}: diagnóstico finalizado (100%).");
                 return Ok("Diagnóstico finalizado exitosamente.");
             }
             catch (Exception)

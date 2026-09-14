@@ -38,24 +38,17 @@ namespace SkyHelp.Models
 
         public virtual ICollection<Auditoria>? Auditorias { get; set; }
         [JsonIgnore]
-        public virtual ICollection<Articulos>? Articulos { get; set; }
-        [JsonIgnore]
         public virtual ICollection<Domiciliarios>? Domiciliarios { get; set; }
         [JsonIgnore]
         public virtual ICollection<Reportes>? Reportes { get; set; }
         [JsonIgnore]
         public virtual ICollection<Tickets>? Tickets { get; set; }
         [JsonIgnore]
-        public virtual ICollection<Notificaciones>? Notificaciones { get; set; }
-        [JsonIgnore]
         public virtual ICollection<Pedidos>? Pedidos { get; set; }
         [JsonIgnore]
         public ICollection<Estadisticas>? Estadisticas { get; set; }
         [JsonIgnore]
         public ICollection<Tecnicos>? Tecnico { get; set; }
-
-        [JsonIgnore]
-        public virtual ICollection<Evaluaciones>? Evaluaciones { get; set; }
     }
         
 }

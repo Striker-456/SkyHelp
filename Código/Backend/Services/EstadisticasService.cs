@@ -6,7 +6,7 @@ using SkyHelp.Services.Interfaces;
 
 namespace SkyHelp.Services
 {
-    // Igual que ReportesService, agrega datos de Tickets/Evaluaciones/Tecnicos — consulta el
+    // Igual que ReportesService, agrega datos de Tickets/Tecnicos — consulta el
     // SkyHelpContext directamente en lugar de forzar métodos de agregación en cada repositorio.
     public class EstadisticasService : IEstadisticasService
     {
@@ -34,10 +34,6 @@ namespace SkyHelp.Services
                 .Where(t => t.FechaCreacion >= inicio && (hasta == null || t.FechaCreacion <= hasta))
                 .ToListAsync();
 
-            var evaluaciones = await _context.Evaluaciones
-                .Where(e => e.FechaEvaluacion >= inicio && (hasta == null || e.FechaEvaluacion <= hasta))
-                .ToListAsync();
-
             int ContarPorEstado(Func<string, bool> coincide) =>
                 tickets.Count(t => t.EstadoTicket != null && coincide(t.EstadoTicket.NombreEstado));
 
@@ -61,8 +57,6 @@ namespace SkyHelp.Services
             double? tiempoPromedio = resueltosConTiempo.Count > 0
                 ? resueltosConTiempo.Average(t => (t.FechaCierre!.Value - t.FechaCreacion!.Value).TotalHours)
                 : null;
-
-            var satisfaccion = evaluaciones.Count > 0 ? evaluaciones.Average(e => e.Calificacion) * 20 : 0;
 
             var distribucion = tickets
                 .GroupBy(t => t.EstadoTicket?.NombreEstado ?? "Sin estado")
@@ -112,7 +106,6 @@ namespace SkyHelp.Services
                 UsuariosActivos = usuariosActivos,
                 CriticosAltos = criticosAltos,
                 TiempoPromedioResolucionHoras = tiempoPromedio.HasValue ? Math.Round(tiempoPromedio.Value, 1) : null,
-                SatisfaccionPromedio = Math.Round(satisfaccion, 0),
                 DistribucionPorEstado = distribucion,
                 TicketsPorPrioridad = porPrioridad,
                 ComparativaMensual = meses,

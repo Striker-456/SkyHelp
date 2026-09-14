@@ -40,9 +40,6 @@
 /* Administración (Gestión de técnicos) */
 @import url('components/admin.css');
 
-/* Mapa */
-@import url('components/map.css');
-
 /* Tickets */
 @import url('components/tickets.css');
 

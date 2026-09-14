@@ -52,8 +52,6 @@ namespace SkyHelp.Models
         [JsonIgnore]
         public virtual EstadosTicket? EstadoTicket { get; set; }
         [JsonIgnore]
-        public virtual ICollection<Evaluaciones>? Evaluaciones { get; set; }
-        [JsonIgnore]
         public virtual ICollection<ProgresoTickets>? ProgresoTickets { get; set; }
     }
 }

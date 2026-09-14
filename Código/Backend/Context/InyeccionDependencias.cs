@@ -18,20 +18,16 @@ namespace SkyHelp.Context
                 options.UseSqlServer(connectionString, sqlOptions =>
                     sqlOptions.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(5), errorNumbersToAdd: null)
                 ));// Configurar el contexto de la base de datos con SQL Server
-            services.AddScoped<IUsuariosRepository, UsuariosRepository>();// Inyección de dependencia del repositorio de usuarios 
+            services.AddScoped<IUsuariosRepository, UsuariosRepository>();// Inyección de dependencia del repositorio de usuarios
             services.AddScoped<IRolRepository, RolRepository>();// Inyección de dependencia del repositorio de roles
-            services.AddScoped<IArticulosRepository, ArticulosRepository>();// Inyección de dependencia del repositorio de artículos
             services.AddScoped<IAuditoriaRepository, AuditoriaRepository>();//Inyección de dependencia del repositorio de auditoría
             services.AddScoped<IDomiciliariosRepository, DomiciliariosRepository>();//Inyección de dependencia del repositorio de domiciliarios
             services.AddScoped<IReportesRepository, ReportesRepository>();//Inyección de dependencia del repositorio de reportes
-            services.AddScoped<INotificacionesRepository, NotificacionRepository>();//Inyección de dependencia del repositorio de notificaciones
             services.AddScoped<IPedidosRepository, PedidosRepository>();//Inyección de dependencia del repositorio de pedidos
             services.AddScoped<IEstadisticasRepository, EstadisticasRepository>();//Inyección de dependencia del repositorio de estadísticas
-            services.AddScoped<IExportacionesEstadisticasRepository, ExportacionesEstadisticasRepository>();//Inyección de dependencia del repositorio de exportaciones de estadísticas
             services.AddScoped<ITecnicosRepository, TecnicosRepository>();//Inyección de dependencia del repositorio de técnicos
             services.AddScoped<ITicketsRepository, TicketsRepository>();//Inyección de dependencia del repositorio de tickets
             services.AddScoped<IEstadosTicketsRepository, EstadosTicketsRepository>();//Inyección de dependencia del repositorio de estados de tickets
-            services.AddScoped<IEvaluacionesRepository, EvaluacionesRepository>();//Inyección de dependencia del repositorio de evaluaciones
             services.AddScoped<IProgresoTicketsRepository, ProgresoTicketsRepository>();//Inyección de dependencia del repositorio de progreso de tickets
 
             services.AddScoped<IAuditoriaService, AuditoriaService>();
