@@ -34,8 +34,8 @@ namespace SkyHelp.Models
         public string? Observaciones { get; set; }
         [StringLength(500)]
         public string? Recomendaciones { get; set; }
-        // Dirección de recogida/entrega que el cliente indica al crear el ticket (opcional). La
-        // usa PedidosService al generar el Pedido de entrega, en vez del placeholder genérico.
+        // Dirección de entrega que el cliente indica al crear el ticket (opcional). La usa
+        // PedidosService al generar el Pedido de entrega, en vez del placeholder genérico.
         [StringLength(200)]
         public string? DireccionEntrega { get; set; }
         [Required]

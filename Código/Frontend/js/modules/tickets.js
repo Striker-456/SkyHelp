@@ -843,7 +843,7 @@ AplicacionSkyHelp.prototype.mostrarModalNuevoTicket = async function() {
                     <div class="wizard-seccion-titulo">Últimos detalles</div>
                     <p style="color:var(--gris-500);font-size:0.875rem;margin-bottom:1.25rem;">Un administrador asignará el técnico que atenderá tu solicitud.</p>
                     <div class="grupo-formulario">
-                        <label>Dirección de recogida (opcional)</label>
+                        <label>Dirección de entrega (opcional)</label>
                         <input type="text" name="direccion" placeholder="Calle 123 #45-67, Ciudad">
                     </div>
                     <div class="wizard-resumen">
