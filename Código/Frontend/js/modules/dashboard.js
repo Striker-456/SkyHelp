@@ -16,11 +16,13 @@ AplicacionSkyHelp.prototype.obtenerContenidoDashboard = async function() {
         const resultados = await Promise.allSettled([
             Api.getTickets(),
             Api.getEstadosTickets(),
-            Api.getTecnicos().catch(() => [])
+            Api.getTecnicos().catch(() => []),
+            Api.getNombresUsuarios().catch(() => [])
         ]);
         datosSkyHelp.tickets  = resultados[0].status === 'fulfilled' ? (resultados[0].value || []) : [];
         datosSkyHelp.estados  = resultados[1].status === 'fulfilled' ? (resultados[1].value || []) : [];
         datosSkyHelp.tecnicos = resultados[2].status === 'fulfilled' ? (resultados[2].value || []) : [];
+        datosSkyHelp.usuarios = resultados[3].status === 'fulfilled' ? (resultados[3].value || []) : [];
     } catch (e) {
         datosSkyHelp.tickets = [];
     }
@@ -50,6 +52,7 @@ AplicacionSkyHelp.prototype.obtenerContenidoDashboard = async function() {
                                 <th>ID</th>
                                 <th>Categoría</th>
                                 <th>Descripción</th>
+                                <th>Cliente</th>
                                 <th>Estado</th>
                                 <th>Prioridad</th>
                                 <th>Acciones</th>
@@ -61,6 +64,12 @@ AplicacionSkyHelp.prototype.obtenerContenidoDashboard = async function() {
                                 const esAdmin = rol === 'administrador';
                                 const miId = this.usuarioActual.id || sessionStorage.getItem('skyhelp_id');
                                 const miTecnico = esTecnico ? (datosSkyHelp.tecnicos || []).find(t => t.idUsuario === miId) : null;
+                                const usuarios = datosSkyHelp.usuarios || [];
+                                const getNombreCliente = (idUsuario) => {
+                                    if (idUsuario === miId) return this.usuarioActual.nombre;
+                                    const u = usuarios.find(u => u.idUsuario === idUsuario);
+                                    return u ? (u.nombreCompleto || u.NombreCompleto || u.nombreUsuarios || u.NombreUsuarios || '—') : '—';
+                                };
                                 return datosSkyHelp.tickets.slice(0, 5).map(ticket => {
                                 const id = ticket.idTicket || ticket.id || '';
                                 const numero = ticket.numeroTicket ? `#${ticket.numeroTicket}` : id.substring(0,8) + '...';
@@ -77,6 +86,7 @@ AplicacionSkyHelp.prototype.obtenerContenidoDashboard = async function() {
                                     <td><strong>${numero}</strong></td>
                                     <td>${ticket.categoria || ''}</td>
                                     <td>${ticket.descripcion || ''}</td>
+                                    <td>${getNombreCliente(ticket.idUsuario)}</td>
                                     <td><span class="insignia-estado ${this.obtenerClaseInsigniaEstado(estadoNombre)}">${estadoNombre}</span></td>
                                     <td><span class="insignia-estado ${this.obtenerClaseInsigniaPrioridad(ticket.prioridad)}">${ticket.prioridad || ''}</span></td>
                                     <td>

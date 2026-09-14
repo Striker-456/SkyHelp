@@ -304,22 +304,28 @@ AplicacionSkyHelp.prototype.verDetalleTicket = async function(id) {
     let tecnicos = datosSkyHelp.tecnicos || [];
     let usuarios = datosSkyHelp.usuarios || [];
     let domiciliarios = datosSkyHelp.domiciliarios || [];
-    
-    // Si no hay técnicos o domiciliarios cargados, cargarlos ahora
-    if (!tecnicos.length || !domiciliarios.length) {
+
+    // Si no hay técnicos, usuarios o domiciliarios cargados, cargarlos ahora. Esto pasa, por
+    // ejemplo, cuando se abre el detalle desde el Dashboard (obtenerContenidoDashboard nunca
+    // carga usuarios) en vez de desde la sección Tickets — sin este respaldo, el nombre del
+    // cliente quedaba en "—" para técnico/domiciliario aunque ObtenerNombres funcione bien.
+    if (!tecnicos.length || !usuarios.length || !domiciliarios.length) {
         try {
             const resultados = await Promise.allSettled([
                 tecnicos.length ? Promise.resolve(tecnicos) : Api.getTecnicos().catch(() => []),
+                usuarios.length ? Promise.resolve(usuarios) : Api.getNombresUsuarios().catch(() => []),
                 domiciliarios.length ? Promise.resolve(domiciliarios) : Api.getDomiciliarios().catch(() => [])
             ]);
             tecnicos = resultados[0].status === 'fulfilled' ? (resultados[0].value || []) : [];
-            domiciliarios = resultados[1].status === 'fulfilled' ? (resultados[1].value || []) : [];
+            usuarios = resultados[1].status === 'fulfilled' ? (resultados[1].value || []) : [];
+            domiciliarios = resultados[2].status === 'fulfilled' ? (resultados[2].value || []) : [];
 
             // Guardar en cache global
             datosSkyHelp.tecnicos = tecnicos;
+            datosSkyHelp.usuarios = usuarios;
             datosSkyHelp.domiciliarios = domiciliarios;
         } catch(e) {
-            console.error('Error cargando técnicos y domiciliarios:', e);
+            console.error('Error cargando técnicos, usuarios y domiciliarios:', e);
         }
     }
 
