@@ -24,7 +24,6 @@ namespace SkyHelp.Context
             services.AddScoped<IDomiciliariosRepository, DomiciliariosRepository>();//Inyección de dependencia del repositorio de domiciliarios
             services.AddScoped<IReportesRepository, ReportesRepository>();//Inyección de dependencia del repositorio de reportes
             services.AddScoped<IPedidosRepository, PedidosRepository>();//Inyección de dependencia del repositorio de pedidos
-            services.AddScoped<IEstadisticasRepository, EstadisticasRepository>();//Inyección de dependencia del repositorio de estadísticas
             services.AddScoped<ITecnicosRepository, TecnicosRepository>();//Inyección de dependencia del repositorio de técnicos
             services.AddScoped<ITicketsRepository, TicketsRepository>();//Inyección de dependencia del repositorio de tickets
             services.AddScoped<IEstadosTicketsRepository, EstadosTicketsRepository>();//Inyección de dependencia del repositorio de estados de tickets

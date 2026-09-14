@@ -46,8 +46,6 @@ namespace SkyHelp.Models
         [JsonIgnore]
         public virtual ICollection<Pedidos>? Pedidos { get; set; }
         [JsonIgnore]
-        public ICollection<Estadisticas>? Estadisticas { get; set; }
-        [JsonIgnore]
         public ICollection<Tecnicos>? Tecnico { get; set; }
     }
         

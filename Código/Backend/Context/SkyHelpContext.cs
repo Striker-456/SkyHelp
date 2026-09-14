@@ -33,7 +33,6 @@ namespace SkyHelp.Context
         public DbSet<Domiciliarios> Domiciliarios { get; set; }
         public DbSet<Reportes> Reportes { get; set; }
         public DbSet<Pedidos> Pedidos { get; set; }
-        public DbSet<Estadisticas> Estadisticas { get; set; }
         public DbSet<Tecnicos> Tecnicos { get; set; }
         public DbSet<Tickets> Tickets { get; set; }
         public DbSet<EstadosTicket> EstadosTickets { get; set; }
@@ -64,8 +63,8 @@ namespace SkyHelp.Context
             //    hace DomiciliariosRepository.EliminarDomiciliario a mano). No se usa SetNull real en
             //    la base de datos porque, junto con Usuarios->Domiciliarios/Tecnicos ya en Cascade,
             //    volvería a producir múltiples rutas de cascada hacia Tickets.
-            //  - Reportes y Estadisticas son contenido/histórico generado por un Usuario sin
-            //    limpieza manual en los repositorios -> Restrict, para no perderlos silenciosamente.
+            //  - Reportes es contenido/histórico generado por un Usuario sin limpieza manual en el
+            //    repositorio -> Restrict, para no perderlo silenciosamente.
             //  - Auditoria es el log de auditoría: Restrict a nivel de BD (protege el rastro ante
             //    borrados directos), pero UsuariosRepository.EliminarUsuario ya lo limpia a mano al
             //    borrar la cuenta completa, así que ese flujo sigue funcionando igual.
@@ -220,28 +219,6 @@ namespace SkyHelp.Context
                       .HasForeignKey(e => e.IdDomiciliario)
                       .OnDelete(DeleteBehavior.Cascade);
                 entity.ToTable("Pedidos");
-            });
-
-            // Configuración de la entidad Estadisticas
-            modelBuilder.Entity<Estadisticas>(entity =>
-            {
-                entity.ToTable("Estadisticas");
-                entity.HasKey(e => e.IdEstadistica);
-                entity.Property(e => e.Periodo).HasMaxLength(50).IsRequired();
-                entity.Property(e => e.FechaInicio).IsRequired();
-                entity.Property(e => e.FechaFin).IsRequired();
-                entity.Property(e => e.TipoGrafico).HasMaxLength(50).IsRequired();
-                entity.Property(e => e.Datos).HasColumnType("ntext").IsRequired();
-                entity.Property(e => e.IdUsuario).IsRequired();
-                entity.Property(e => e.ExportadoExcel).IsRequired();
-                entity.Property(e => e.ExportadoPDF).IsRequired();
-                entity.Property(e => e.FechaGeneracion).IsRequired();
-                // RELACIÓN: Usuarios -> Estadisticas. Restrict: preserva el historial de estadísticas
-                // generadas; no hay limpieza manual en EstadisticasRepository.
-                entity.HasOne(e => e.Usuario)
-                      .WithMany(u => u.Estadisticas)
-                      .HasForeignKey(e => e.IdUsuario)
-                      .OnDelete(DeleteBehavior.Restrict);
             });
 
             // Configuración de la entidad Tecnicos
