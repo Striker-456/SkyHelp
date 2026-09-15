@@ -123,6 +123,16 @@ builder.Services.AddAuthentication(x =>
 
 var app = builder.Build();
 
+// Aplica migraciones pendientes al arrancar. Necesario para contenedores (docker-compose): un
+// SQL Server recién levantado no tiene la base SkyHelp ni sus tablas hasta que algo las crea, y
+// aquí no hay un paso separado que corra `dotnet ef database update`. Migrate() es seguro de
+// llamar siempre: no hace nada si ya está al día.
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<SkyHelp.Context.SkyHelpContext>();
+    db.Database.Migrate();
+}
+
 // Red de seguridad: cualquier excepción no controlada por un try/catch local
 // (o que se les escape) termina aquí en vez de tumbar la respuesta sin registro.
 app.UseExceptionHandler(errorApp =>
