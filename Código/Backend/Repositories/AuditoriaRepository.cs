@@ -38,6 +38,11 @@ namespace SkyHelp.Repositories
             return await query.OrderByDescending(a => a.FechaEvento).ToListAsync();
         }
 
+        public async Task<Auditoria?> ObtenerAuditoriaPorID(Guid id)
+        {
+            return await _context.Auditoria.Include(a => a.Usuario).FirstOrDefaultAsync(x => x.IDLog == id);
+        }
+
         public async Task<bool> CrearAuditoria(Auditoria auditoria)
         {
             try

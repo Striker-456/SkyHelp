@@ -37,5 +37,23 @@ namespace SkyHelp.Controllers
             }
         }
 
+        [HttpGet("ObtenerAuditoriaPorID")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ObtenerAuditoriaPorId(Guid id)
+        {
+            try
+            {
+                var auditoria = await _auditoriaService.ObtenerPorIdAsync(id);
+                if (auditoria == null)
+                    return NotFound("Auditoría no encontrada.");
+                return Ok(auditoria);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener la auditoría.");
+            }
+        }
     }
 }

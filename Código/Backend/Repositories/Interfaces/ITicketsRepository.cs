@@ -16,5 +16,6 @@ namespace SkyHelp.Repositories.Interfaces
         Task<bool> IniciarDiagnostico(Guid idTicket);
         Task<bool> RegistrarDiagnostico(Guid idTicket, string diagnostico, string? fallaEncontrada = null, string? pruebasRealizadas = null, string? observaciones = null, string? recomendaciones = null);
         Task<bool> ActualizarDetallesTicket(Guid idTicket, string categoria, string prioridad, string descripcion);
+        Task<bool> EliminarTicket(Guid id);
     }
 }

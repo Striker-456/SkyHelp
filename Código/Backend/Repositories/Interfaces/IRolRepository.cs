@@ -1,4 +1,4 @@
-using SkyHelp.Models;
+﻿using SkyHelp.Models;
 
 namespace SkyHelp.Repositories.Interfaces
 {
@@ -6,5 +6,12 @@ namespace SkyHelp.Repositories.Interfaces
     {
         Task<List<Roles>> ObtenerRoles();
         Task<Roles> ObtenerRolesPorID(Guid id);
+
+        Task<bool> AsignarRol(Roles roles);
+
+        Task<bool> ActualizarRol( Roles roles);
+        
+        Task<bool> EliminarRol(Guid id);
+
     }
 }

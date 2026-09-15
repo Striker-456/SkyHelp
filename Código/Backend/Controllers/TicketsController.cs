@@ -508,6 +508,24 @@ namespace SkyHelp.Controllers
             }
         }
 
+        [Authorize(Roles = RoleNames.Administrador)]
+        [HttpDelete("EliminarTicket")]
+        public async Task<IActionResult> EliminarTicket(Guid Id)
+        {
+            try
+            {
+                var resultado = await _ticketsRepository.EliminarTicket(Id);
+                if (!resultado)
+                    return NotFound("Ticket no encontrado o no se pudo eliminar.");
+                await _auditoriaService.RegistrarAsync(ObtenerIdActor(), "Eliminar", "Tickets", Id,
+                    "Ticket eliminado.", ObtenerIp());
+                return Ok("Ticket eliminado exitosamente.");
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al eliminar el ticket.");
+            }
+        }
     }
 
     public class ActualizarDomiciliarioTicketRequest

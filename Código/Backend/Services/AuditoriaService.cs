@@ -37,6 +37,12 @@ namespace SkyHelp.Services
             return lista.Select(MapearDto).ToList();
         }
 
+        public async Task<AuditoriaDto?> ObtenerPorIdAsync(Guid id)
+        {
+            var auditoria = await _auditoriaRepository.ObtenerAuditoriaPorID(id);
+            return auditoria == null ? null : MapearDto(auditoria);
+        }
+
         private static AuditoriaDto MapearDto(Auditoria a) => new()
         {
             Id = a.IDLog,
