@@ -83,18 +83,27 @@ namespace SkyHelp.Services
 
             using var mensaje = new MailMessage
             {
-                From = new MailAddress(_options.RemitenteCorreo, _options.RemitenteNombre),
+                From = new MailAddress(_options.RemitenteCorreo, _options.RemitenteNombre, System.Text.Encoding.UTF8),
                 Subject = asunto,
+                // Gmail cierra la conexion ("protocol violation") si el asunto/cuerpo
+                // llevan caracteres no ASCII sin codificar correctamente.
+                SubjectEncoding = System.Text.Encoding.UTF8,
                 Body = cuerpo,
+                BodyEncoding = System.Text.Encoding.UTF8,
+                BodyTransferEncoding = System.Net.Mime.TransferEncoding.Base64,
                 IsBodyHtml = true
             };
             mensaje.To.Add(usuario.Correo);
+
+            // Codificar tambien el nombre del remitente para evitar no-ASCII en cabeceras.
+            mensaje.Headers.Add("X-Mailer", "SkyHelp");
 
             using var cliente = new SmtpClient(_options.Host, _options.Port)
             {
                 EnableSsl = _options.UseSsl,
                 DeliveryMethod = SmtpDeliveryMethod.Network,
-                UseDefaultCredentials = false
+                UseDefaultCredentials = false,
+                Timeout = 30000
             };
 
             if (!string.IsNullOrWhiteSpace(_options.Usuario))

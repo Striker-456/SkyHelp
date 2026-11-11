@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:5191';
+const API_BASE = 'http://localhost:27580';
 
 const Api = {
     // Obtener token almacenado
@@ -93,26 +93,41 @@ const Api = {
     // Solicita el enlace temporal. El backend responde siempre lo mismo
     // exista o no la cuenta, para evitar enumeracion de usuarios.
     async solicitarRestablecimiento(correo) {
-        const respuesta = await fetch(`${API_BASE}/api/Auth/SolicitarRestablecimiento`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ correo })
-        });
+        let respuesta;
+        try {
+            respuesta = await fetch(`${API_BASE}/api/Auth/SolicitarRestablecimiento`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ correo })
+            });
+        } catch (e) {
+            // "Failed to fetch" = no se pudo conectar con el backend.
+            throw new Error('No se pudo conectar con el servidor. Verifica que el backend este en ejecucion en ' + API_BASE);
+        }
 
         const texto = await respuesta.text();
+        if (respuesta.status === 429)
+            throw new Error('Demasiadas solicitudes. Espera un minuto antes de intentar de nuevo.');
         if (!respuesta.ok) throw new Error(texto || 'No se pudo enviar el enlace de recuperacion');
         return texto;
     },
 
     // Consume el token del enlace y define la nueva contrasena.
     async restablecerContrasena(token, nuevaContrasena) {
-        const respuesta = await fetch(`${API_BASE}/api/Auth/RestablecerContrasena`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token, nuevaContrasena })
-        });
+        let respuesta;
+        try {
+            respuesta = await fetch(`${API_BASE}/api/Auth/RestablecerContrasena`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token, nuevaContrasena })
+            });
+        } catch (e) {
+            throw new Error('No se pudo conectar con el servidor. Verifica que el backend este en ejecucion en ' + API_BASE);
+        }
 
         const texto = await respuesta.text();
+        if (respuesta.status === 429)
+            throw new Error('Demasiadas solicitudes. Espera un minuto antes de intentar de nuevo.');
         if (!respuesta.ok) throw new Error(texto || 'No se pudo restablecer la contrasena');
         return texto;
     },

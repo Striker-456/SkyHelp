@@ -91,7 +91,16 @@ namespace SkyHelp.Services
             var baseUrl = _emailOptions.UrlBaseFrontend?.TrimEnd('/') ?? string.Empty;
             var enlace = $"{baseUrl}/reset-password?token={Uri.EscapeDataString(tokenEnClaro)}";
 
-            await _emailService.EnviarCorreoRestablecimientoAsync(usuario, enlace, expiracion, cancellationToken);
+            try
+            {
+                await _emailService.EnviarCorreoRestablecimientoAsync(usuario, enlace, expiracion, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                // El fallo de envio se registra pero no se propaga: la respuesta al cliente
+                // debe ser identica exista o no la cuenta (evita enumeracion de usuarios).
+                _logger.LogError(ex, "No se pudo enviar el correo de restablecimiento a {Correo}.", usuario.Correo);
+            }
 
             return (enlace, expiracion);
         }

@@ -12,3 +12,4 @@ pid.txt
 # --- Secretos ---
 appsettings.Production.json
 .env
+appsettings.Development.json
