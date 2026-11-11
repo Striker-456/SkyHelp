@@ -1,4 +1,4 @@
-﻿using SkyHelp;
+using SkyHelp;
 using Microsoft.EntityFrameworkCore;
 using SkyHelp.Models;
 
@@ -24,6 +24,7 @@ namespace SkyHelp.Context
         public DbSet<Tickets> Tickets { get; set; }
         public DbSet<EstadosTicket> EstadosTickets { get; set; }
         public DbSet<Evaluaciones> Evaluaciones { get; set; }
+        public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
 
 
@@ -37,8 +38,8 @@ namespace SkyHelp.Context
                 entity.Property(e => e.IdRol).IsRequired();
                 entity.Property(e => e.NombreUsuarios).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.NombreCompleto).IsRequired().HasMaxLength(100);
-                entity.Property(e => e.Correo).IsRequired().HasMaxLength(50);
-                entity.Property(e => e.Contrasena).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Correo).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Contrasena).IsRequired().HasMaxLength(500);
                 entity.Property(e => e.EstadoCuenta).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.Telefono).HasMaxLength(20);
                 entity.HasOne(e => e.Rol)
@@ -132,7 +133,8 @@ namespace SkyHelp.Context
                  entity.Property(e => e.IDTicket).IsRequired();
                  entity.HasOne(e => e.Usuario)
                        .WithMany(t => t.Notificaciones)
-                       .HasForeignKey(e => e.IdUsuario);
+                         .HasForeignKey(e => e.IdUsuario)
+                         .OnDelete(DeleteBehavior.NoAction);
                  entity.HasOne(e => e.Ticket)
                        .WithMany()
                        .HasForeignKey(e => e.IDTicket);
@@ -154,7 +156,8 @@ namespace SkyHelp.Context
                       .HasForeignKey(e => e.IdUsuario);
                 entity.HasOne(e => e.Domiciliario)
                       .WithMany(t => t.Pedidos)
-                      .HasForeignKey(e => e.IdDomiciliario);
+                        .HasForeignKey(e => e.IdDomiciliario)
+                        .OnDelete(DeleteBehavior.NoAction);
                 entity.ToTable("Pedidos");
             });
 
@@ -260,12 +263,35 @@ namespace SkyHelp.Context
                 // RELACIÓN: Evaluaciones -> Usuarios
                 entity.HasOne(e => e.Usuario)
                       .WithMany(u => u.Evaluaciones)
-                      .HasForeignKey(e => e.IdUsuario);
+                        .HasForeignKey(e => e.IdUsuario)
+                        .OnDelete(DeleteBehavior.NoAction);
                 // RELACIÓN: Evaluaciones -> Tickets
                 entity.HasOne(e => e.Ticket)
                       .WithMany(t => t.Evaluaciones)
                       .HasForeignKey(e => e.IdTicket);
             });
+            // Configuración de la entidad PasswordResetToken (restablecimiento de contraseña)
+            modelBuilder.Entity<PasswordResetToken>(entity =>
+            {
+                entity.ToTable("PasswordResetTokens");
+                entity.HasKey(e => e.IdToken);
+                entity.Property(e => e.TokenHash).IsRequired().HasMaxLength(64);
+                entity.Property(e => e.FechaExpiracion).IsRequired();
+                entity.Property(e => e.FechaCreacion).IsRequired();
+                entity.Property(e => e.SolicitadoDesdeIp).HasMaxLength(45);
+
+                // Índice único: un token no puede repetirse y la búsqueda por hash debe ser rápida.
+                entity.HasIndex(e => e.TokenHash).IsUnique();
+
+                // Un usuario puede acumular tokens históricos; se borran en cascada con la cuenta.
+                entity.HasOne(e => e.Usuario)
+                      .WithMany()
+                      .HasForeignKey(e => e.IdUsuario)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.Ignore(e => e.EstaVigente);
+            });
+
             base.OnModelCreating(modelBuilder);
         }
     }

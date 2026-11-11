@@ -1,7 +1,4 @@
-
-alert("ESTE ES MI API.JS");
-
-const API_BASE = 'https://localhost:7062';
+const API_BASE = 'http://localhost:5191';
 
 const Api = {
     // Obtener token almacenado
@@ -92,6 +89,33 @@ const Api = {
     return respuesta.json();
 },
 
+    // ---- Restablecimiento de contrasena (publico, sin token) ----
+    // Solicita el enlace temporal. El backend responde siempre lo mismo
+    // exista o no la cuenta, para evitar enumeracion de usuarios.
+    async solicitarRestablecimiento(correo) {
+        const respuesta = await fetch(`${API_BASE}/api/Auth/SolicitarRestablecimiento`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ correo })
+        });
+
+        const texto = await respuesta.text();
+        if (!respuesta.ok) throw new Error(texto || 'No se pudo enviar el enlace de recuperacion');
+        return texto;
+    },
+
+    // Consume el token del enlace y define la nueva contrasena.
+    async restablecerContrasena(token, nuevaContrasena) {
+        const respuesta = await fetch(`${API_BASE}/api/Auth/RestablecerContrasena`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token, nuevaContrasena })
+        });
+
+        const texto = await respuesta.text();
+        if (!respuesta.ok) throw new Error(texto || 'No se pudo restablecer la contrasena');
+        return texto;
+    },
     // Roles
     getRoles()                    { return this.get('/api/rol/ObtenerRoles'); },
 
@@ -111,8 +135,9 @@ const Api = {
     getUsuarios()                 { return this.get('/api/usuarios/ObtenerUsuarios'); },
     getNombreUsuarioPorId(id)     { return this.get(`/api/usuarios/ObtenerNombrePorId?id=${id}`); },
     crearUsuario(usuario)         { return this.post('/api/usuarios/CrearUsuario', usuario); },
+    crearUsuarioAdmin(usuario)    { return this.post('/api/usuarios/CrearUsuarioAdmin', usuario); },
     actualizarUsuario(usuario)    { return this.put('/api/usuarios/ActualizarUsuario', usuario); },
-    eliminarUsuario(id)           { return this.delete(`/api/usuarios/EliminarUsuario?ID=${id}`); },
+    eliminarUsuario(id)           { return this.delete(`/api/usuarios/EliminarUsuario?id=${id}`); },
 
     // Estados de tickets
     getEstadosTickets()           { return this.get('/api/estadostickets/ObtenerEstadosTickets'); },

@@ -1,0 +1,14 @@
+# --- .NET build output ---
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# --- Logs y temporales ---
+*.log
+pid.txt
+
+# --- Secretos ---
+appsettings.Production.json
+.env

@@ -12,7 +12,6 @@ class AplicacionSkyHelp {
     }
     
     inicializar() {
-        console.log('Aplicación SkyHelp inicializada');
         // Restaurar tema guardado
         if (localStorage.getItem('skyhelp-tema') === 'oscuro') {
             document.body.classList.add('modo-oscuro');
@@ -31,6 +30,10 @@ class AplicacionSkyHelp {
             }
         });
         // Intentar restaurar sesión antes de mostrar inicio
+        // Si la URL trae ?token=... es que el usuario abrio el enlace del correo.
+        if (this.detectarTokenRecuperacion && this.detectarTokenRecuperacion()) {
+            return;
+        }
         if (!this.restaurarSesion()) {
             this.mostrarVista('inicio');
         }

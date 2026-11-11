@@ -365,6 +365,8 @@
                 <div class="pestanas">
                     <button class="pestana activa" data-pestana="login" onclick="aplicacion.cambiarPestana('login')">Iniciar Sesión</button>
                     <button class="pestana" data-pestana="registro" onclick="aplicacion.cambiarPestana('registro')">Registrarse</button>
+
+                    <button class="pestana" data-pestana="recuperar" onclick="aplicacion.cambiarPestana('recuperar')">Recuperar</button>
                 </div>
 
                 <!-- Pestaña de Login -->
@@ -395,7 +397,7 @@
                                 <input type="checkbox">
                                 Recordarme
                             </label>
-                            <a href="#" class="enlace">¿Olvidaste tu contraseña?</a>
+                            <a href="#" class="enlace" onclick="aplicacion.irARecuperar(event)">¿Olvidaste tu contraseña?</a>
                         </div>
 
                         <button type="submit" class="btn btn-primario btn-bloque">Iniciar Sesión</button>
@@ -426,20 +428,10 @@
                             <input type="email" name="correo" placeholder="correo@ejemplo.com" required>
                         </div>
 
-                        <div class="grupo-formulario">
-                            <label>Tipo de Usuario *</label>
-                            <select name="rol" id="selector-rol" onchange="aplicacion.mostrarCampoPlaca()" required>
-                                <option value="">Selecciona tu rol</option>
-                                <option value="cliente">Cliente</option>
-                                <option value="tecnico">Técnico</option>
-                                <option value="domiciliario">Domiciliario</option>
-                            </select>
-                        </div>
-
-                        <div class="grupo-formulario" id="campo-placa" style="display: none;">
-                            <label>Placa del Vehículo *</label>
-                            <input type="text" name="placa" placeholder="ABC-1234" maxlength="8">
-                        </div>
+                        <p style="font-size:0.85rem;color:var(--gris-600);margin:0;">
+                            Las cuentas se crean con rol <strong>Cliente</strong>.
+                            Los roles Técnico, Domiciliario y Administrador los asigna un administrador.
+                        </p>
 
                         <div class="grupo-formulario">
                             <label>Empresa (Opcional)</label>
@@ -466,6 +458,61 @@
 
                         <button type="submit" class="btn btn-primario btn-bloque">Crear Cuenta</button>
                     </form>
+                </div>
+
+                <!-- Pestana de Recuperar Contrasena -->
+                <div id="pestana-recuperar" class="contenido-pestana">
+                    <div class="encabezado-formulario">
+                        <h2>Recuperar Contrasena</h2>
+                        <p>Te enviaremos un enlace temporal a tu correo</p>
+                    </div>
+
+                    <!-- Paso 1: solicitar el enlace -->
+                    <form id="formulario-solicitar-recuperacion" onsubmit="aplicacion.manejarSolicitarRecuperacion(event)">
+                        <div class="grupo-formulario">
+                            <label>Correo Electronico</label>
+                            <input type="email" name="correo" id="correo-recuperacion" placeholder="correo@ejemplo.com" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primario btn-bloque">Enviar enlace de recuperacion</button>
+                    </form>
+
+                    <!-- Paso 2: definir la nueva contrasena (token del enlace) -->
+                    <form id="formulario-restablecer" onsubmit="aplicacion.manejarRestablecerContrasena(event)" style="display: none;">
+                        <div class="grupo-formulario">
+                            <label>Nueva Contrasena</label>
+                            <div class="entrada-contrasena">
+                                <input type="password" name="nuevaContrasena" id="nueva-contrasena" placeholder="" required>
+                                <button type="button" class="alternar-contrasena" onclick="aplicacion.alternarContrasena('nueva-contrasena')">
+                                    <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grupo-formulario">
+                            <label>Confirmar Contrasena</label>
+                            <div class="entrada-contrasena">
+                                <input type="password" name="confirmarContrasena" id="confirmar-nueva-contrasena" placeholder="" required>
+                                <button type="button" class="alternar-contrasena" onclick="aplicacion.alternarContrasena('confirmar-nueva-contrasena')">
+                                    <svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Reglas de la politica de contrasena -->
+                        <ul class="lista-requisitos" id="requisitos-contrasena">
+                            <li data-regla="longitud">Minimo 8 caracteres</li>
+                            <li data-regla="mayuscula">Al menos una letra mayuscula</li>
+                            <li data-regla="numero">Al menos un numero</li>
+                            <li data-regla="especial">Al menos un caracter especial (!@#$%^&amp;*)</li>
+                        </ul>
+
+                        <button type="submit" class="btn btn-primario btn-bloque">Restablecer Contrasena</button>
+                    </form>
+
+                    <div class="pie-formulario" style="justify-content: center; margin-top: 1.25rem;">
+                        <a href="#" class="enlace" onclick="aplicacion.volverALogin(event)">Volver a iniciar sesion</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -544,7 +591,7 @@
   </div>
 
   <!-- Scripts modulares -->
-  <script type="text/javascript" src="js/modules/api.js"></script>
+    <script type="text/javascript" src="js/modules/api.js?v=2"></script>
   <script type="text/javascript" src="js/modules/data.js"></script>
   <script type="text/javascript" src="js/modules/core.js"></script>
   <script type="text/javascript" src="js/modules/auth.js"></script>
@@ -552,7 +599,7 @@
   <script type="text/javascript" src="js/modules/dashboard.js"></script>
   <script type="text/javascript" src="js/modules/admin.js"></script>
   <script type="text/javascript" src="js/modules/map.js"></script>
-  <script type="text/javascript" src="js/modules/tickets.js"></script>
+    <script type="text/javascript" src="js/modules/tickets.js?v=2"></script>
   <script type="text/javascript" src="js/modules/users.js"></script>
   <script type="text/javascript" src="js/modules/reports.js"></script>
   <script type="text/javascript" src="js/modules/config.js"></script>

@@ -4,3 +4,32 @@ GET {{Microservicios_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+
+### ============================================================
+### NOTA: políticas y restablecimiento de contraseña
+### ============================================================
+# La contraseña debe cumplir: 8+ caracteres, al menos una MAYÚSCULA,
+# al menos un número y al menos un carácter especial (!@#$%^&*...).
+#
+# Flujo de restablecimiento por correo (enlace temporal):
+#
+# 1) Solicitar el enlace (público, rate-limited):
+POST {{host}}/api/Auth/SolicitarRestablecimiento
+Content-Type: application/json
+
+{
+  "correo": "usuario@ejemplo.com"
+}
+
+###
+# 2) El usuario abre el enlace recibido por correo:
+#    {{UrlBaseFrontend}}/reset-password?token=XXXX
+#    El frontend debe leer el parámetro "token" y enviarlo aquí:
+POST {{host}}/api/Auth/RestablecerContrasena
+Content-Type: application/json
+
+{
+  "token": "TOKEN_DEL_ENLACE",
+  "nuevaContrasena": "NuevaClave#2024"
+}

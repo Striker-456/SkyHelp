@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SkyHelp.Repositories;
 using SkyHelp.Repositories.Interfaces;
+using SkyHelp.Services;
+using SkyHelp.Services.Interfaces;
 using System.Net.Security;
 
 namespace SkyHelp.Context
@@ -30,6 +32,12 @@ namespace SkyHelp.Context
             services.AddScoped<ITicketsRepository, TicketsRepository>();//Inyección de dependencia del repositorio de tickets
             services.AddScoped<IEstadosTicketsRepository, EstadosTicketsRepository>();//Inyección de dependencia del repositorio de estados de tickets
             services.AddScoped<IEvaluacionesRepository, EvaluacionesRepository>();//Inyección de dependencia del repositorio de evaluaciones
+            // ------------------------------------------------- Restablecimiento de contraseña
+            // Configuración SMTP (appsettings.json "Email" o variables SkyHelp__Email__*).
+            services.Configure<EmailOptions>(_Configuration.GetSection(EmailOptions.SectionName));
+            services.AddScoped<IEmailService, SmtpEmailService>();
+            services.AddScoped<IPasswordResetService, PasswordResetService>();
+
             return services;
             
         }

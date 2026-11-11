@@ -7,3 +7,14 @@
 
 // Inicializar aplicación
 const aplicacion = new AplicacionSkyHelp();
+
+// Retroalimentacion en vivo de la politica de contrasena
+// (mismas reglas que valida el backend en RestablecerContrasena).
+document.addEventListener('DOMContentLoaded', function() {
+    const campoNueva = document.getElementById('nueva-contrasena');
+    if (campoNueva) {
+        campoNueva.addEventListener('input', function() {
+            aplicacion.actualizarRequisitosContrasena(this.value);
+        });
+    }
+});

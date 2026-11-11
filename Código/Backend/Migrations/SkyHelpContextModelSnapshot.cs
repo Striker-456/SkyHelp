@@ -267,6 +267,43 @@ namespace SkyHelp.Migrations
                     b.ToTable("Evaluaciones", (string)null);
                 });
 
+            modelBuilder.Entity("SkyHelp.Models.PasswordResetToken", b =>
+                {
+                    b.Property<Guid>("IdToken")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaExpiracion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaUso")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("IdUsuario")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("SolicitadoDesdeIp")
+                        .HasMaxLength(45)
+                        .HasColumnType("nvarchar(45)");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.HasKey("IdToken");
+
+                    b.HasIndex("IdUsuario");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique();
+
+                    b.ToTable("PasswordResetTokens", (string)null);
+                });
+
             modelBuilder.Entity("SkyHelp.Models.Reportes", b =>
                 {
                     b.Property<Guid>("IdReporte")
@@ -393,13 +430,13 @@ namespace SkyHelp.Migrations
 
                     b.Property<string>("Contrasena")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Correo")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("EstadoCuenta")
                         .IsRequired()
@@ -591,10 +628,21 @@ namespace SkyHelp.Migrations
                     b.HasOne("SkyHelp.Models.Usuarios", "Usuario")
                         .WithMany("Evaluaciones")
                         .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Ticket");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("SkyHelp.Models.PasswordResetToken", b =>
+                {
+                    b.HasOne("SkyHelp.Models.Usuarios", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("IdUsuario")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Usuario");
                 });
@@ -663,7 +711,7 @@ namespace SkyHelp.Migrations
                     b.HasOne("SkyHelp.Models.Usuarios", "Usuario")
                         .WithMany("Notificaciones")
                         .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Ticket");
@@ -676,7 +724,7 @@ namespace SkyHelp.Migrations
                     b.HasOne("SkyHelp.Domiciliarios", "Domiciliario")
                         .WithMany("Pedidos")
                         .HasForeignKey("IdDomiciliario")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("SkyHelp.Models.Usuarios", "Usuario")
